@@ -1,0 +1,106 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+    <!-- BEGIN: Vertical Form -->
+    <div class="intro-y box mt-5">
+        <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+            <h2 class="text-3xl mx-auto mt-3 mb-3">ADD TECHNICIAN</h2>
+        </div>
+        <div class="px-3 sm:px-10 py-5">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5">
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Name</label>
+                        <input name="title" type="text" class="form-control" placeholder="Enter Technician Name Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Location</label>
+                        <input name="cid" type="text" class="form-control" placeholder="Enter Technician Name Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Department</label>
+                        <select name="" id="" class="form-control">
+                            <option value="">Select Department</option>
+                            <option value="">Accounts</option>
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Designation</label>
+                        <select name="" id="" class="form-control">
+                            <option value="">Select Designation</option>
+                            <option value="">Senior Technician</option>
+                            <option value="">Junior Technician</option>
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Mobile Number</label>
+                        <input name="cid" type="text" class="form-control" placeholder="Enter Technician Mobile Number Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Email</label>
+                        <input name="cid" type="email" class="form-control" placeholder="Enter Technician Email Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12">
+                        <hr>
+                        <h1 class="text-center mt-3 mb-3">Other Details</h1>
+                        <hr>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Contact Name</label>
+                        <input name="cid" type="text" class="form-control" placeholder="Enter Enter Emergency Contact Name Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Relation</label>
+                        <input name="cid" type="text" class="form-control" placeholder="Enter Relation With Technician  Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Contact Number</label>
+                        <input name="cid" type="text" class="form-control" placeholder="Enter Contat Number Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Contact Address</label>
+                        <input name="cid" type="text" class="form-control" placeholder="Enter Contat Address Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12">
+                        <hr>
+                        <h1 class="text-center mt-3 mb-3">Login Credentials</h1>
+                        <hr>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Username</label>
+                        <input name="cid" type="text" class="form-control" placeholder="Enter Contat Number Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Password</label>
+                        <input name="cid" type="text" class="form-control" placeholder="Enter Contat Address Here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
+                        <button class="btn btn-primary w-24 ml-2" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END: Vertical Form -->
+</div>
+<!-- END: Content -->
+{% endblock content %}
