@@ -7,7 +7,7 @@
 
     {% if messages %}
         {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5" role="alert">
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
                 <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
                 {{ message }}
                 <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">

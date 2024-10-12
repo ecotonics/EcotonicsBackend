@@ -5,9 +5,9 @@ urlpatterns = [
     # TECHNICIANS
     path('technicians/',views.technicians,name='technicians'),
     path('technician/add/',views.add_technician,name='technician-add'),
-    path('technician/edit/',views.edit_technician,name='technician-edit'),
-    path('technician/details/',views.technician_details,name='technician-details'),
-    path('technician/delete/',views.delete_technician,name='technician-delete'),
+    path('technician/edit/<slug:slug>/',views.edit_technician,name='technician-edit'),
+    path('technician/details/<slug:slug>/',views.technician_details,name='technician-details'),
+    path('technician/delete/<slug:slug>/',views.delete_technician,name='technician-delete'),
 
     # ATTANDENCE
     path('attandance/',views.attandance,name='attandance'),

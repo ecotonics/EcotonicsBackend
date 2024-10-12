@@ -20,7 +20,7 @@
     <!-- BEGIN: Vertical Form -->
     <div class="intro-y box mt-5">
         <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
-            <h2 class="text-3xl mx-auto mt-3 mb-3">ADD TECHNICIAN</h2>
+            <h2 class="text-3xl mx-auto mt-3 mb-3">EDIT TECHNICIAN</h2>
         </div>
         <div class="px-3 sm:px-10 py-5">
             <form action="" method="post" enctype="multipart/form-data">
@@ -29,52 +29,50 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Name</label>
-                        <input name="name" type="text" class="form-control" placeholder="Enter technician name here" required maxlength="50">
+                        <input value="{{ technician.user.first_name }}" name="name" type="text" class="form-control" placeholder="Enter technician name here" required maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Photo</label>
-                        <input name="photo" type="file" class="form-control file" required accept=".jpg, .jpeg, .png">
+                        <input name="photo" type="file" class="form-control file" accept=".jpg, .jpeg, .png">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Mobile Number</label>
-                        <input name="mobile" type="text" class="form-control" placeholder="enter mobile number here" required maxlength="15">
+                        <input value="{{ technician.user.mobile }}" name="mobile" type="text" class="form-control" placeholder="enter mobile number here" required maxlength="15">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Email</label>
-                        <input name="email" type="email" class="form-control" placeholder="Enter email here" required maxlength="100">
+                        <input value="{{ technician.user.email }}" name="email" type="email" class="form-control" placeholder="Enter email here" required maxlength="100">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-4">
                         <label for="input-wizard-2" class="form-label">Location</label>
-                        <input name="location" type="text" class="form-control" placeholder="Enter location here" required maxlength="50">
+                        <input value="{{ technician.location }}" name="location" type="text" class="form-control" placeholder="Enter location here" required maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-4">
                         <label for="input-wizard-2" class="form-label">Aadhar Number</label>
-                        <input name="aadhar" type="text" class="form-control" placeholder="Enter aadhar number here" required maxlength="12">
+                        <input value="{{ technician.aadhar }}" name="aadhar" type="text" class="form-control" placeholder="Enter aadhar number here" required maxlength="12">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-4">
                         <label for="input-wizard-2" class="form-label">Blood Group</label>
-                        <input name="bg" type="text" class="form-control" placeholder="Enter blood group here" required maxlength="3">
+                        <input value="{{ technician.blood }}" name="bg" type="text" class="form-control" placeholder="Enter blood group here" required maxlength="3">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Department</label>
                         <select name="department" id="" class="form-control" required>
-                            {% for department in departments %}
-                                <option value="{{ department.auto_id }}">{{ department }}</option>
-                            {% endfor %}
+                            <option value="{{ technician.department.auto_id }}">{{ technician.department }}</option>
                         </select>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Designation</label>
                         <select name="designation" id="" class="form-control" required>
-                            <option value="">Select Designation</option>
+                            <option value="{{ technician.designation.auto_id }}">{{ technician.designation }}</option>
                             {% for designation in designations %}
                                 <option value="{{ designation.auto_id }}">{{ designation }}</option>
                             {% endfor %}
@@ -89,38 +87,22 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Contact Name</label>
-                        <input name="contact_name" type="text" class="form-control" placeholder="Enter emergency contact name here" required maxlength="50">
+                        <input value="{{ technician.contact_name }}" name="contact_name" type="text" class="form-control" placeholder="Enter emergency contact name here" required maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Relation</label>
-                        <input name="relation" type="text" class="form-control" placeholder="Enter relation with technician here" required maxlength="50">
+                        <input value="{{ technician.relation }}" name="relation" type="text" class="form-control" placeholder="Enter relation with technician here" required maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Contact Number</label>
-                        <input name="contact_number" type="text" class="form-control" placeholder="Enter contat number here" required maxlength="15">
+                        <input value="{{ technician.contact_number }}" name="contact_number" type="text" class="form-control" placeholder="Enter contat number here" required maxlength="15">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Contact Address</label>
-                        <input name="address" type="text" class="form-control" placeholder="Enter contat address here" required maxlength="100">
-                    </div>
-
-                    <div class="intro-y col-span-12">
-                        <hr>
-                        <h1 class="text-center mt-3 mb-3">Login Credentials</h1>
-                        <hr>
-                    </div>
-
-                    <div class="intro-y col-span-12 sm:col-span-6">
-                        <label for="input-wizard-2" class="form-label">Username</label>
-                        <input name="username" type="text" class="form-control" placeholder="Enter username" required maxlength="20">
-                    </div>
-
-                    <div class="intro-y col-span-12 sm:col-span-6">
-                        <label for="input-wizard-2" class="form-label">Password</label>
-                        <input value="123456" name="password" id="password" type="text" class="form-control" placeholder="Enter password" required maxlength="20">
+                        <input value="{{ technician.address }}" name="address" type="text" class="form-control" placeholder="Enter contat address here" required maxlength="100">
                     </div>
 
                     <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
