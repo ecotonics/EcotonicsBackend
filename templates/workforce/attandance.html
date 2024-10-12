@@ -1,0 +1,64 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+    <div class="grid grid-cols-12 gap-6">
+        <div class="col-span-12 mt-10">
+            <h1 class="text-center text-3xl">APPROVE ATTANDANCE</h1>
+            <hr class="mt-5">
+        </div>
+
+        <div class="col-span-12 mt-5">
+            <div class="intro-y block sm:flex items-center h-10">
+                <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                    <button class="btn box flex items-center text-slate-600 dark:text-slate-300"> <i data-lucide="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to Excel </button>
+                    <a href="{% url 'attandance-add' %}" class="btn btn-success text-white mx-2">ADD ATTANDANCE</a>
+                </div>
+            </div>
+            <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                <table class="table table-report sm:mt-2">
+                    <thead>
+                        <tr>
+                            <th class="text-center whitespace-nowrap">NO</th>
+                            <th class="text-center whitespace-nowrap">TECHNICIAN</th>
+                            <th class="text-center whitespace-nowrap">PHOTO</th>
+                            <th class="text-center whitespace-nowrap">SITE</th>
+                            <th class="text-center whitespace-nowrap">FROM</th>
+                            <th class="text-center whitespace-nowrap">TO</th>
+                            <th class="text-center whitespace-nowrap">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="intro-x">
+                            <td class="text-center whitespace-nowrap">1</td>
+                            <td class="text-center">
+                                <a href="" class="font-medium whitespace-nowrap">Pranav P</a>
+                                <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">Chief Technician</div>
+                            </td>
+                            <td class="">
+                                <div class="flex justify-center">
+                                    <div class="w-10 h-10 image-fit zoom-in">
+                                        <img alt="Midone - HTML Admin Template" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="Uploaded at 21 April 2021">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center whitespace-nowrap">Subash Site</td>
+                            <td class="text-center whitespace-nowrap text-success">9:30 AM</td>
+                            <td class="text-center whitespace-nowrap text-warning">5:30 PM</td>
+                            <td class="table-report__action w-56">
+                                <div class="flex justify-center items-center">
+                                    <a class="flex items-center mr-3 text-success" href=""> <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i></a>
+                                    <a class="flex items-center text-danger" href=""> <i data-lucide="rotate-cw" class="w-4 h-4 mr-1"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Content -->
+{% endblock content %}
