@@ -4,6 +4,19 @@
 {% block content %}
 <!-- BEGIN: Content -->
 <div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12 mt-10">
             <h1 class="text-center text-3xl">CATEGORIES</h1>
@@ -14,90 +27,61 @@
             <div class="intro-y block sm:flex items-center h-10">
                 <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
                     <button class="btn box flex items-center text-slate-600 dark:text-slate-300"> <i data-lucide="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to Excel </button>
-                    <a href="{% url 'category-add' %}" class="btn btn-success text-white mx-2">CREATE CATEGORY</a>
+                    <a href="{% url 'category-add' %}" class="btn btn-success text-white mx-2">ADD CATEGORY</a>
                 </div>
             </div>
             <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                <table class="table table-report sm:mt-2">
-                    <thead>
-                        <tr>
-                            <th class="text-center whitespace-nowrap">SL NO</th>
-                            <th class="text-center whitespace-nowrap">NAME</th>
-                            <th class="text-center whitespace-nowrap">CATEGORY ID</th>
-                            <th class="text-center whitespace-nowrap">STATUS</th>
-                            <th class="text-center whitespace-nowrap">ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="intro-x">
-                            <td class="text-center whitespace-nowrap">1</td>
-                            <td>
-                                <p href="" class="font-medium text-center whitespace-nowrap">Automation</p>
-                            </td>
-                            <td class="text-center whitespace-nowrap">CAT-001</td>
-                            <td class="">
-                                <p class="text-center whitespace-nowrap text-success">Active</p>
-                            </td>
-                            <td class="table-report__action w-56">
-                                <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href=""> <i data-lucide="edit" class="w-4 h-4 mr-1"></i></a>
-                                    <a class="flex items-center text-danger" href=""> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr class="intro-x">
-                            <td class="text-center whitespace-nowrap">2</td>
-                            <td>
-                                <p href="" class="font-medium text-center whitespace-nowrap">IT</p>
-                            </td>
-                            <td class="text-center whitespace-nowrap">CAT-002</td>
-                            <td class="">
-                                <p class="text-center whitespace-nowrap text-success">Active</p>
-                            </td>
-                            <td class="table-report__action w-56">
-                                <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href=""> <i data-lucide="edit" class="w-4 h-4 mr-1"></i></a>
-                                    <a class="flex items-center text-danger" href=""> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr class="intro-x">
-                            <td class="text-center whitespace-nowrap">3</td>
-                            <td>
-                                <p href="" class="font-medium text-center whitespace-nowrap">Networking</p>
-                            </td>
-                            <td class="text-center whitespace-nowrap">CAT-003</td>
-                            <td class="">
-                                <p class="text-center whitespace-nowrap text-success">Active</p>
-                            </td>
-                            <td class="table-report__action w-56">
-                                <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href=""> <i data-lucide="edit" class="w-4 h-4 mr-1"></i></a>
-                                    <a class="flex items-center text-danger" href=""> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr class="intro-x">
-                            <td class="text-center whitespace-nowrap">4</td>
-                            <td>
-                                <p href="" class="font-medium text-center whitespace-nowrap">CCTV</p>
-                            </td>
-                            <td class="text-center whitespace-nowrap">CAT-004</td>
-                            <td class="">
-                                <p class="text-center whitespace-nowrap text-success">Active</p>
-                            </td>
-                            <td class="table-report__action w-56">
-                                <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href=""> <i data-lucide="edit" class="w-4 h-4 mr-1"></i></a>
-                                    <a class="flex items-center text-danger" href=""> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                {% if categories %}
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">SL NO</th>
+                                <th class="text-center whitespace-nowrap">NAME</th>
+                                <th class="text-center whitespace-nowrap">CATEGORY ID</th>
+                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                                <tr class="intro-x">
+                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+                                    <td>
+                                        <p href="" class="font-medium text-center whitespace-nowrap">{{ category.name }}</p>
+                                    </td>
+                                    <td class="text-center whitespace-nowrap">ECAT-{{ category.auto_id }}</td>
+                                    <td class="">
+                                        <p class="text-center whitespace-nowrap text-success">{{ category.status }}</p>
+                                    </td>
+                                    <td class="table-report__action w-56">
+                                        <div class="flex justify-center items-center">
+                                            <a class="flex items-center mr-3" href="{% url 'category-edit' category.slug %}">
+                                                <i data-lucide="edit" class="w-4 h-4 mr-1"></i>
+                                            </a>
+                                            <a class="flex items-center text-danger" href="{% url 'category-delete' category.slug %}" onclick="return confirm('Are you sure you want to delete the category ?');">
+                                                <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
+                            <tbody>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                    <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

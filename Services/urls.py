@@ -5,8 +5,8 @@ urlpatterns = [
     # SERVICE CATEGORY
     path('categories/',views.categories,name='categories'),
     path('category/add/',views.add_category,name='category-add'),
-    path('category/edit/',views.edit_category,name='category-edit'),
-    path('category/delete/',views.delete_category,name='category-delete'),
+    path('category/edit/<slug:slug>/',views.edit_category,name='category-edit'),
+    path('category/delete/<slug:slug>/',views.delete_category,name='category-delete'),
 
     # SERVICE
     path('services/',views.services,name='services'),

@@ -1,18 +1,36 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
+from Services.models import Category
+from django.contrib import messages
 
 # Create your views here.
 
 @login_required
 def categories(request):
+    categories = Category.active_objects.all()
+
     context = {
         'main' : 'services',
-        'sub' : 'categories'
+        'sub' : 'categories',
+        'categories' : categories
     }
     return render(request,'services/categories.html',context)
 
 @login_required
 def add_category(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        info = request.POST.get('info')
+
+        try:
+            Category.objects.create(name=name,info=info)
+            messages.success(request,'Category added successfully ... !')
+            return redirect('categories')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('category-add')
+
     context = {
         'main' : 'services',
         'sub' : 'categories'
@@ -20,15 +38,40 @@ def add_category(request):
     return render(request,'services/category-add.html',context)
 
 @login_required
-def edit_category(request,cid):
+def edit_category(request,slug):
+    category = Category.objects.get(slug=slug)
+
+    if request.method == 'POST':
+        category.name = request.POST.get('name')
+        category.info = request.POST.get('info')
+
+        try:
+            category.save()
+            messages.success(request,'Category edited successfully ... !')
+            return redirect('categories')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('category-edit' , slug=category.slug)
+
     context = {
         'main' : 'services',
-        'sub' : 'categories'
+        'sub' : 'categories',
+        'category' : category
     }
     return render(request,'services/category-edit.html',context)
 
 @login_required
-def delete_category(request,cid):
+def delete_category(request,slug):
+    try:
+        category = Category.objects.get(slug=slug)
+        category.is_deleted=True
+        category.save()
+        messages.error(request, 'Category deleted successfully ...!')
+
+    except Exception as exception:
+        messages.warning(request, exception)
+
     return redirect('categories')
 
 #-----------------------------------------------------------------------------------------------------------------------------------
