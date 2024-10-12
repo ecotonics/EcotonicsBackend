@@ -4,6 +4,19 @@
 {% block content %}
 <!-- BEGIN: Content -->
 <div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12 mt-10">
             <h1 class="text-center text-3xl">SERVICES</h1>
@@ -18,91 +31,76 @@
                 </div>
             </div>
             <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                <table class="table table-report sm:mt-2">
-                    <thead>
-                        <tr>
-                            <th class="text-center whitespace-nowrap">SL NO</th>
-                            <th class="text-center whitespace-nowrap">NAME</th>
-                            <th class="text-center whitespace-nowrap">CATEGORY</th>
-                            <th class="text-center whitespace-nowrap">SERVICE ID</th>
-                            <th class="text-center whitespace-nowrap">STATUS</th>
-                            <th class="text-center whitespace-nowrap">ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="intro-x">
-                            <td class="text-center whitespace-nowrap">1</td>
-                            <td>
-                                <p href="" class="font-medium text-center whitespace-nowrap">CCTV Installation</p>
-                            </td>
-                            <td class="text-center whitespace-nowrap">CCTV</td>
-                            <td class="text-center whitespace-nowrap">SER-001</td>
-                            <td class="">
-                                <p class="text-center whitespace-nowrap text-success">Active</p>
-                            </td>
-                            <td class="table-report__action w-56">
-                                <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href=""> <i data-lucide="edit" class="w-4 h-4 mr-1"></i></a>
-                                    <a class="flex items-center text-danger" href=""> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i></a>
-                                </div>
-                            </td>
-                        </tr>
+                {% if services %}
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">NAME</th>
+                                <th class="text-center whitespace-nowrap">CATEGORY</th>
+                                <th class="text-center whitespace-nowrap">SERVICE ID</th>
+                                <th class="text-center whitespace-nowrap">WORKS</th>
+                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services %}
+                                <tr class="intro-x">
+                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
 
-                        <tr class="intro-x">
-                            <td class="text-center whitespace-nowrap">2</td>
-                            <td>
-                                <p href="" class="font-medium text-center whitespace-nowrap">Implimentation</p>
-                            </td>
-                            <td class="text-center whitespace-nowrap">Automation</td>
-                            <td class="text-center whitespace-nowrap">SER-002</td>
-                            <td class="">
-                                <p class="text-center whitespace-nowrap text-success">Active</p>
-                            </td>
-                            <td class="table-report__action w-56">
-                                <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href=""> <i data-lucide="edit" class="w-4 h-4 mr-1"></i></a>
-                                    <a class="flex items-center text-danger" href=""> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i></a>
-                                </div>
-                            </td>
-                        </tr>
+                                    <td class="font-medium text-center whitespace-nowrap">
+                                        <a href="">{{ service.name }}</a>
+                                    </td>
 
-                        <tr class="intro-x">
-                            <td class="text-center whitespace-nowrap">3</td>
-                            <td>
-                                <p href="" class="font-medium text-center whitespace-nowrap">Server Installation</p>
-                            </td>
-                            <td class="text-center whitespace-nowrap">Networking</td>
-                            <td class="text-center whitespace-nowrap">SER-003</td>
-                            <td class="">
-                                <p class="text-center whitespace-nowrap text-success">Active</p>
-                            </td>
-                            <td class="table-report__action w-56">
-                                <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href=""> <i data-lucide="edit" class="w-4 h-4 mr-1"></i></a>
-                                    <a class="flex items-center text-danger" href=""> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i></a>
-                                </div>
-                            </td>
-                        </tr>
+                                    <td class="text-center whitespace-nowrap">
+                                        <a href="{% url 'category-details' service.category.slug %}">{{ service.category }} </a>
+                                    </td>
 
-                        <tr class="intro-x">
-                            <td class="text-center whitespace-nowrap">4</td>
-                            <td>
-                                <p href="" class="font-medium text-center whitespace-nowrap">Establishment</p>
-                            </td>
-                            <td class="text-center whitespace-nowrap">IT</td>
-                            <td class="text-center whitespace-nowrap">SER-001</td>
-                            <td class="">
-                                <p class="text-center whitespace-nowrap text-success">Active</p>
-                            </td>
-                            <td class="table-report__action w-56">
-                                <div class="flex justify-center items-center">
-                                    <a class="flex items-center mr-3" href=""> <i data-lucide="edit" class="w-4 h-4 mr-1"></i></a>
-                                    <a class="flex items-center text-danger" href=""> <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                    <td class="text-center whitespace-nowrap">ESER-{{ service.auto_id }}</td>
+
+                                    <td class="text-center whitespace-nowrap">{{ service.works | default:'0' }}</td>
+
+                                    <td class="">
+                                        <p class="text-center whitespace-nowrap text-success">{{ service.status }}</p>
+                                    </td>
+
+                                    <td class="table-report__action w-56">
+                                        <div class="flex justify-center items-center">
+                                            <a class="flex items-center text-warning mr-3" href="">
+                                                <i data-lucide="eye" class="w-4 h-4 mr-3"></i>
+                                            </a>
+
+                                            <a class="flex items-center mr-3" href="{% url 'service-edit' service.slug %}">
+                                                <i data-lucide="edit" class="w-4 h-4 mr-3"></i>
+                                            </a>
+
+                                            <a class="flex items-center text-danger" href="{% url 'service-delete' service.slug %}" onclick="return confirm('Are you sure you want to delete the service ?');">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            </a>
+                                            {% if service.works == 0 %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
+                            <tbody>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                    <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
