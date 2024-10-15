@@ -41,7 +41,7 @@
         <div class="mobile-menu md:hidden">
             <div class="mobile-menu-bar">
                 <a href="" class="flex mr-auto">
-                    <img alt="Midone - HTML Admin Template" class="w-6" src="{% static 'backend/images/logo.svg' %}">
+                    <img alt="" class="w-6" src="{% static 'backend/images/logo.svg' %}">
                 </a>
                 <a href="javascript:;" class="mobile-menu-toggler"> <i data-lucide="bar-chart-2" class="w-8 h-8 text-white transform -rotate-90"></i> </a>
             </div>
@@ -55,7 +55,7 @@
                         </a>
                         <ul class="menu__sub-open">
                             <li>
-                                <a href="side-menu-dark-dashboard-overview-1.html" class="menu menu--active">
+                                <a href="" class="menu menu--active">
                                     <div class="menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="menu__title"> Overview 1 </div>
                                 </a>
@@ -69,7 +69,7 @@
                         </a>
                         <ul class="">
                             <li>
-                                <a href="side-menu-dark-dashboard-overview-1.html" class="menu menu--active">
+                                <a href="" class="menu menu--active">
                                     <div class="menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="menu__title"> Side Menu </div>
                                 </a>
@@ -77,7 +77,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="side-menu-dark-inbox.html" class="menu">
+                        <a href="" class="menu">
                             <div class="menu__icon"> <i data-lucide="inbox"></i> </div>
                             <div class="menu__title"> Inbox </div>
                         </a>
@@ -92,8 +92,8 @@
             <div class="h-full flex items-center">
                 <!-- BEGIN: Logo -->
                 <a href="" class="logo -intro-x hidden md:flex xl:w-[180px] block">
-                    <img alt="Midone - HTML Admin Template" class="logo__image w-6" src="{% static 'backend/images/logo.svg' %}">
-                    <span class="logo__text text-white text-lg ml-3"> Enigma </span>
+                    <img alt="" class="logo__image w-6" src="{% static 'backend/images/logo.svg' %}">
+                    <span class="logo__text text-white text-lg ml-3"> Ecotonics </span>
                 </a>
                 <!-- END: Logo -->
                 <!-- BEGIN: Breadcrumb -->
@@ -132,7 +132,7 @@
                             <div class="mb-5">
                                 <a href="" class="flex items-center mt-2">
                                     <div class="w-8 h-8 image-fit">
-                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="{% static 'backend/images/profile-5.jpg' %}">
+                                        <img alt="" class="rounded-full" src="{% static 'backend/images/profile-5.jpg' %}">
                                     </div>
                                     <div class="ml-3">Tom Hanks</div>
                                     <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">tomhanks@left4code.com</div>
@@ -150,7 +150,7 @@
                             <div class="notification-content__title">Notifications</div>
                             <div class="cursor-pointer relative flex items-center ">
                                 <div class="w-12 h-12 flex-none image-fit mr-1">
-                                    <img alt="Midone - HTML Admin Template" class="rounded-full" src="{% static 'backend/images/profile-5.jpg' %}">
+                                    <img alt="" class="rounded-full" src="{% static 'backend/images/profile-5.jpg' %}">
                                     <div class="w-3 h-3 bg-success absolute right-0 bottom-0 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div class="ml-2 overflow-hidden">
@@ -168,13 +168,21 @@
                 <!-- BEGIN: Account Menu -->
                 <div class="intro-x dropdown w-8 h-8">
                     <div class="dropdown-toggle w-8 h-8 rounded-full overflow-hidden shadow-lg image-fit zoom-in scale-110" role="button" aria-expanded="false" data-tw-toggle="dropdown">
-                        <img alt="Midone - HTML Admin Template" src="{% static 'backend/images/profile-3.jpg' %}">
+                        {% if user.photo %}
+                            <img alt="" src="{{ user.photo.url }}">
+                        {% else %}
+                            <img alt="" src="{% static 'backend/images/preview.jpg' %}">
+                        {% endif %}
                     </div>
                     <div class="dropdown-menu w-56">
                         <ul class="dropdown-content bg-primary/80 before:block before:absolute before:bg-black before:inset-0 before:rounded-md before:z-[-1] text-white">
                             <li class="p-2">
-                                <div class="font-medium">Tom Hanks</div>
-                                <div class="text-xs text-white/60 mt-0.5 dark:text-slate-500">DevOps Engineer</div>
+                                <div class="font-medium">{{ user.username }}</div>
+                                {% if user.is_superuser %}
+                                    <div class="text-xs text-white/60 mt-0.5 dark:text-slate-500">Super Admin</div>
+                                {% else %}
+                                    <div class="text-xs text-white/60 mt-0.5 dark:text-slate-500">Technician</div>
+                                {% endif %}
                             </li>
                             <li>
                                 <hr class="dropdown-divider border-white/[0.08]">
@@ -267,15 +275,15 @@
                         </a>
                         <ul class="{% if main == 'customers' %} side-menu__sub-open {% endif %}">
                             <li>
-                                <a href="{% url 'enterprises' %}" class="side-menu {% if sub == 'enterprises' %} side-menu--active {% endif %}">
+                                <a href="{% url 'customers' 'enterprise' %}" class="side-menu {% if sub == 'enterprise' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Enterprises </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'intividuals' %}" class="side-menu {% if sub == 'intivituals' %} side-menu--active {% endif %}">
+                                <a href="{% url 'customers' 'individual' %}" class="side-menu {% if sub == 'individual' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Indivituals </div>
+                                    <div class="side-menu__title"> Individuals </div>
                                 </a>
                             </li>
                         </ul>
@@ -291,19 +299,19 @@
                         </a>
                         <ul class="{% if main == 'accounts' %} side-menu__sub-open {% endif %}">
                             <li>
-                                <a href="{% url 'enterprises' %}" class="side-menu {% if sub == 'categories' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'categories' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Categories </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'intividuals' %}" class="side-menu {% if sub == 'bank-accounts' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'bank-accounts' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Bank Accounts </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'intividuals' %}" class="side-menu {% if sub == 'transactions' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'transactions' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Transactions </div>
                                 </a>
@@ -335,19 +343,19 @@
                         </a>
                         <ul class="{% if main == 'procurement' %} side-menu__sub-open {% endif %}">
                             <li>
-                                <a href="{% url 'enterprises' %}" class="side-menu {% if sub == 'requisitions' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'requisitions' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Requisitions </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'intividuals' %}" class="side-menu {% if sub == 'quotations' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'quotations' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Quotations </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'intividuals' %}" class="side-menu {% if sub == 'proposals' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'proposals' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Proposals </div>
                                 </a>
@@ -365,19 +373,19 @@
                         </a>
                         <ul class="{% if main == 'reports' %} side-menu__sub-open {% endif %}">
                             <li>
-                                <a href="{% url 'enterprises' %}" class="side-menu {% if sub == 'finance' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'finance' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Finance </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'intividuals' %}" class="side-menu {% if sub == 'sales' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'sales' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Sales </div>
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'intividuals' %}" class="side-menu {% if sub == 'works' %} side-menu--active {% endif %}">
+                                <a href="" class="side-menu {% if sub == 'works' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Works </div>
                                 </a>
