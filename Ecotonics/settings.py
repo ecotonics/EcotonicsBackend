@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'Services',
     'Customers',
     'Technicians',
+    'Accounts',
 ]
 
 MIDDLEWARE = [

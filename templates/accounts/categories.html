@@ -1,0 +1,90 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid grid-cols-12 gap-6">
+        <div class="col-span-12 mt-10">
+            <h1 class="text-center text-3xl">TRANSACTION CATEGORIES</h1>
+            <hr class="mt-5">
+        </div>
+
+        <div class="col-span-12 mt-5">
+            <div class="intro-y block sm:flex items-center h-10">
+                <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                    <button class="btn box flex items-center text-slate-600 dark:text-slate-300"> <i data-lucide="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to Excel </button>
+                    <a href="{% url 'transaction-category-add' %}" class="btn btn-success text-white mx-2">ADD CATEGORY</a>
+                </div>
+            </div>
+            <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                {% if categories %}
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">NAME</th>
+                                <th class="text-center whitespace-nowrap">CATEGORY ID</th>
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                                <tr class="intro-x">
+                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                    <td class="font-medium text-center whitespace-nowrap">
+                                        <a href="">{{ category.name }}</a>
+                                    </td>
+
+                                    <td class="text-center whitespace-nowrap">TC-0{{ category.auto_id }}</td>
+
+                                    <td class="table-report__action w-56">
+                                        <div class="flex justify-center items-center">
+                                            <a class="flex items-center text-warning mr-3" href="">
+                                                <i data-lucide="eye" class="w-4 h-4 mr-3"></i>
+                                            </a>
+
+                                            <a class="flex items-center" href="{% url 'transaction-category-edit' category.slug %}">
+                                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
+                            <tbody>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                    <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Content -->
+{% endblock content %}

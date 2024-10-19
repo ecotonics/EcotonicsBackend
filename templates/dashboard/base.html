@@ -299,7 +299,7 @@
                         </a>
                         <ul class="{% if main == 'accounts' %} side-menu__sub-open {% endif %}">
                             <li>
-                                <a href="" class="side-menu {% if sub == 'categories' %} side-menu--active {% endif %}">
+                                <a href="{% url 'transaction-categories' %}" class="side-menu {% if sub == 'categories' %} side-menu--active {% endif %}">
                                     <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
                                     <div class="side-menu__title"> Categories </div>
                                 </a>
