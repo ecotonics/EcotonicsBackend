@@ -37,6 +37,7 @@
                             <tr>
                                 <th class="text-center whitespace-nowrap">NO</th>
                                 <th class="text-center whitespace-nowrap">NAME</th>
+                                <th class="text-center whitespace-nowrap">TYPE</th>
                                 <th class="text-center whitespace-nowrap">CATEGORY ID</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
@@ -49,6 +50,12 @@
                                     <td class="font-medium text-center whitespace-nowrap">
                                         <a href="">{{ category.name }}</a>
                                     </td>
+
+                                    {% if category.type == 'INCOME' %}
+                                        <td class="text-center whitespace-nowrap text-success">INCOME</td>
+                                    {% elif category.type == 'EXPENSE' %}
+                                        <td class="text-center whitespace-nowrap text-danger">EXPENSE</td>
+                                    {% endif %}
 
                                     <td class="text-center whitespace-nowrap">TC-0{{ category.auto_id }}</td>
 

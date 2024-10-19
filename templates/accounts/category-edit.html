@@ -27,7 +27,16 @@
                 {% csrf_token %}
                 <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5">
 
-                    <div class="intro-y col-span-12 sm:col-span-12">
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Category Type</label>
+                        <select name="type" id="" class="form-control">
+                            <option value="{{ category.type }}">{{ category.type }}</option>
+                            <option value="INCOME">INCOME</option>
+                            <option value="EXPENSE">EXPENSE</option>
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Category Name</label>
                         <input value="{{ category.name }}" name="name" type="text" class="form-control" placeholder="Enter category name here" required maxlength="100">
                     </div>

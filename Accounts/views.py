@@ -1,7 +1,10 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
-from Accounts.models import TransactionCategory, BankAccount
+from Accounts.models import TransactionCategory, BankAccount, Transaction
 from django.contrib import messages
+from datetime import datetime
+today = datetime.today()
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -20,11 +23,12 @@ def transaction_categories(request):
 @login_required
 def add_transaction_category(request):
     if request.method == 'POST':
+        type = request.POST.get('type')
         name = request.POST.get('name')
         info = request.POST.get('info')
 
         try:
-            TransactionCategory.objects.create(name=name,info=info)
+            TransactionCategory.objects.create(type=type,name=name,info=info)
             messages.success(request,'Transaction category added successfully ... !')
             return redirect('transaction-categories')
 
@@ -44,6 +48,7 @@ def edit_transaction_category(request,slug):
     category = TransactionCategory.objects.get(slug=slug)
 
     if request.method == 'POST':
+        category.type = request.POST.get('type')
         category.name = request.POST.get('name')
         category.info = request.POST.get('info')
 
@@ -123,3 +128,59 @@ def edit_bank_account(request,slug):
     }
 
     return render(request,'accounts/bank-account-edit.html',context)
+
+@login_required
+def transactions(request):
+    transactions = Transaction.active_objects.all()
+    context = {
+        'main' : 'accounts',
+        'sub' : 'transactions',
+        'transactions' : transactions
+    }
+    return render(request,'accounts/transactions.html',context)
+
+def filter_category(request):
+    type = request.GET.get('type')
+    category_list = TransactionCategory.active_objects.filter(type=type).values('slug', 'name')
+    category_data = list(category_list)
+
+    return JsonResponse({'categories': category_data})
+
+@login_required
+def add_transaction(request):
+    accounts = BankAccount.active_objects.all()
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        category = request.POST.get('category')
+        title = request.POST.get('title')
+        account = request.POST.get('account')
+        amount = request.POST.get('amount')
+
+        try:
+            category = TransactionCategory.active_objects.get(slug=category)
+            account = BankAccount.active_objects.get(slug=account)
+
+            Transaction.objects.create(date=date,category=category,type=category.type,title=title,account=account,amount=amount)
+            messages.success(request,'Transaction added successfully ... !')
+            return redirect('transactions')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('transaction-add')
+
+    context = {
+        'main' : 'accounts',
+        'sub' : 'transactions',
+        'today' : today,
+        'accounts' : accounts
+    }
+
+    return render(request,'accounts/transaction-add.html',context)
+
+@login_required
+def edit_transaction(request,slug):
+    return render(request,'accounts/transaction-edit.html')
+
+@login_required
+def delete_transaction(request,slug):
+    return redirect('transactions')

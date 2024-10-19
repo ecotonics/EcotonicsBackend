@@ -6,7 +6,13 @@ from Core.middlewares import RequestMiddleware
 
 # Create your models here.
 
+TRANSACTION = (
+    ('INCOME','INCOME'),
+    ('EXPENSE','EXPENSE'),
+)
+
 class TransactionCategory(BaseModel):
+    type = models.CharField(max_length=50,choices=TRANSACTION)
     name = models.CharField(max_length=100)
     info = models.TextField(null=True)
 
@@ -45,3 +51,26 @@ class BankAccount(BaseModel):
         save_data(self, request, self.name)
 
         super(BankAccount, self).save(*args, **kwargs)
+
+class Transaction(BaseModel):
+    date = models.DateField()
+    type = models.CharField(max_length=25,choices=TRANSACTION)
+    category = models.ForeignKey(TransactionCategory,on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    account = models.ForeignKey(BankAccount,on_delete=models.CASCADE)
+    amount = models.FloatField(default=0.00)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _('Transaction')
+        verbose_name_plural = _('Transactions')
+        ordering = ("-date_added",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.title)
+
+        super(Transaction, self).save(*args, **kwargs)
