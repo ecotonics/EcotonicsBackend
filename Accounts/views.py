@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
-from Accounts.models import TransactionCategory
+from Accounts.models import TransactionCategory, BankAccount
 from django.contrib import messages
 
 # Create your views here.
@@ -54,7 +54,7 @@ def edit_transaction_category(request,slug):
 
         except Exception as exception:
             messages.warning(request,str(exception))
-            return redirect('transaction-category-add')
+            return redirect('transaction-category-edit',slug=category.slug)
 
     context = {
         'main' : 'accounts',
@@ -63,3 +63,63 @@ def edit_transaction_category(request,slug):
     }
 
     return render(request,'accounts/category-edit.html',context)
+
+@login_required
+def bank_accounts(request):
+    accounts = BankAccount.active_objects.all()
+    context = {
+        'main' : 'accounts',
+        'sub' : 'bank-accounts',
+        'accounts' : accounts
+    }
+    return render(request,'accounts/bank-accounts.html',context)
+
+@login_required
+def add_bank_account(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        account = request.POST.get('account')
+        number = request.POST.get('number')
+        branch = request.POST.get('branch')
+
+        try:
+            BankAccount.objects.create(name=name,account=account,number=number,branch=branch)
+            messages.success(request,'Bank account added successfully ... !')
+            return redirect('bank-accounts')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('bank-account-add')
+
+    context = {
+        'main' : 'accounts',
+        'sub' : 'bank-accounts',
+    }
+
+    return render(request,'accounts/bank-account-add.html',context)
+
+@login_required
+def edit_bank_account(request,slug):
+    account = BankAccount.objects.get(slug=slug)
+    if request.method == 'POST':
+        account.name = request.POST.get('name')
+        account.account = request.POST.get('account')
+        account.number = request.POST.get('number')
+        account.branch = request.POST.get('branch')
+
+        try:
+            account.save()
+            messages.success(request,'Bank account detail edited successfully ... !')
+            return redirect('bank-accounts')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('bank-account-edit',slug=account.slug)
+
+    context = {
+        'main' : 'accounts',
+        'sub' : 'bank-accounts',
+        'account' : account
+    }
+
+    return render(request,'accounts/bank-account-edit.html',context)

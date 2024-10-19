@@ -24,3 +24,24 @@ class TransactionCategory(BaseModel):
         save_data(self, request, self.name)
 
         super(TransactionCategory, self).save(*args, **kwargs)
+
+class BankAccount(BaseModel):
+    name = models.CharField(max_length=100)
+    account = models.CharField(max_length=50)
+    number = models.CharField(max_length=50)
+    branch = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Bank Account')
+        verbose_name_plural = _('Bank Accounts')
+        ordering = ("-date_added",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.name)
+
+        super(BankAccount, self).save(*args, **kwargs)
