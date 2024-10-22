@@ -70,12 +70,12 @@
 
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
-                                            <a class="flex items-center text-warning mr-3" href="">
-                                                <i data-lucide="eye" class="w-4 h-4 mr-3"></i>
+                                            <a class="flex items-center mr-3" href="{% url 'transaction-edit' transaction.slug %}">
+                                                <i data-lucide="edit" class="w-4 h-4 mr-3"></i>
                                             </a>
 
-                                            <a class="flex items-center" href="">
-                                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                            <a class="flex items-center text-danger" href="{% url 'transaction-delete' transaction.slug %}" onclick="return confirm('Are you sure you want to delete the transaction ?');">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
                                             </a>
                                         </div>
                                     </td>

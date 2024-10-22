@@ -179,8 +179,46 @@ def add_transaction(request):
 
 @login_required
 def edit_transaction(request,slug):
-    return render(request,'accounts/transaction-edit.html')
+    accounts = BankAccount.active_objects.all()
+    transaction = Transaction.objects.get(slug=slug)
+    categories = TransactionCategory.objects.filter(type = transaction.type)
+    if request.method == 'POST':
+        transaction.date = request.POST.get('date')
+        transaction.title = request.POST.get('title')
+        transaction.amount = request.POST.get('amount')
+
+        category = request.POST.get('category')
+        account = request.POST.get('account')
+
+        try:
+            category = TransactionCategory.active_objects.get(slug=category)
+            account = BankAccount.active_objects.get(slug=account)
+
+            transaction.save()
+            messages.success(request,'Transaction details edited successfully ... !')
+            return redirect('transactions')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('transaction-edit',slug=slug)
+
+    context = {
+        'main' : 'accounts',
+        'sub' : 'transactions',
+        'transaction' : transaction,
+        'today' : today,
+        'categories' : categories,
+        'accounts' : accounts,
+    }
+    return render(request,'accounts/transaction-edit.html',context)
 
 @login_required
 def delete_transaction(request,slug):
+    try:
+        transaction = Transaction.objects.get(slug=slug)
+        transaction.is_deleted = True
+        transaction.save()
+        messages.warning(request,'Transaction deleted successfully ...!')
+    except Exception as exception:
+        messages.warning(request,str(exception))
     return redirect('transactions')

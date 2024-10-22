@@ -320,10 +320,33 @@
                     </li>
 
                     <li>
-                        <a href="{% url 'leads' %}" class="side-menu {% if main == 'leads' %} side-menu--active {% endif %}">
+                        <a href="javascript:;" class="side-menu {% if main == 'leads' %} side-menu--active {% endif %}">
                             <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
-                            <div class="side-menu__title"> Leads </div>
+                            <div class="side-menu__title">
+                                Leads
+                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                            </div>
                         </a>
+                        <ul class="{% if main == 'leads' %} side-menu__sub-open {% endif %}">
+                            <li>
+                                <a href="{% url 'leads' 'pending' %}" class="side-menu {% if sub == 'pending' %} side-menu--active {% endif %}">
+                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                    <div class="side-menu__title"> PENDING </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'leads' 'failed' %}" class="side-menu {% if sub == 'failed' %} side-menu--active {% endif %}">
+                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                    <div class="side-menu__title"> FAILED </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'leads' 'converted' %}" class="side-menu {% if sub == 'converted' %} side-menu--active {% endif %}">
+                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                    <div class="side-menu__title"> CONVERTED </div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li>

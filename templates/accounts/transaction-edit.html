@@ -20,7 +20,7 @@
     <!-- BEGIN: Vertical Form -->
     <div class="intro-y box mt-5">
         <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
-            <h2 class="text-3xl mx-auto mt-3 mb-3">ADD TRANSACTION</h2>
+            <h2 class="text-3xl mx-auto mt-3 mb-3">EDIT TRANSACTION</h2>
         </div>
         <div class="px-3 sm:px-10 py-5">
             <form action="" method="post" enctype="multipart/form-data">
@@ -29,13 +29,13 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Date</label>
-                        <input value="{{ today | date:'Y-m-d' }}" type="date" name="date" id="" class="form-control">
+                        <input value="{{ transaction.date | date:'Y-m-d' }}" type="date" name="date" id="" class="form-control">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Transaction Type</label>
                         <select name="type" id="transaction-type" class="form-control">
-                            <option value="">Select Transaction Type</option>
+                            <option value="{{ transaction.type }}">{{ transaction.type }}</option>
                             <option value="INCOME">INCOME</option>
                             <option value="EXPENSE">EXPENSE</option>
                         </select>
@@ -44,20 +44,23 @@
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Transaction Category</label>
                         <select name="category" id="transaction-category" class="form-control">
-                            <option value="">Select Category</option>
+                            <option value="{{ transaction.category.slug }}">{{ transaction.category.name }}</option>
+                            {% for category in categories %}
+                                <option value="{{ category.slug }}">{{ category.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Title</label>
-                        <input type="text" name="title" id="" class="form-control" placeholder="Enter transaction title">
+                        <input value="{{ transaction.title }}" type="text" name="title" id="" class="form-control" placeholder="Enter transaction title">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Account</label>
                         <div class="intro-y col-span-12 sm:col-span-6">
                             <select name="account" id="transaction-category" class="form-control">
-                                <option value="">Select Account</option>
+                                <option value="{{ transaction.account.slug }}">{{ transaction.account.name }} {{ transaction.account.account }}</option>
                                 {% for account in accounts %}
                                     <option value="{{ account.slug }}">{{ account.name }} {{ account.account }}</option>
                                 {% endfor %}
@@ -67,7 +70,7 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Amount</label>
-                        <input step="0.01" type="number" name="amount" id="" class="form-control" placeholder="Enter transaction amount">
+                        <input value="{{ transaction.amount }}" step="0.01" type="number" name="amount" id="" class="form-control" placeholder="Enter transaction amount">
                     </div>
 
                     <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">

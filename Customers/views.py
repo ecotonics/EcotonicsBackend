@@ -2,12 +2,14 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from Customers.models import Customer
 from django.contrib import messages
+from Services.models import Category, Service
+from Customers.models import Lead
 
 # Create your views here.
 
 @login_required
 def customers(request,type):
-    customers = Customer.objects.filter(type=type)
+    customers = Customer.active_objects.filter(type=type)
     context = {
         'main' : 'customers',
         'sub' : type,
@@ -83,26 +85,96 @@ def delete_customer(request,slug):
 #-----------------------------------------------------------------------------------------------------------------------------------
 
 @login_required
-def leads(request):
+def leads(request,status):
+    leads = Lead.active_objects.filter(status=status.upper())
     context = {
         'main' : 'leads',
+        'sub' : status,
+        'status' : status,
+        'leads' : leads
     }
     return render(request,'leads/leads.html',context)
 
 @login_required
 def add_lead(request):
+    categories = Category.active_objects.all()
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        location = request.POST.get('location')
+        type = request.POST.get('type')
+        mobile = request.POST.get('mobile')
+        email = request.POST.get('email')
+        category = request.POST.get('category')
+        service = request.POST.get('service')
+        info = request.POST.get('info')
+
+        try:
+            category = Category.objects.get(slug=category)
+            service = Service.objects.get(slug=service)
+
+            Lead.objects.create(
+                name=name,location=location,type=type,mobile=mobile,email=email,category=category,service=service,info=info
+            )
+            messages.success(request,'Lead addedd successfully')
+            return redirect('leads',status='pending')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('lead-add')
+
     context = {
         'main' : 'leads',
+        'sub' : 'pending',
+        'categories' : categories
     }
     return render(request,'leads/lead-add.html',context)
 
 @login_required
-def edit_lead(request,cid):
+def edit_lead(request,slug):
+    lead = Lead.objects.get(slug=slug)
+    categories = Category.active_objects.all()
+    services = Service.active_objects.filter(category=lead.category)
+
+    if request.method == 'POST':
+        lead.name = request.POST.get('name')
+        lead.location = request.POST.get('location')
+        lead.type = request.POST.get('type')
+        lead.mobile = request.POST.get('mobile')
+        lead.email = request.POST.get('email')
+        lead.info = request.POST.get('info')
+
+        try:
+            category = Category.objects.get(slug=category)
+            service = Service.objects.get(slug=service)
+
+            lead.category = category
+            lead.service = service
+            lead.save()
+
+            messages.success(request,'Lead detailed updated successfully')
+            return redirect('leads', status=lead.status)
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('lead-edit',slug=slug)
+
     context = {
         'main' : 'leads',
+        'sub' : 'pending',
+        'lead' : lead,
+        'categories' : categories,
+        'services' : services
     }
     return render(request,'leads/lead-edit.html',context)
 
 @login_required
-def delete_lead(request,cid):
-    return redirect('leads')
+def delete_lead(request,slug):
+    try:
+        lead = Lead.objects.get(slug=slug)
+        lead.is_deleted=True
+        lead.save()
+        messages.error(request, 'Lead deleted successfully ...!')
+
+    except Exception as exception:
+        messages.warning(request, exception)
+    return redirect('leads',status=lead.status)

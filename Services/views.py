@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from Services.models import Category, Service
 from django.contrib import messages
 from django.db.models import Count
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -189,3 +190,12 @@ def add_call(request):
         'main' : 'calls'
     }
     return render(request,'calls/call-add.html',context)
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+
+def filter_service(request):
+    slug = request.GET.get('slug')
+    services_list = Service.active_objects.filter(category__slug=slug).values('slug', 'name')
+    services_data = list(services_list)
+
+    return JsonResponse({'services': services_data})
