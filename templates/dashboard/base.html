@@ -49,20 +49,27 @@
                 <a href="javascript:;" class="mobile-menu-toggler"> <i data-lucide="x-circle" class="w-8 h-8 text-white transform -rotate-90"></i> </a>
                 <ul class="scrollable__content py-2">
                     <li>
-                        <a href="javascript:;.html" class="menu menu--active">
+                        <a href="{% url 'dashboard' %}" class="menu menu--active">
                             <div class="menu__icon"> <i data-lucide="home"></i> </div>
-                            <div class="menu__title"> Dashboard <i data-lucide="chevron-down" class="menu__sub-icon transform rotate-180"></i> </div>
+                            <div class="menu__title"> Dashboard </div>
                         </a>
-                        <ul class="menu__sub-open">
-                            <li>
-                                <a href="" class="menu menu--active">
-                                    <div class="menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="menu__title"> Overview 1 </div>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
+
                     <li>
+                        <a href="" class="menu">
+                            <div class="menu__icon"> <i data-lucide="clipboard"></i> </div>
+                            <div class="menu__title"> Attandance </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="" class="menu">
+                            <div class="menu__icon"> <i data-lucide="dollar-sign"></i> </div>
+                            <div class="menu__title"> Expenses </div>
+                        </a>
+                    </li>
+
+                    <!-- <li>
                         <a href="javascript:;" class="menu">
                             <div class="menu__icon"> <i data-lucide="box"></i> </div>
                             <div class="menu__title"> Menu Layout <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
@@ -75,13 +82,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li>
-                        <a href="" class="menu">
-                            <div class="menu__icon"> <i data-lucide="inbox"></i> </div>
-                            <div class="menu__title"> Inbox </div>
-                        </a>
-                    </li>
+                    </li> -->
                     <li class="menu__devider my-6"></li>
                 </ul>
             </div>

@@ -49,6 +49,7 @@ def add_technician(request):
                 designation = Designation.objects.get(auto_id=designation_id)
                 user = User.objects.create(username=username,first_name=name,email=email,is_technician=True,photo=photo,mobile=mobile)
                 user.set_password(password)
+                user.save()
 
                 Technician.objects.create(
                     user=user,location=location,aadhar=aadhar,blood=blood,
