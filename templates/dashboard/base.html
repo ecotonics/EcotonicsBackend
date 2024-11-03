@@ -351,6 +351,36 @@
                     </li>
 
                     <li>
+                        <a href="javascript:;" class="side-menu {% if main == 'works' %} side-menu--active {% endif %}">
+                            <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
+                            <div class="side-menu__title">
+                                Works
+                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                            </div>
+                        </a>
+                        <ul class="{% if main == 'works' %} side-menu__sub-open {% endif %}">
+                            <li>
+                                <a href="{% url 'works' 'pending' %}" class="side-menu {% if sub == 'pending' %} side-menu--active {% endif %}">
+                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                    <div class="side-menu__title"> PENDING </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'works' 'ongoing' %}" class="side-menu {% if sub == 'ongoing' %} side-menu--active {% endif %}">
+                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                    <div class="side-menu__title"> ONGOING </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'works' 'completed' %}" class="side-menu {% if sub == 'completed' %} side-menu--active {% endif %}">
+                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                    <div class="side-menu__title"> COMPLETED </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
                         <a href="{% url 'calls' %}" class="side-menu {% if main == 'calls' %} side-menu--active {% endif %}">
                             <div class="side-menu__icon"> <i data-lucide="phone-call"></i> </div>
                             <div class="side-menu__title"> Service Calls </div>

@@ -20,7 +20,7 @@
     <!-- BEGIN: Vertical Form -->
     <div class="intro-y box mt-5">
         <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
-            <h2 class="text-3xl mx-auto mt-3 mb-3">ADD LEAD</h2>
+            <h2 class="text-3xl mx-auto mt-3 mb-3">EDIT WORK</h2>
         </div>
         <div class="px-3 sm:px-10 py-5">
             <form action="" method="post" enctype="multipart/form-data">
@@ -69,7 +69,7 @@
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Service</label>
                         <select name="service" id="services" class="form-control">
-                            <option value="{{ lead.service }}">{{ lead.service }}</option>
+                            <option value="{{ lead.service.slug }}">{{ lead.service }}</option>
                             {% for service in services %}
                                 <option value="{{ service.slug }}">{{ service.name }}</option>
                             {% endfor %}

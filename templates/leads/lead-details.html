@@ -1,0 +1,148 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- BEGIN: Profile Info -->
+    <div class="intro-y box px-5 pt-5 mt-5">
+        <div class="flex flex-col lg:flex-row dark:border-darkmode-400 pb-5 -mx-5">
+            <div class="flex-1 px-5 items-center justify-center">
+                <div class="flex flex-col justify-center items-center mt-4">
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> {{ lead.name }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ lead.mobile }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ lead.email }} </div>
+                </div>
+            </div>
+            <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
+                <div class="flex flex-col justify-center items-center mt-4">
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i> {{ lead.location }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ lead.category }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ lead.service }} </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Profile Info -->
+
+    <!-- BEGIN: Lead Followups -->
+    <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3">
+        <div class="intro-x flex items-center h-10">
+            <h2 class="text-lg font-medium truncate mr-5">
+                Lead Followups
+            </h2>
+
+            {% if lead.status == 'PENDING' %}
+                <button class="ml-auto btn btn-primary" data-tw-toggle="modal" data-tw-target="#convert-modal">Convert to Work</button>
+                <button class="ml-2 btn btn-primary" data-tw-toggle="modal" data-tw-target="#timeline-modal">Add Followups</button>
+            {% endif %}
+        </div>
+        <div class="mt-5 relative before:block before:absolute before:w-px before:h-[85%] before:bg-slate-200 before:dark:bg-darkmode-400 before:ml-5 before:mt-5">
+
+            {% if followups %}
+                {% for followup in followups %}
+                    <div class="intro-x relative flex items-center mb-3">
+                        <div class="before:block before:absolute before:w-20 before:h-px before:bg-slate-200 before:dark:bg-darkmode-400 before:mt-5 before:ml-5">
+                            <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                <img alt="" src="{% static 'backend/images/preview.jpg' %}">
+                            </div>
+                        </div>
+                        <div class="box px-5 py-3 ml-4 flex-1 zoom-in">
+                            <div class="flex items-center">
+                                <div class="font-medium">{{ followup.title }}</div>
+                                <div class="text-xs text-slate-500 ml-auto">{{ followup.date | date:'d F Y' | upper }}</div>
+                            </div>
+                            <div class="text-slate-500 mt-1">{{ followup.details }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="intro-x relative flex items-center mb-3">
+                <div class="before:block before:absolute before:w-20 before:h-px before:bg-slate-200 before:dark:bg-darkmode-400 before:mt-5 before:ml-5">
+                    <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                        <img alt="" src="{% static 'backend/images/preview.jpg' %}">
+                    </div>
+                </div>
+                <div class="box px-5 py-3 ml-4 flex-1 zoom-in">
+                    <div class="flex justify-center">
+                        <div class="font-medium">Lead generated on  {{ lead.date | date:'d F Y' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Lead Followups -->
+
+</div>
+<!-- END: Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="convert-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{% url 'lead-convert' lead.slug %}" method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="p-5 text-center"> <i data-lucide="check-circle" class="w-16 h-16 text-success mx-auto mt-3"></i>
+                        <div class="text-3xl mt-5">Convert Lead!</div>
+                        <div class="text-slate-500 mt-2">Are you sure you want to convert the lead to work !</div>
+                    </div>
+                    <div class="px-5 pb-8 text-center">
+                        <button type="submit" data-tw-dismiss="modal" class="btn btn-primary w-24">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END: Modal Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="timeline-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <form action="{% url 'followup' lead.slug %}" method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+                <!-- BEGIN: Modal Header -->
+                <div class="modal-header">
+                    <h2 class="font-medium text-base mr-auto">Followup</h2>
+                </div>
+                <!-- END: Modal Header -->
+                <!-- BEGIN: Modal Body -->
+                <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                    <div class="col-span-12 sm:col-span-12">
+                        <label for="modal-form-1" class="form-label">Title</label>
+                        <input name="title" id="modal-form-1" type="text" class="form-control" placeholder="Enter followup title">
+                    </div>
+                    <div class="col-span-12 sm:col-span-12">
+                        <label for="modal-form-1" class="form-label">Details</label>
+                        <textarea name="details" id="" class="form-control" rows="5" placeholder="Enter followup details"></textarea>
+                    </div>
+                </div>
+                <!-- END: Modal Body -->
+                <!-- BEGIN: Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+                    <button type="submit" class="btn btn-primary w-20">Submit</button>
+                </div>
+                <!-- END: Modal Footer -->
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END: Modal Content -->
+{% endblock content %}

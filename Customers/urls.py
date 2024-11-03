@@ -11,6 +11,11 @@ urlpatterns = [
     #LEADS
     path('leads/<str:status>/',views.leads,name='leads'),
     path('lead/add/',views.add_lead,name='lead-add'),
+    path('lead/details/<slug:slug>/',views.view_lead,name='lead-view'),
     path('lead/edit/<slug:slug>/',views.edit_lead,name='lead-edit'),
     path('lead/delete/<slug:slug>/',views.delete_lead,name='lead-delete'),
+    path('lead/convert/<slug:slug>/',views.convert_lead,name='lead-convert'),
+
+    #FOLLOWUP
+    path('followup/<slug:slug>/',views.followup,name='followup')
 ]

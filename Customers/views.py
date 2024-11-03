@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from Customers.models import Customer
 from django.contrib import messages
 from Services.models import Category, Service
-from Customers.models import Lead
+from Customers.models import Lead, Followup
+from django.apps import apps
 
 # Create your views here.
 
@@ -130,6 +131,43 @@ def add_lead(request):
     return render(request,'leads/lead-add.html',context)
 
 @login_required
+def view_lead(request,slug):
+    lead = Lead.objects.get(slug=slug)
+    followups = Followup.active_objects.filter(lead=lead)
+    context = {
+        'main' : 'leads',
+        'sub' : lead.status.lower(),
+        'lead' : lead,
+        'followups' : followups
+    }
+    return render(request,'leads/lead-details.html',context)
+
+@login_required
+def convert_lead(request,slug):
+    lead = Lead.objects.get(slug=slug)
+    lead.status = 'CONVERTED'
+    lead.save()
+
+    Work = apps.get_model('Works', 'Work')
+    Work.objects.create(lead=lead)
+    return redirect('leads',slug=lead.status)
+
+@login_required
+def followup(request,slug):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        details = request.POST.get('details')
+
+        try:
+            lead = Lead.objects.get(slug=slug)
+            Followup.objects.create(lead=lead,title=title,details=details)
+            messages.success(request, 'Followup added successfully')
+        except Exception as exception:
+            messages.warning(request,exception)
+
+        return redirect('lead-view',slug=lead.slug)
+
+@login_required
 def edit_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     categories = Category.active_objects.all()
@@ -143,6 +181,9 @@ def edit_lead(request,slug):
         lead.email = request.POST.get('email')
         lead.info = request.POST.get('info')
 
+        category = request.POST.get('category')
+        service = request.POST.get('service')
+
         try:
             category = Category.objects.get(slug=category)
             service = Service.objects.get(slug=service)
@@ -152,7 +193,7 @@ def edit_lead(request,slug):
             lead.save()
 
             messages.success(request,'Lead detailed updated successfully')
-            return redirect('leads', status=lead.status)
+            return redirect('leads', status=lead.status.lower())
 
         except Exception as exception:
             messages.warning(request,str(exception))
@@ -160,7 +201,7 @@ def edit_lead(request,slug):
 
     context = {
         'main' : 'leads',
-        'sub' : 'pending',
+        'sub' : lead.status.lower(),
         'lead' : lead,
         'categories' : categories,
         'services' : services
@@ -171,9 +212,9 @@ def edit_lead(request,slug):
 def delete_lead(request,slug):
     try:
         lead = Lead.objects.get(slug=slug)
-        lead.is_deleted=True
+        lead.status = 'FAILED'
         lead.save()
-        messages.error(request, 'Lead deleted successfully ...!')
+        messages.error(request, 'Marked the lead as failed ...!')
 
     except Exception as exception:
         messages.warning(request, exception)

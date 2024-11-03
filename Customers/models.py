@@ -56,3 +56,24 @@ class Lead(BaseModel):
         save_data(self, request, self.name)
 
         super(Lead, self).save(*args, **kwargs)
+
+class Followup(BaseModel):
+    lead = models.ForeignKey(Lead,on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    title = models.CharField(max_length=100)
+    details = models.TextField(null=True,blank=True)
+
+    def __str__(self):
+        return self.slug
+
+    class Meta:
+        verbose_name = _('Followup')
+        verbose_name_plural = _('Followups')
+        ordering = ("-date_added",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.title)
+
+        super(Followup, self).save(*args, **kwargs)
