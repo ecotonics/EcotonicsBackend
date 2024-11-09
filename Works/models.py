@@ -28,3 +28,27 @@ class Work(BaseModel):
         save_data(self, request, self.lead.name)
 
         super(Work, self).save(*args, **kwargs)
+
+
+class Attendance(BaseModel):
+    date = models.DateField(auto_now_add=True)
+    status = models.IntegerField(default=1)
+    technician = models.ForeignKey(Technician,on_delete=models.CASCADE)
+    work = models.ForeignKey(Work,on_delete=models.CASCADE)
+    start_time = models.TimeField(null=True,blank=True)
+    end_time = models.TimeField(null=True,blank=True)
+
+    def __str__(self):
+        return f'{self.technician.user.first_name}'
+
+    class Meta:
+        verbose_name = _('Attendance')
+        verbose_name_plural = _('Attendances')
+        ordering = ("-date_added",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.technician.user.username)
+
+        super(Attendance, self).save(*args, **kwargs)

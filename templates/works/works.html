@@ -38,7 +38,6 @@
                                 <th class="text-center whitespace-nowrap">NO</th>
                                 <th class="text-center whitespace-nowrap">DATE</th>
                                 <th class="text-center whitespace-nowrap">LEAD</th>
-                                <th class="text-center whitespace-nowrap">CATEGORY</th>
                                 <th class="text-center whitespace-nowrap">SERVICE</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
@@ -48,9 +47,14 @@
                                 <tr class="intro-x">
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
                                     <td class="font-medium text-center whitespace-nowrap">{{ work.date | date:'d M Y'}}</td>
-                                    <td class="text-center whitespace-nowrap">{{ work.lead }}</td>
-                                    <td class="text-center whitespace-nowrap">{{ work.lead.category }}</td>
-                                    <td class="text-center whitespace-nowrap">{{ work.lead.service }}</td>
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ work.lead.name }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ work.lead.mobile }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ work.lead.service }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ work.lead.service.category }}</div>
+                                    </td>
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
                                             <a class="flex items-center text-warning" href="{% url 'work-details' work.slug %}">

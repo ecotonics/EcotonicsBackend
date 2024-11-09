@@ -4,6 +4,7 @@ from Users.models import User
 from Technicians.models import Department, Designation, Technician
 from django.contrib import messages
 from django.db import transaction
+from Works.models import Work, Attendance
 
 # Create your views here.
 
@@ -147,21 +148,57 @@ def delete_technician(request,slug):
         messages.warning(request, exception)
     return redirect('technicians')
 
-#-----------------------------------------------------------------------------------------------------------------------------------
 
 @login_required
 def attandance(request):
+    attandances = Attendance.active_objects.filter(status=1)
+
     context = {
         'main' : 'workforce',
-        'sub' : 'attandance'
+        'sub' : 'attandance',
+        'attandances' : attandances
     }
     return render(request,'workforce/attandance.html',context)
 
 @login_required
 def add_attandance(request):
+    technicians = Technician.active_objects.all()
+    works = Work.active_objects.all()
+
+    if request.method == 'POST':
+        technician = request.POST.get('technician')
+        work = request.POST.get('work')
+        start_time = request.POST.get('start_time')
+        end_time = request.POST.get('end_time')
+
+        try:
+            if request.user.is_superuser:
+                technician = Technician.objects.get(slug=technician)
+            else:
+                technician = Technician.objects.get(user=request.user)
+
+            work = Work.objects.get(slug=work)
+
+            Attendance.objects.create(
+                technician=technician, work=work, start_time=start_time, end_time=end_time
+            )
+
+            messages.success(request,'Attendance added successfully')
+
+            if request.user.is_superuser:
+                return redirect('attandance')
+            else:
+                return redirect('dashboard')
+
+        except Exception as exception:
+            messages.warning(request,exception)
+            return redirect('attandance-add')
+
     context = {
         'main' : 'workforce',
-        'sub' : 'attandance'
+        'sub' : 'attandance',
+        'technicians' : technicians,
+        'works' : works
     }
     return render(request,'workforce/attandance-add.html',context)
 
@@ -175,4 +212,28 @@ def edit_attandance(request):
 
 @login_required
 def delete_attandance(request):
+    return redirect('attandance')
+
+@login_required
+def approve_attendance(request,slug):
+    try:
+        attandance = Attendance.objects.get(slug=slug)
+        attandance.status = 2
+        attandance.save()
+        messages.success(request,'Attendance approved')
+    except Exception as exception:
+        messages.error(request,exception)
+
+    return redirect('attandance')
+
+@login_required
+def reject_attendance(request,slug):
+    try:
+        attandance = Attendance.objects.get(slug=slug)
+        attandance.status = 0
+        attandance.save()
+        messages.success(request,'Attendance rejected')
+    except Exception as exception:
+        messages.error(request,exception)
+
     return redirect('attandance')

@@ -38,9 +38,8 @@
                                 <th class="text-center whitespace-nowrap">NO</th>
                                 <th class="text-center whitespace-nowrap">DATE</th>
                                 <th class="text-center whitespace-nowrap">LEAD TYPE</th>
-                                <th class="text-center whitespace-nowrap">NAME</th>
-                                <th class="text-center whitespace-nowrap">MOBILE</th>
-                                <th class="text-center whitespace-nowrap">EMAIL</th>
+                                <th class="text-center whitespace-nowrap">CUSTOMER</th>
+                                <th class="text-center whitespace-nowrap">WORK</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
                         </thead>
@@ -50,9 +49,14 @@
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
                                     <td class="font-medium text-center whitespace-nowrap">{{ lead.date | date:'d M Y'}}</td>
                                     <td class="text-center whitespace-nowrap">{{ lead.type }}</td>
-                                    <td class="text-center whitespace-nowrap">{{ lead.name }}</td>
-                                    <td class="text-center whitespace-nowrap">{{ lead.mobile }}</td>
-                                    <td class="text-center whitespace-nowrap">{{ lead.email }}</td>
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ lead.name }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ lead.mobile }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ lead.service }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ lead.service.category }}</div>
+                                    </td>
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
                                             <a class="flex items-center mr-3 text-warning" href="{% url 'lead-view' lead.slug %}">

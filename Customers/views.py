@@ -83,7 +83,6 @@ def delete_customer(request,slug):
 
     return redirect('customers',type=customer.type)
 
-#-----------------------------------------------------------------------------------------------------------------------------------
 
 @login_required
 def leads(request,status):
@@ -150,7 +149,7 @@ def convert_lead(request,slug):
 
     Work = apps.get_model('Works', 'Work')
     Work.objects.create(lead=lead)
-    return redirect('leads',slug=lead.status)
+    return redirect('works',slug='pending')
 
 @login_required
 def followup(request,slug):

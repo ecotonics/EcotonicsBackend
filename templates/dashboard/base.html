@@ -55,35 +55,183 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a href="" class="menu">
-                            <div class="menu__icon"> <i data-lucide="clipboard"></i> </div>
-                            <div class="menu__title"> Attandance </div>
-                        </a>
-                    </li>
+                    {% if user.is_superuser %}
+                        <li>
+                            <a href="javascript:;" class="menu">
+                                <div class="menu__icon"> <i data-lucide="settings"></i> </div>
+                                <div class="menu__title"> Services <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
+                            </a>
+                            <ul class="">
+                                <li>
+                                    <a href="{% url 'categories' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Categories </div>
+                                    </a>
+                                </li>
 
-                    <li>
-                        <a href="" class="menu">
-                            <div class="menu__icon"> <i data-lucide="dollar-sign"></i> </div>
-                            <div class="menu__title"> Expenses </div>
-                        </a>
-                    </li>
+                                <li>
+                                    <a href="{% url 'services' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Services </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <!-- <li>
-                        <a href="javascript:;" class="menu">
-                            <div class="menu__icon"> <i data-lucide="box"></i> </div>
-                            <div class="menu__title"> Menu Layout <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
-                        </a>
-                        <ul class="">
-                            <li>
-                                <a href="" class="menu menu--active">
-                                    <div class="menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="menu__title"> Side Menu </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li> -->
-                    <li class="menu__devider my-6"></li>
+                        <li>
+                            <a href="javascript:;" class="menu">
+                                <div class="menu__icon"> <i data-lucide="tag"></i> </div>
+                                <div class="menu__title"> Workforce <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
+                            </a>
+                            <ul class="">
+                                <li>
+                                    <a href="{% url 'technicians' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Technicians </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{% url 'attandance' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Attandance </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript:;" class="menu">
+                                <div class="menu__icon"> <i data-lucide="users"></i> </div>
+                                <div class="menu__title"> Customers <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
+                            </a>
+                            <ul class="">
+                                <li>
+                                    <a href="{% url 'customers' 'enterprise' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Enterprises </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{% url 'customers' 'individual' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Individuals </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript:;" class="menu">
+                                <div class="menu__icon"> <i data-lucide="dollar-sign"></i> </div>
+                                <div class="menu__title"> Accounts <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
+                            </a>
+                            <ul class="">
+                                <li>
+                                    <a href="{% url 'transaction-categories' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Categories </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{% url 'bank-accounts' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Bank Accounts </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{% url 'transactions' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> Transactions </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript:;" class="menu">
+                                <div class="menu__icon"> <i data-lucide="clipboard"></i> </div>
+                                <div class="menu__title"> Leads <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
+                            </a>
+                            <ul class="">
+                                <li>
+                                    <a href="{% url 'leads' 'pending' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> PENDING </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{% url 'leads' 'failed' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> FAILED </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{% url 'leads' 'converted' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> CONVERTED </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript:;" class="menu">
+                                <div class="menu__icon"> <i data-lucide="clipboard"></i> </div>
+                                <div class="menu__title"> Works <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
+                            </a>
+                            <ul class="">
+                                <li>
+                                    <a href="{% url 'works' 'pending' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> PENDING </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{% url 'works' 'ongoing' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> ONGOING </div>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{% url 'works' 'completed' %}" class="menu menu--active">
+                                        <div class="menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="menu__title"> COMPLETED </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'calls' %}" class="menu menu--active">
+                                <div class="menu__icon"> <i data-lucide="phone-call"></i> </div>
+                                <div class="menu__title"> Service Calls </div>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if user.is_technician %}
+                        <li>
+                            <a href="{% url 'attandance-add' %}" class="menu menu--active">
+                                <div class="menu__icon"> <i data-lucide="clipboard"></i> </div>
+                                <div class="menu__title"> Attendance </div>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'work-expenses' %}" class="menu menu--active">
+                                <div class="menu__icon"> <i data-lucide="dollar-sign"></i> </div>
+                                <div class="menu__title"> Work Expense </div>
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -218,176 +366,178 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a href="javascript:;" class="side-menu {% if main == 'services' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="settings"></i> </div>
-                            <div class="side-menu__title">
-                                Services
-                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                            </div>
-                        </a>
-                        <ul class="{% if main == 'services' %} side-menu__sub-open {% endif %}">
-                            <li>
-                                <a href="{% url 'categories' %}" class="side-menu {% if sub == 'categories' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Categories </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'services' %}" class="side-menu {% if sub == 'services' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Services </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    {% if user.is_superuser %}
+                        <li>
+                            <a href="javascript:;" class="side-menu {% if main == 'services' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="settings"></i> </div>
+                                <div class="side-menu__title">
+                                    Services
+                                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                                </div>
+                            </a>
+                            <ul class="{% if main == 'services' %} side-menu__sub-open {% endif %}">
+                                <li>
+                                    <a href="{% url 'categories' %}" class="side-menu {% if sub == 'categories' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Categories </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'services' %}" class="side-menu {% if sub == 'services' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Services </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li>
-                        <a href="javascript:;" class="side-menu {% if main == 'workforce' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="tag"></i> </div>
-                            <div class="side-menu__title">
-                                Workforce
-                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                            </div>
-                        </a>
-                        <ul class="{% if main == 'workforce' %} side-menu__sub-open {% endif %}">
-                            <li>
-                                <a href="{% url 'technicians' %}" class="side-menu {% if sub == 'technicians' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Technicians </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'attandance' %}" class="side-menu {% if sub == 'attandance' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Attandance </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li>
+                            <a href="javascript:;" class="side-menu {% if main == 'workforce' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="tag"></i> </div>
+                                <div class="side-menu__title">
+                                    Workforce
+                                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                                </div>
+                            </a>
+                            <ul class="{% if main == 'workforce' %} side-menu__sub-open {% endif %}">
+                                <li>
+                                    <a href="{% url 'technicians' %}" class="side-menu {% if sub == 'technicians' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Technicians </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'attandance' %}" class="side-menu {% if sub == 'attandance' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Attandance </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li>
-                        <a href="javascript:;" class="side-menu {% if main == 'customers' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="users"></i> </div>
-                            <div class="side-menu__title">
-                                Customers
-                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                            </div>
-                        </a>
-                        <ul class="{% if main == 'customers' %} side-menu__sub-open {% endif %}">
-                            <li>
-                                <a href="{% url 'customers' 'enterprise' %}" class="side-menu {% if sub == 'enterprise' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Enterprises </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'customers' 'individual' %}" class="side-menu {% if sub == 'individual' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Individuals </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li>
+                            <a href="javascript:;" class="side-menu {% if main == 'customers' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="users"></i> </div>
+                                <div class="side-menu__title">
+                                    Customers
+                                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                                </div>
+                            </a>
+                            <ul class="{% if main == 'customers' %} side-menu__sub-open {% endif %}">
+                                <li>
+                                    <a href="{% url 'customers' 'enterprise' %}" class="side-menu {% if sub == 'enterprise' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Enterprises </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'customers' 'individual' %}" class="side-menu {% if sub == 'individual' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Individuals </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li>
-                        <a href="javascript:;" class="side-menu {% if main == 'accounts' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="dollar-sign"></i> </div>
-                            <div class="side-menu__title">
-                                Accounts
-                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                            </div>
-                        </a>
-                        <ul class="{% if main == 'accounts' %} side-menu__sub-open {% endif %}">
-                            <li>
-                                <a href="{% url 'transaction-categories' %}" class="side-menu {% if sub == 'categories' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Categories </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'bank-accounts' %}" class="side-menu {% if sub == 'bank-accounts' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Bank Accounts </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'transactions' %}" class="side-menu {% if sub == 'transactions' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Transactions </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li>
+                            <a href="javascript:;" class="side-menu {% if main == 'accounts' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="dollar-sign"></i> </div>
+                                <div class="side-menu__title">
+                                    Accounts
+                                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                                </div>
+                            </a>
+                            <ul class="{% if main == 'accounts' %} side-menu__sub-open {% endif %}">
+                                <li>
+                                    <a href="{% url 'transaction-categories' %}" class="side-menu {% if sub == 'categories' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Categories </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'bank-accounts' %}" class="side-menu {% if sub == 'bank-accounts' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Bank Accounts </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'transactions' %}" class="side-menu {% if sub == 'transactions' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Transactions </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li>
-                        <a href="javascript:;" class="side-menu {% if main == 'leads' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
-                            <div class="side-menu__title">
-                                Leads
-                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                            </div>
-                        </a>
-                        <ul class="{% if main == 'leads' %} side-menu__sub-open {% endif %}">
-                            <li>
-                                <a href="{% url 'leads' 'pending' %}" class="side-menu {% if sub == 'pending' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> PENDING </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'leads' 'failed' %}" class="side-menu {% if sub == 'failed' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> FAILED </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'leads' 'converted' %}" class="side-menu {% if sub == 'converted' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> CONVERTED </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li>
+                            <a href="javascript:;" class="side-menu {% if main == 'leads' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
+                                <div class="side-menu__title">
+                                    Leads
+                                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                                </div>
+                            </a>
+                            <ul class="{% if main == 'leads' %} side-menu__sub-open {% endif %}">
+                                <li>
+                                    <a href="{% url 'leads' 'pending' %}" class="side-menu {% if sub == 'pending' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> PENDING </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'leads' 'failed' %}" class="side-menu {% if sub == 'failed' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> FAILED </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'leads' 'converted' %}" class="side-menu {% if sub == 'converted' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> CONVERTED </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li>
-                        <a href="javascript:;" class="side-menu {% if main == 'works' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
-                            <div class="side-menu__title">
-                                Works
-                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                            </div>
-                        </a>
-                        <ul class="{% if main == 'works' %} side-menu__sub-open {% endif %}">
-                            <li>
-                                <a href="{% url 'works' 'pending' %}" class="side-menu {% if sub == 'pending' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> PENDING </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'works' 'ongoing' %}" class="side-menu {% if sub == 'ongoing' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> ONGOING </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'works' 'completed' %}" class="side-menu {% if sub == 'completed' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> COMPLETED </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li>
+                            <a href="javascript:;" class="side-menu {% if main == 'works' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
+                                <div class="side-menu__title">
+                                    Works
+                                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                                </div>
+                            </a>
+                            <ul class="{% if main == 'works' %} side-menu__sub-open {% endif %}">
+                                <li>
+                                    <a href="{% url 'works' 'pending' %}" class="side-menu {% if sub == 'pending' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> PENDING </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'works' 'ongoing' %}" class="side-menu {% if sub == 'ongoing' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> ONGOING </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'works' 'completed' %}" class="side-menu {% if sub == 'completed' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> COMPLETED </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li>
-                        <a href="{% url 'calls' %}" class="side-menu {% if main == 'calls' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="phone-call"></i> </div>
-                            <div class="side-menu__title"> Service Calls </div>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="{% url 'calls' %}" class="side-menu {% if main == 'calls' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="phone-call"></i> </div>
+                                <div class="side-menu__title"> Service Calls </div>
+                            </a>
+                        </li>
+                    {% endif %}
 
-                    <li>
+                    <!-- <li>
                         <a href="javascript:;" class="side-menu {% if main == 'procurement' %} side-menu--active {% endif %}">
                             <div class="side-menu__icon"> <i data-lucide="file-text"></i> </div>
                             <div class="side-menu__title">
@@ -452,9 +602,23 @@
                             <div class="side-menu__icon"> <i data-lucide="award"></i> </div>
                             <div class="side-menu__title"> Refferels </div>
                         </a>
-                    </li>
+                    </li> -->
 
-                    <li class="side-nav__devider my-6"></li>
+                    {% if user.is_technician %}
+                        <li>
+                            <a href="{% url 'attandance-add' %}" class="side-menu {% if main == 'attendance' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
+                                <div class="side-menu__title"> Attandance </div>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'work-expenses' %}" class="side-menu {% if main == 'expense' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="dollar-sign"></i> </div>
+                                <div class="side-menu__title"> Work Expense </div>
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </nav>
             <!-- END: Side Menu -->
