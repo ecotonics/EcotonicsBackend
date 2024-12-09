@@ -9,6 +9,7 @@ from Core.middlewares import RequestMiddleware
 
 class Department(BaseModel):
     name = models.CharField(max_length=50)
+    info = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -28,6 +29,7 @@ class Department(BaseModel):
 class Designation(BaseModel):
     department = models.ForeignKey(Department,on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
+    info = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name

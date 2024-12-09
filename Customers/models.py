@@ -7,8 +7,19 @@ from Services.models import Category, Service
 
 # Create your models here.
 
+TYPE = (
+    ('individual', 'individual'),
+    ('enterprise', 'enterprise')
+)
+
+LEAD_STATUS = (
+    ('PENDING', 'PENDING'),
+    ('CONVERTED', 'CONVERTED'),
+    ('FAILED', 'FAILED')
+)
+
 class Customer(BaseModel):
-    type = models.CharField(max_length=50)
+    type = models.CharField(max_length=50, choices=TYPE)
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=50)
     mobile = models.CharField(max_length=15)
@@ -32,12 +43,16 @@ class Customer(BaseModel):
 
 class Lead(BaseModel):
     date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=50,default='PENDING')
+    status = models.CharField(max_length=50, choices=LEAD_STATUS, default='PENDING')
+
+    type = models.CharField(max_length=50, choices=TYPE)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE, null=True, blank=True)
+
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=50)
-    type = models.CharField(max_length=50)
     mobile = models.CharField(max_length=15)
     email = models.EmailField()
+
     category = models.ForeignKey(Category,on_delete=models.PROTECT)
     service = models.ForeignKey(Service,on_delete=models.PROTECT)
     info = models.TextField(null=True,blank=True)

@@ -39,6 +39,7 @@
                                 <th class="text-center whitespace-nowrap">DATE</th>
                                 <th class="text-center whitespace-nowrap">LEAD TYPE</th>
                                 <th class="text-center whitespace-nowrap">CUSTOMER</th>
+                                <th class="text-center whitespace-nowrap">WORK TYPE</th>
                                 <th class="text-center whitespace-nowrap">WORK</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
@@ -48,26 +49,33 @@
                                 <tr class="intro-x">
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
                                     <td class="font-medium text-center whitespace-nowrap">{{ lead.date | date:'d M Y'}}</td>
-                                    <td class="text-center whitespace-nowrap">{{ lead.type }}</td>
+                                    <td class="text-center whitespace-nowrap">
+                                        {% if lead.customer %}
+                                            Existing Customer
+                                        {% else %}
+                                            New Lead
+                                        {% endif %}
+                                    </td>
                                     <td class="text-center">
                                         <a href="" class="font-medium whitespace-nowrap">{{ lead.name }}</a>
                                         <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ lead.mobile }}</div>
                                     </td>
+                                    <td class="text-center whitespace-nowrap">{{ lead.type | capfirst }}</td>
                                     <td class="text-center">
                                         <a href="" class="font-medium whitespace-nowrap">{{ lead.service }}</a>
                                         <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ lead.service.category }}</div>
                                     </td>
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
-                                            <a class="flex items-center mr-3 text-warning" href="{% url 'lead-view' lead.slug %}">
-                                                <i data-lucide="eye" class="w-4 h-4 mr-1"></i>
+                                            <a class="flex items-center mx-2 text-warning" href="{% url 'lead-view' lead.slug %}">
+                                                <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
                                             </a>
                                             {% if lead.status == 'PENDING' %}
-                                                <a class="flex items-center mr-3" href="{% url 'lead-edit' lead.slug %}">
-                                                    <i data-lucide="edit" class="w-4 h-4 mr-1"></i>
+                                                <a class="flex items-center mx-2" href="{% url 'lead-edit' lead.slug %}">
+                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
                                                 </a>
-                                                <a class="flex items-center text-danger" href="{% url 'lead-delete' lead.slug %}" onclick="return confirm('Are you sure you want to cancel the lead ?');">
-                                                    <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>
+                                                <a class="flex items-center text-danger mx-2" href="{% url 'lead-delete' lead.slug %}" onclick="return confirm('Are you sure you want to cancel the lead ?');">
+                                                    <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
                                                 </a>
                                             {% endif %}
                                         </div>

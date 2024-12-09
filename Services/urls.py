@@ -14,6 +14,7 @@ urlpatterns = [
     path('service/add/',views.add_service,name='service-add'),
     path('service/edit/<slug:slug>/',views.edit_service,name='service-edit'),
     path('service/delete/<slug:slug>/',views.delete_service,name='service-delete'),
+    path('service/details/<slug:slug>/',views.service_details,name='service-details'),
 
     # SERVICE CALLS
     path('calls/',views.calls,name='calls'),

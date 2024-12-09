@@ -20,7 +20,7 @@
     <!-- BEGIN: Vertical Form -->
     <div class="intro-y box mt-5">
         <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
-            <h2 class="text-3xl mx-auto mt-3 mb-3">EDIT SERVICE</h2>
+            <h2 class="text-3xl mx-auto mt-3 mb-3">ADD DESIGNATION</h2>
         </div>
         <div class="px-3 sm:px-10 py-5">
             <form action="" method="post" enctype="multipart/form-data">
@@ -28,27 +28,27 @@
                 <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5">
 
                     <div class="intro-y col-span-12 sm:col-span-6">
-                        <label for="input-wizard-2" class="form-label">Service Name</label>
-                        <input value="{{ service.name }}" name="name" type="text" class="form-control" placeholder="Enter service name here" required maxlength="100">
+                        <label for="input-wizard-2" class="form-label">Designation Name</label>
+                        <input name="name" type="text" class="form-control" placeholder="Enter designation name here" required maxlength="100">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
-                        <label for="input-wizard-2" class="form-label">Category</label>
-                        <select name="category" id="" class="form-control" required>
-                            <option value="{{ service.category.auto_id }}">{{ service.category }}</option>
-                            {% for category in categories %}
-                                <option value="{{ category.auto_id }}">{{ category }}</option>
+                        <label for="input-wizard-2" class="form-label">Designation Name</label>
+                        <select name="department" id="" class="form-control">
+                            <option value="">Select Department</option>
+                            {% for department in departments %}
+                                <option value="{{ department.slug }}">{{ department }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-12">
                         <label for="input-wizard-2" class="form-label">Info</label>
-                        <textarea name="info" id="" cols="10" rows="5" placeholder="Enter service info" class="form-control">{{ service.info }}</textarea>
+                        <textarea name="info" id="" cols="10" rows="5" placeholder="Enter additional info" class="form-control"></textarea>
                     </div>
 
                     <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
-                        <a class="btn btn-outline-secondary w-24 ml-2" href="{% url 'services' %}">Cancel</a>
+                        <a class="btn btn-outline-secondary w-24 ml-2" href="{% url 'designations' %}">Cancel</a>
                         <button class="btn btn-primary w-24 ml-2" type="submit">Submit</button>
                     </div>
                 </div>

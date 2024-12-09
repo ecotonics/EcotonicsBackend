@@ -5,6 +5,7 @@ from django.contrib import messages
 from Services.models import Category, Service
 from Customers.models import Lead, Followup
 from django.apps import apps
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -84,6 +85,15 @@ def delete_customer(request,slug):
     return redirect('customers',type=customer.type)
 
 
+def filter_customers(request):
+    type = request.GET.get('type')
+
+    customers_list = Customer.active_objects.filter(type=type).values('slug', 'name')
+    customers_data = list(customers_list)
+
+    return JsonResponse({'customers': customers_data})
+
+
 @login_required
 def leads(request,status):
     leads = Lead.active_objects.filter(status=status.upper())
@@ -98,23 +108,36 @@ def leads(request,status):
 @login_required
 def add_lead(request):
     categories = Category.active_objects.all()
+
     if request.method == 'POST':
         name = request.POST.get('name')
         location = request.POST.get('location')
-        type = request.POST.get('type')
         mobile = request.POST.get('mobile')
         email = request.POST.get('email')
         category = request.POST.get('category')
         service = request.POST.get('service')
         info = request.POST.get('info')
+        lead_type = request.POST.get('lead_type')
+        work_type = request.POST.get('work_type')
+        customer = request.POST.get('customer')
 
         try:
             category = Category.objects.get(slug=category)
             service = Service.objects.get(slug=service)
 
-            Lead.objects.create(
-                name=name,location=location,type=type,mobile=mobile,email=email,category=category,service=service,info=info
-            )
+            if lead_type == 'new':
+                Lead.objects.create(
+                    type=work_type, category=category, service=service, info=info,
+                    name=name, email=email, mobile=mobile, location=location,
+                )
+
+            elif lead_type == 'existing':
+                customer = Customer.objects.get(slug=customer)
+                Lead.objects.create(
+                    type=work_type, category=category, service=service, info=info, customer=customer,
+                    name=customer.name, email=customer.email, mobile=customer.mobile, location=customer.location,
+                )
+
             messages.success(request,'Lead addedd successfully')
             return redirect('leads',status='pending')
 
@@ -171,13 +194,25 @@ def edit_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     categories = Category.active_objects.all()
     services = Service.active_objects.filter(category=lead.category)
+    customers = Customer.active_objects.all()
 
     if request.method == 'POST':
-        lead.name = request.POST.get('name')
-        lead.location = request.POST.get('location')
+        if lead.customer:
+            customer = request.POST.get('customer')
+            customer = Customer.objects.get(slug=customer)
+            lead.customer = customer
+
+            lead.name = customer.name
+            lead.email = customer.email
+            lead.mobile = customer.mobile
+            lead.location = customer.location
+        else:
+            lead.name = request.POST.get('name')
+            lead.mobile = request.POST.get('mobile')
+            lead.email = request.POST.get('email')
+            lead.location = request.POST.get('location')
+
         lead.type = request.POST.get('type')
-        lead.mobile = request.POST.get('mobile')
-        lead.email = request.POST.get('email')
         lead.info = request.POST.get('info')
 
         category = request.POST.get('category')
@@ -196,14 +231,15 @@ def edit_lead(request,slug):
 
         except Exception as exception:
             messages.warning(request,str(exception))
-            return redirect('lead-edit',slug=slug)
+            return redirect('lead-edit', slug=slug)
 
     context = {
         'main' : 'leads',
         'sub' : lead.status.lower(),
         'lead' : lead,
         'categories' : categories,
-        'services' : services
+        'services' : services,
+        'customers' : customers
     }
     return render(request,'leads/lead-edit.html',context)
 

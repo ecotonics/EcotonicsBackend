@@ -248,8 +248,8 @@
                 <!-- BEGIN: Breadcrumb -->
                 <nav aria-label="breadcrumb" class="-intro-x h-[45px] mr-auto">
                     <ol class="breadcrumb breadcrumb-light">
-                        <li class="breadcrumb-item"><a href="#">Application</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ main | capfirst }}</li>
                     </ol>
                 </nav>
                 <!-- END: Breadcrumb -->
@@ -401,15 +401,21 @@
                             </a>
                             <ul class="{% if main == 'workforce' %} side-menu__sub-open {% endif %}">
                                 <li>
-                                    <a href="{% url 'technicians' %}" class="side-menu {% if sub == 'technicians' %} side-menu--active {% endif %}">
+                                    <a href="{% url 'departments' %}" class="side-menu {% if sub == 'departments' %} side-menu--active {% endif %}">
                                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                        <div class="side-menu__title"> Technicians </div>
+                                        <div class="side-menu__title"> Departments </div>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'attandance' %}" class="side-menu {% if sub == 'attandance' %} side-menu--active {% endif %}">
+                                    <a href="{% url 'designations' %}" class="side-menu {% if sub == 'designations' %} side-menu--active {% endif %}">
                                         <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                        <div class="side-menu__title"> Attandance </div>
+                                        <div class="side-menu__title"> Designations </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'technicians' %}" class="side-menu {% if sub == 'technicians' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> Technicians </div>
                                     </a>
                                 </li>
                             </ul>
@@ -440,6 +446,30 @@
                         </li>
 
                         <li>
+                            <a href="javascript:;" class="side-menu {% if main == 'leads' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
+                                <div class="side-menu__title">
+                                    Leads
+                                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                                </div>
+                            </a>
+                            <ul class="{% if main == 'leads' %} side-menu__sub-open {% endif %}">
+                                <li>
+                                    <a href="{% url 'leads' 'pending' %}" class="side-menu {% if sub == 'pending' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> PENDING LEADS </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'leads' 'failed' %}" class="side-menu {% if sub == 'failed' %} side-menu--active {% endif %}">
+                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                        <div class="side-menu__title"> FAILED LEADS </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- <li>
                             <a href="javascript:;" class="side-menu {% if main == 'accounts' %} side-menu--active {% endif %}">
                                 <div class="side-menu__icon"> <i data-lucide="dollar-sign"></i> </div>
                                 <div class="side-menu__title">
@@ -467,39 +497,9 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> -->
 
-                        <li>
-                            <a href="javascript:;" class="side-menu {% if main == 'leads' %} side-menu--active {% endif %}">
-                                <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
-                                <div class="side-menu__title">
-                                    Leads
-                                    <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                                </div>
-                            </a>
-                            <ul class="{% if main == 'leads' %} side-menu__sub-open {% endif %}">
-                                <li>
-                                    <a href="{% url 'leads' 'pending' %}" class="side-menu {% if sub == 'pending' %} side-menu--active {% endif %}">
-                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                        <div class="side-menu__title"> PENDING </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'leads' 'failed' %}" class="side-menu {% if sub == 'failed' %} side-menu--active {% endif %}">
-                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                        <div class="side-menu__title"> FAILED </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'leads' 'converted' %}" class="side-menu {% if sub == 'converted' %} side-menu--active {% endif %}">
-                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                        <div class="side-menu__title"> CONVERTED </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li>
+                        <!-- <li>
                             <a href="javascript:;" class="side-menu {% if main == 'works' %} side-menu--active {% endif %}">
                                 <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
                                 <div class="side-menu__title">
@@ -527,14 +527,14 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> -->
 
-                        <li>
+                        <!-- <li>
                             <a href="{% url 'calls' %}" class="side-menu {% if main == 'calls' %} side-menu--active {% endif %}">
                                 <div class="side-menu__icon"> <i data-lucide="phone-call"></i> </div>
                                 <div class="side-menu__title"> Service Calls </div>
                             </a>
-                        </li>
+                        </li> -->
                     {% endif %}
 
                     <!-- <li>

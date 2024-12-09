@@ -17,5 +17,7 @@ urlpatterns = [
     path('lead/convert/<slug:slug>/',views.convert_lead,name='lead-convert'),
 
     #FOLLOWUP
-    path('followup/<slug:slug>/',views.followup,name='followup')
+    path('followup/<slug:slug>/',views.followup,name='followup'),
+
+    path('filter-customers/',views.filter_customers,name='filter-customers')
 ]

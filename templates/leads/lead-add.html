@@ -26,34 +26,63 @@
             <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5">
-
-                    <div class="intro-y col-span-12 sm:col-span-4">
-                        <label for="input-wizard-2" class="form-label">Name</label>
-                        <input name="name" type="text" class="form-control" placeholder="Enter name here" required maxlength="100">
-                    </div>
-
-                    <div class="intro-y col-span-12 sm:col-span-4">
-                        <label for="input-wizard-2" class="form-label">Location</label>
-                        <input name="location" type="text" class="form-control" placeholder="Enter location here" required maxlength="100">
-                    </div>
-
-                    <div class="intro-y col-span-12 sm:col-span-4">
-                        <label for="input-wizard-2" class="form-label">Type</label>
-                        <select name="type" id="" class="form-control">
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Lead Type</label>
+                        <select name="lead_type" id="lead_type" class="form-control" required>
                             <option value="">Select Lead Type</option>
-                            <option value="Individual">Industrial</option>
-                            <option value="Individual">Individual</option>
+                            <option value="new">New Lead</option>
+                            <option value="existing">Existing Customer</option>
                         </select>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
-                        <label for="input-wizard-2" class="form-label">Mobile</label>
-                        <input name="mobile" type="text" class="form-control" placeholder="Enter mobile number here" required maxlength="100">
+                        <label for="input-wizard-2" class="form-label">Work Type</label>
+                        <select name="work_type" id="customer_type" class="form-control" required>
+                            <option value="">Select Work Type</option>
+                            <option value="individual">Individual</option>
+                            <option value="enterprise">Enterprise</option>
+                        </select>
                     </div>
 
-                    <div class="intro-y col-span-12 sm:col-span-6">
+                    <div class="intro-y col-span-12">
+                        <hr>
+                        <h1 class="text-center mt-3 mb-3">Customer Details</h1>
+                        <hr>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6 new">
+                        <label for="input-wizard-2" class="form-label">Name</label>
+                        <input name="name" type="text" class="form-control" placeholder="Enter name here" maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6 new">
+                        <label for="input-wizard-2" class="form-label">Location</label>
+                        <input name="location" type="text" class="form-control" placeholder="Enter location here" maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6 new">
+                        <label for="input-wizard-2" class="form-label">Mobile</label>
+                        <input name="mobile" type="text" class="form-control" placeholder="Enter mobile number here" maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6 new">
                         <label for="input-wizard-2" class="form-label">Email</label>
                         <input name="email" type="email" class="form-control" placeholder="Enter email address here" maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-12 existing" style="display: none;">
+                        <div class="intro-y col-span-12 sm:col-span-6">
+                            <label for="input-wizard-2" class="form-label">Customer</label>
+                            <select name="customer" id="customers" class="form-control">
+                                <option value="">Select Customer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="intro-y col-span-12">
+                        <hr>
+                        <h1 class="text-center mt-3 mb-3">Work Informations</h1>
+                        <hr>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
@@ -74,11 +103,12 @@
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-12">
-                        <label for="input-wizard-2" class="form-label">Info</label>
+                        <label for="input-wizard-2" class="form-label">Informations</label>
                         <textarea name="info" id="" cols="10" rows="5" placeholder="Enter additional info" class="form-control"></textarea>
                     </div>
 
                     <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
+                        <a class="btn btn-outline-secondary w-24 ml-2" href="{% url 'leads' 'pending' %}">Cancel</a>
                         <button class="btn btn-primary w-24 ml-2" type="submit">Submit</button>
                     </div>
                 </div>

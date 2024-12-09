@@ -7,7 +7,7 @@
 
     {% if messages %}
         {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mt-5 text-white" role="alert">
                 <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
                 {{ message }}
                 <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
@@ -19,7 +19,7 @@
 
     <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12 mt-10">
-            <h1 class="text-center text-3xl">TECHNICIANS</h1>
+            <h1 class="text-center text-3xl">DEPARTMENTS</h1>
             <hr class="mt-5">
         </div>
 
@@ -27,66 +27,46 @@
             <div class="intro-y block sm:flex items-center h-10">
                 <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
                     <button class="btn box flex items-center text-slate-600 dark:text-slate-300"> <i data-lucide="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Export to Excel </button>
-                    <a href="{% url 'technician-add' %}" class="btn btn-success text-white mx-2">ADD TECHNICIAN</a>
+                    <a href="{% url 'department-add' %}" class="btn btn-success text-white mx-2">ADD DEPARTMENT</a>
                 </div>
             </div>
             <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                {% if technicians %}
+                {% if departments %}
                     <table class="table table-report sm:mt-2">
                         <thead>
                             <tr>
                                 <th class="text-center whitespace-nowrap">NO</th>
                                 <th class="text-center whitespace-nowrap">NAME</th>
-                                <th class="text-center whitespace-nowrap">PHOTO</th>
-                                <th class="text-center whitespace-nowrap">MOBILE</th>
-                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                <th class="text-center whitespace-nowrap">DEPARTMENT ID</th>
+                                <th class="text-center whitespace-nowrap">STAFFS</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for technician in technicians %}
+                            {% for department in departments %}
                                 <tr class="intro-x">
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
 
-                                    <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ technician }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ technician.designation }} / {{ technician.department }}</div>
+                                    <td class="font-medium text-center whitespace-nowrap">
+                                        <a href="">{{ department.name }}</a>
                                     </td>
 
-                                    <td class="">
-                                        <div class="flex justify-center">
-                                            <div class="w-10 h-10 image-fit zoom-in">
-                                                {% if technician.user.photo %}
-                                                    <img alt="" class="tooltip rounded-full" src="{{ technician.user.photo.url }}" title="{{ technician }}">
-                                                {% else %}
-                                                    <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ technician }}">
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </td>
+                                    <td class="text-center whitespace-nowrap">EDEP-0{{ department.auto_id }}</td>
 
-                                    <td class="text-center whitespace-nowrap">{{ technician.user.mobile }}</td>
-
-                                    <td class="text-center whitespace-nowrap">
-                                        {% if technician.status == 1 %}
-                                            <p class="text-success">IN SERVICE</p>
-                                        {% elif technician.status == 0 %}
-                                            <p class="text-danger">NOT IN SERVICE</p>
-                                        {% endif %}
-                                    </td>
+                                    <td class="text-center whitespace-nowrap">{{ department.staffs }}</td>
 
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
-                                            <a class="flex items-center mx-2 text-warning" href="{% url 'technician-details' technician.slug %}">
+                                            <a class="flex items-center text-warning mx-2" href="{% url 'department-details' department.slug %}">
                                                 <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
                                             </a>
 
-                                            {% if technician.status == 1 %}
-                                                <a class="flex items-center mx-2" href="{% url 'technician-edit' technician.slug %}">
-                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
-                                                </a>
+                                            <a class="flex items-center mx-2" href="{% url 'department-edit' department.slug %}">
+                                                <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                                            </a>
 
-                                                <a class="flex items-center text-danger mx-2" href="{% url 'technician-delete' technician.slug %}" onclick="return confirm('Are you sure you want to retire the staff ?');">
+                                            {% if department.staffs == 0 %}
+                                                <a class="flex items-center text-danger mx-2" href="{% url 'department-delete' department.slug %}" onclick="return confirm('Are you sure you want to delete the department ?');">
                                                     <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
                                                 </a>
                                             {% endif %}

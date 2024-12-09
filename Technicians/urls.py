@@ -2,6 +2,20 @@ from django.urls import path
 from Technicians import views
 
 urlpatterns = [
+    # DEPARTMENTS
+    path('departments/', views.departments, name='departments'),
+    path('department/add/', views.add_department, name='department-add'),
+    path('department/edit/<slug:slug>/', views.edit_department, name='department-edit'),
+    path('department/detail/<slug:slug>/', views.department_details, name='department-details'),
+    path('department/delete/<slug:slug>/', views.delete_department, name='department-delete'),
+
+    # DESIGNATIONS
+    path('designation/', views.designations, name='designations'),
+    path('designation/add/', views.add_designation, name='designation-add'),
+    path('designation/edit/<slug:slug>/', views.edit_designation, name='designation-edit'),
+    path('designation/detail/<slug:slug>/', views.designation_details, name='designation-details'),
+    path('designation/delete/<slug:slug>/', views.delete_designation, name='designation-delete'),
+
     # TECHNICIANS
     path('technicians/',views.technicians,name='technicians'),
     path('technician/add/',views.add_technician,name='technician-add'),

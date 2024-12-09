@@ -5,8 +5,192 @@ from Technicians.models import Department, Designation, Technician
 from django.contrib import messages
 from django.db import transaction
 from Works.models import Work, Attendance
+from django.db.models import Count
 
 # Create your views here.
+
+@login_required
+def departments(request):
+    departments = Department.active_objects.all().annotate(staffs=Count('technician'))
+
+    context = {
+        'main' : 'workforce',
+        'sub' : 'departments',
+        'departments' : departments
+    }
+
+    return render(request, 'workforce/departments.html', context)
+
+@login_required
+def add_department(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        info = request.POST.get('info')
+
+        try:
+            Department.objects.create(name=name,info=info)
+            messages.success(request,'Department added successfully ... !')
+            return redirect('departments')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('department-add')
+
+    context = {
+        'main' : 'workforce',
+        'sub' : 'departments'
+    }
+
+    return render(request,'workforce/department-add.html',context)
+
+@login_required
+def edit_department(request,slug):
+    department = Department.objects.get(slug=slug)
+
+    if request.method == 'POST':
+        department.name = request.POST.get('name')
+        department.info = request.POST.get('info')
+
+        try:
+            department.save()
+            messages.success(request,'Department edited successfully ... !')
+            return redirect('departments')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('department-edit' , slug=department.slug)
+
+    context = {
+        'main' : 'workforce',
+        'sub' : 'departments',
+        'department' : department
+    }
+
+    return render(request,'workforce/department-edit.html',context)
+
+@login_required
+def department_details(request,slug):
+    department = Department.objects.get(slug=slug)
+    designations = Designation.active_objects.filter(department=department)
+    staffs = Technician.active_objects.filter(department=department)
+
+    context = {
+        'main' : 'workforce',
+        'sub' : 'departments',
+        'department' : department,
+        'designations,' : designations,
+        'staffs' : staffs
+    }
+    return render(request,'workforce/department-details.html',context)
+
+@login_required
+def delete_department(request,slug):
+    try:
+        department = Department.objects.get(slug=slug)
+        department.is_deleted=True
+        department.save()
+        messages.error(request, 'Department deleted successfully ...!')
+
+    except Exception as exception:
+        messages.warning(request, exception)
+
+    return redirect('departments')
+
+@login_required
+def designations(request):
+    designations = Designation.active_objects.all().annotate(staffs=Count('technician'))
+
+    context = {
+        'main' : 'workforce',
+        'sub' : 'designations',
+        'designations' : designations
+    }
+
+    return render(request, 'workforce/designations.html', context)
+
+@login_required
+def add_designation(request):
+    departments = Department.active_objects.all()
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        info = request.POST.get('info')
+        department = request.POST.get('department')
+
+        try:
+            department = Department.objects.get(slug=department)
+
+            Designation.objects.create(name=name, info=info, department=department)
+            messages.success(request,'Designation added successfully ... !')
+            return redirect('designations')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('designation-add')
+
+    context = {
+        'main' : 'workforce',
+        'sub' : 'designations',
+        'departments' : departments
+    }
+
+    return render(request,'workforce/designation-add.html',context)
+
+@login_required
+def edit_designation(request,slug):
+    designation = Designation.objects.get(slug=slug)
+    departments = Department.active_objects.all()
+
+    if request.method == 'POST':
+        designation.name = request.POST.get('name')
+        designation.info = request.POST.get('info')
+
+        department = request.POST.get('department')
+        designation.department = Department.objects.get(slug=department)
+
+        try:
+            designation.save()
+            messages.success(request,'Designation edited successfully ... !')
+            return redirect('designations')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('designation-edit' , slug=designation.slug)
+
+    context = {
+        'main' : 'workforce',
+        'sub' : 'designations',
+        'designation' : designation,
+        'departments' : departments
+    }
+
+    return render(request,'workforce/designation-edit.html',context)
+
+@login_required
+def designation_details(request,slug):
+    designation = Designation.objects.get(slug=slug)
+    staffs = Technician.active_objects.filter(designation=designation)
+
+    context = {
+        'main' : 'workforce',
+        'sub' : 'designations',
+        'designation' : designation,
+        'staffs' : staffs
+    }
+    return render(request,'workforce/designation-details.html',context)
+
+@login_required
+def delete_designation(request,slug):
+    try:
+        designation = Designation.objects.get(slug=slug)
+        designation.is_deleted=True
+        designation.save()
+        messages.error(request, 'Designation deleted successfully ...!')
+
+    except Exception as exception:
+        messages.warning(request, exception)
+
+    return redirect('designations')
 
 @login_required
 def technicians(request):

@@ -4,6 +4,7 @@ from Services.models import Category, Service
 from django.contrib import messages
 from django.db.models import Count
 from django.http import JsonResponse
+from Works.models import Work
 
 # Create your views here.
 
@@ -174,6 +175,20 @@ def delete_service(request,slug):
     except Exception as exception:
         messages.warning(request, exception)
     return redirect('services')
+
+@login_required
+def service_details(request,slug):
+    service = Service.active_objects.get(slug=slug)
+    works = Work.objects.filter(lead__service=service)
+
+    context = {
+        'main' : 'services',
+        'sub' : 'services',
+        'service' : service,
+        'works' : works,
+    }
+
+    return render(request,'services/service-details.html',context)
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 

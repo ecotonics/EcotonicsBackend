@@ -42,4 +42,37 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('#customer_type').on('change', function(){
+        var customer_type = $(this).val();
+
+        $.ajax({
+            url: '/filter-customers/',
+            data: {
+                'type': customer_type
+            },
+            success: function(response) {
+                $('#customers').empty();
+                $('#customers').append('<option value="">Select Customer</option>');
+
+                $.each(response.customers, function(index, customer) {
+                    $('#customers').append('<option value="'+customer.slug+'">'+customer.name+'</option>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching customers:', error);
+            }
+        });
+    })
+
+    $('#lead_type').on('change', function(){
+        var lead_type = $(this).val();
+        if (lead_type == 'new') {
+            $('.new').show();
+            $('.existing').hide();
+        } else {
+            $('.existing').show();
+            $('.new').hide();
+        }
+    })
 });
