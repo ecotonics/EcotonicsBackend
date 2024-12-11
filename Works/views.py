@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from Works.models import Work, Attendance
 from Accounts.models import TransactionCategory, Transaction, Expense
 from Technicians.models import Technician
@@ -9,7 +9,7 @@ from django.contrib import messages
 
 # Create your views here.
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def works(request,status):
     works = Work.active_objects.filter(status=status.upper())
     context = {
@@ -20,7 +20,7 @@ def works(request,status):
     }
     return render(request,'works/works.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def work_details(request,slug):
     work = Work.objects.get(slug=slug)
     expenses = Expense.active_objects.filter(work=work)
@@ -37,7 +37,7 @@ def work_details(request,slug):
     }
     return render(request,'works/work-details.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def assign_technician(request,slug):
     work = Work.objects.get(slug=slug)
 
@@ -47,7 +47,7 @@ def assign_technician(request,slug):
 
     return redirect('work-details',slug=work.slug)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def work_expense(request):
     categories = TransactionCategory.active_objects.filter(type='EXPENSE')
     works = Work.active_objects.all()
@@ -88,3 +88,12 @@ def work_expense(request):
         'works' : works
     }
     return render(request,'works/work-expense.html',context)
+
+@login_required
+def assigned_works(request):
+
+    context = {
+        'main' : 'assigned-works',
+    }
+
+    return render(request,'technician/assigned-works.html', context)

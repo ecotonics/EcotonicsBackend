@@ -39,21 +39,61 @@
     <!-- END: Profile Info -->
 
     <!-- BEGIN: Lead Followups -->
-    <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3">
-        <div class="intro-x flex items-center h-10">
-            <h2 class="text-lg font-medium truncate mr-5">
-                Lead Followups
-            </h2>
-
-            {% if lead.status == 'PENDING' %}
-                <button class="ml-auto btn btn-primary" data-tw-toggle="modal" data-tw-target="#convert-modal">Convert to Work</button>
-                <button class="ml-2 btn btn-primary" data-tw-toggle="modal" data-tw-target="#timeline-modal">Add Followups</button>
-            {% endif %}
+    <div class="nav nav-boxed-tabs mt-5" role="tablist">
+        <div id="example-1-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2 active" data-tw-toggle="pill" data-tw-target="#example-tab-1" type="button" role="tab" aria-controls="example-tab-1" aria-selected="true">
+                Followups
+            </button>
         </div>
-        <div class="mt-5 relative before:block before:absolute before:w-px before:h-[85%] before:bg-slate-200 before:dark:bg-darkmode-400 before:ml-5 before:mt-5">
+        <div id="example-2-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-2" type="button" role="tab" aria-controls="example-tab-2" aria-selected="false">
+                Requisitions
+            </button>
+        </div>
+        <div id="example-3-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-3" type="button" role="tab" aria-controls="example-tab-3" aria-selected="false">
+                Proposals
+            </button>
+        </div>
+        <div id="example-4-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-4" type="button" role="tab" aria-controls="example-tab-4" aria-selected="false">
+                Staffs
+            </button>
+        </div>
+    </div>
+    <div class="tab-content mt-5">
+        <div id="example-tab-1" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="example-1-tab">
+            <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3">
+                <div class="intro-x flex items-center h-10">
+                    <h2 class="text-lg font-medium truncate mr-5">
+                        Lead Followups
+                    </h2>
 
-            {% if followups %}
-                {% for followup in followups %}
+                    {% if lead.status == 'PENDING' %}
+                        <button class="ml-auto btn btn-primary" data-tw-toggle="modal" data-tw-target="#timeline-modal">ADD FOLLOWUPS</button>
+                    {% endif %}
+                </div>
+                <div class="mt-5 relative before:block before:absolute before:w-px before:h-[85%] before:bg-slate-200 before:dark:bg-darkmode-400 before:ml-5 before:mt-5">
+
+                    {% if followups %}
+                        {% for followup in followups %}
+                            <div class="intro-x relative flex items-center mb-3">
+                                <div class="before:block before:absolute before:w-20 before:h-px before:bg-slate-200 before:dark:bg-darkmode-400 before:mt-5 before:ml-5">
+                                    <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
+                                        <img alt="" src="{% static 'backend/images/preview.jpg' %}">
+                                    </div>
+                                </div>
+                                <div class="box px-5 py-3 ml-4 flex-1 zoom-in">
+                                    <div class="flex items-center">
+                                        <div class="font-medium">{{ followup.title }}</div>
+                                        <div class="text-xs text-slate-500 ml-auto">{{ followup.date | date:'d F Y' | upper }}</div>
+                                    </div>
+                                    <div class="text-slate-500 mt-1">{{ followup.details }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
                     <div class="intro-x relative flex items-center mb-3">
                         <div class="before:block before:absolute before:w-20 before:h-px before:bg-slate-200 before:dark:bg-darkmode-400 before:mt-5 before:ml-5">
                             <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
@@ -61,26 +101,244 @@
                             </div>
                         </div>
                         <div class="box px-5 py-3 ml-4 flex-1 zoom-in">
-                            <div class="flex items-center">
-                                <div class="font-medium">{{ followup.title }}</div>
-                                <div class="text-xs text-slate-500 ml-auto">{{ followup.date | date:'d F Y' | upper }}</div>
+                            <div class="flex justify-center">
+                                <div class="font-medium">Lead generated on  {{ lead.date | date:'d F Y' }}</div>
                             </div>
-                            <div class="text-slate-500 mt-1">{{ followup.details }}</div>
                         </div>
                     </div>
-                {% endfor %}
-            {% endif %}
-
-            <div class="intro-x relative flex items-center mb-3">
-                <div class="before:block before:absolute before:w-20 before:h-px before:bg-slate-200 before:dark:bg-darkmode-400 before:mt-5 before:ml-5">
-                    <div class="w-10 h-10 flex-none image-fit rounded-full overflow-hidden">
-                        <img alt="" src="{% static 'backend/images/preview.jpg' %}">
+                </div>
+            </div>
+        </div>
+        <div id="example-tab-2" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-2-tab">
+            <div class="col-span-12 mt-5">
+                <div class="intro-y block sm:flex items-center h-10">
+                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <a href="{% url 'create-requisition' lead.slug %}" class="btn btn-primary text-white mx-2">CREATE REQUISITION</a>
                     </div>
                 </div>
-                <div class="box px-5 py-3 ml-4 flex-1 zoom-in">
-                    <div class="flex justify-center">
-                        <div class="font-medium">Lead generated on  {{ lead.date | date:'d F Y' }}</div>
+                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                    {% if categories %}
+                        <table class="table table-report sm:mt-2">
+                            <thead>
+                                <tr>
+                                    <th class="text-center whitespace-nowrap">NO</th>
+                                    <th class="text-center whitespace-nowrap">NAME</th>
+                                    <th class="text-center whitespace-nowrap">CATEGORY ID</th>
+                                    <th class="text-center whitespace-nowrap">SERVICES</th>
+                                    <th class="text-center whitespace-nowrap">STATUS</th>
+                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in categories %}
+                                    <tr class="intro-x">
+                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                        <td class="font-medium text-center whitespace-nowrap">
+                                            <a href="{% url 'category-details' category.slug %}">{{ category.name }}</a>
+                                        </td>
+
+                                        <td class="text-center whitespace-nowrap">ECAT-0{{ category.auto_id }}</td>
+
+                                        <td class="text-center whitespace-nowrap">{{ category.services }}</td>
+
+                                        <td class="">
+                                            <p class="text-center whitespace-nowrap text-success">{{ category.status }}</p>
+                                        </td>
+
+                                        <td class="table-report__action w-56">
+                                            <div class="flex justify-center items-center">
+                                                <a class="flex items-center text-warning mx-2" href="{% url 'category-details' category.slug %}">
+                                                    <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                                </a>
+
+                                                <a class="flex items-center mx-2" href="{% url 'category-edit' category.slug %}">
+                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                                                </a>
+
+                                                {% if category.services == 0 %}
+                                                    <a class="flex items-center text-danger mx-2" href="{% url 'category-delete' category.slug %}" onclick="return confirm('Are you sure you want to delete the category ?');">
+                                                        <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                            <table class="table table-report -mt-2">
+                                <tbody>
+                                    <tr class="intro-x width">
+                                        <td class=" width" style="width:100%;">
+                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                            </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div id="example-tab-3" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-3-tab">
+            <div class="col-span-12 mt-5">
+                <div class="intro-y block sm:flex items-center h-10">
+                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <a href="" class="btn btn-primary text-white mx-2">CREATE PROPOSAL</a>
                     </div>
+                </div>
+                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                    {% if categories %}
+                        <table class="table table-report sm:mt-2">
+                            <thead>
+                                <tr>
+                                    <th class="text-center whitespace-nowrap">NO</th>
+                                    <th class="text-center whitespace-nowrap">NAME</th>
+                                    <th class="text-center whitespace-nowrap">CATEGORY ID</th>
+                                    <th class="text-center whitespace-nowrap">SERVICES</th>
+                                    <th class="text-center whitespace-nowrap">STATUS</th>
+                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in categories %}
+                                    <tr class="intro-x">
+                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                        <td class="font-medium text-center whitespace-nowrap">
+                                            <a href="{% url 'category-details' category.slug %}">{{ category.name }}</a>
+                                        </td>
+
+                                        <td class="text-center whitespace-nowrap">ECAT-0{{ category.auto_id }}</td>
+
+                                        <td class="text-center whitespace-nowrap">{{ category.services }}</td>
+
+                                        <td class="">
+                                            <p class="text-center whitespace-nowrap text-success">{{ category.status }}</p>
+                                        </td>
+
+                                        <td class="table-report__action w-56">
+                                            <div class="flex justify-center items-center">
+                                                <a class="flex items-center text-warning mx-2" href="{% url 'category-details' category.slug %}">
+                                                    <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                                </a>
+
+                                                <a class="flex items-center mx-2" href="{% url 'category-edit' category.slug %}">
+                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                                                </a>
+
+                                                {% if category.services == 0 %}
+                                                    <a class="flex items-center text-danger mx-2" href="{% url 'category-delete' category.slug %}" onclick="return confirm('Are you sure you want to delete the category ?');">
+                                                        <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                            <table class="table table-report -mt-2">
+                                <tbody>
+                                    <tr class="intro-x width">
+                                        <td class=" width" style="width:100%;">
+                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                            </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div id="example-tab-4" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-4-tab">
+            <div class="col-span-12 mt-5">
+                <div class="intro-y block sm:flex items-center h-10">
+                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#technician-modal">ASSIGN STAFF</button>
+                    </div>
+                </div>
+                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                    {% if lead.staffs %}
+                        <table class="table table-report sm:mt-2">
+                            <thead>
+                                <tr>
+                                    <th class="text-center whitespace-nowrap">NO</th>
+                                    <th class="text-center whitespace-nowrap">NAME</th>
+                                    <th class="text-center whitespace-nowrap">PHOTO</th>
+                                    <th class="text-center whitespace-nowrap">MOBILE</th>
+                                    <th class="text-center whitespace-nowrap">STATUS</th>
+                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for staff in staffs %}
+                                    <tr class="intro-x">
+                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                        <td class="text-center">
+                                            <a href="" class="font-medium whitespace-nowrap">{{ staff }}</a>
+                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ staff.designation }} / {{ staff.department }}</div>
+                                        </td>
+
+                                        <td class="">
+                                            <div class="flex justify-center">
+                                                <div class="w-10 h-10 image-fit zoom-in">
+                                                    {% if staff.user.photo %}
+                                                        <img alt="" class="tooltip rounded-full" src="{{ staff.user.photo.url }}" title="{{ staff }}">
+                                                    {% else %}
+                                                        <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ staff }}">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="text-center whitespace-nowrap">{{ staff.user.mobile }}</td>
+
+                                        <td class="text-center whitespace-nowrap">
+                                            {% if staff.status == 1 %}
+                                                <p class="text-success">IN SERVICE</p>
+                                            {% elif staff.status == 0 %}
+                                                <p class="text-danger">NOT IN SERVICE</p>
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="table-report__action w-56">
+                                            <div class="flex justify-center items-center">
+                                                <a class="flex items-center mx-2 text-warning" href="{% url 'technician-details' staff.slug %}">
+                                                    <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                            <table class="table table-report -mt-2">
+                                <tbody>
+                                    <tr class="intro-x width">
+                                        <td class=" width" style="width:100%;">
+                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                            </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -131,6 +389,47 @@
                     <div class="col-span-12 sm:col-span-12">
                         <label for="modal-form-1" class="form-label">Details</label>
                         <textarea name="details" id="" class="form-control" rows="5" placeholder="Enter followup details"></textarea>
+                    </div>
+                </div>
+                <!-- END: Modal Body -->
+                <!-- BEGIN: Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+                    <button type="submit" class="btn btn-primary w-20">Submit</button>
+                </div>
+                <!-- END: Modal Footer -->
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END: Modal Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="technician-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <form action="{% url 'assign-staff' lead.slug %}" method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+                <!-- BEGIN: Modal Header -->
+                <div class="modal-header">
+                    <h2 class="font-medium text-base mr-auto">Staffs</h2>
+                </div>
+                <!-- END: Modal Header -->
+                <!-- BEGIN: Modal Body -->
+                <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                    <div class="col-span-12 sm:col-span-12">
+                        <select name="staffs" id="" class="tom-select" multiple>
+                            <option value="">Search Staff</option>
+                            {% if lead.staffs %}
+                                {% for staff in lead.staffs.all %}
+                                    <option value="{{ staff.id }}" selected>{{ staff.user.first_name }} ({{ staff.designation }})</option>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% for staff in staffs %}
+                                <option value="{{ staff.id }}">{{ staff.user.first_name }} ({{ staff.designation }})</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <!-- END: Modal Body -->

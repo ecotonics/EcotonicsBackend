@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from Services.models import Category, Service
 from django.contrib import messages
 from django.db.models import Count
@@ -8,7 +8,7 @@ from Works.models import Work
 
 # Create your views here.
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def categories(request):
     categories = Category.active_objects.all().annotate(services=Count('service'))
 
@@ -20,7 +20,7 @@ def categories(request):
 
     return render(request,'services/categories.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_category(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -42,7 +42,7 @@ def add_category(request):
 
     return render(request,'services/category-add.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_category(request,slug):
     category = Category.objects.get(slug=slug)
 
@@ -67,7 +67,7 @@ def edit_category(request,slug):
 
     return render(request,'services/category-edit.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def category_details(request,slug):
     category = Category.objects.get(slug=slug)
     services = Service.active_objects.filter(category=category)
@@ -80,7 +80,7 @@ def category_details(request,slug):
     }
     return render(request,'services/category-details.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_category(request,slug):
     try:
         category = Category.objects.get(slug=slug)
@@ -95,7 +95,7 @@ def delete_category(request,slug):
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def services(request):
     services = Service.active_objects.all()
 
@@ -107,7 +107,7 @@ def services(request):
 
     return render(request,'services/services.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_service(request):
     categories = Category.active_objects.all()
 
@@ -134,7 +134,7 @@ def add_service(request):
 
     return render(request,'services/service-add.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_service(request,slug):
     categories = Category.active_objects.all()
     service = Service.objects.get(slug=slug)
@@ -164,7 +164,7 @@ def edit_service(request,slug):
 
     return render(request,'services/service-edit.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_service(request,slug):
     try:
         service = Service.objects.get(slug=slug)
@@ -176,7 +176,7 @@ def delete_service(request,slug):
         messages.warning(request, exception)
     return redirect('services')
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def service_details(request,slug):
     service = Service.active_objects.get(slug=slug)
     works = Work.objects.filter(lead__service=service)
@@ -192,14 +192,14 @@ def service_details(request,slug):
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def calls(request):
     context = {
         'main' : 'calls'
     }
     return render(request,'calls/calls.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_call(request):
     context = {
         'main' : 'calls'

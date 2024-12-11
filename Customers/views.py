@@ -1,15 +1,16 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from Customers.models import Customer
 from django.contrib import messages
 from Services.models import Category, Service
 from Customers.models import Lead, Followup
 from django.apps import apps
 from django.http import JsonResponse
+from Technicians.models import Technician
 
 # Create your views here.
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def customers(request,type):
     customers = Customer.active_objects.filter(type=type)
     context = {
@@ -20,7 +21,7 @@ def customers(request,type):
     }
     return render(request,'customers/customers.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_customer(request,type):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -45,7 +46,7 @@ def add_customer(request,type):
     }
     return render(request,'customers/customer-add.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_customer(request,slug):
     customer = Customer.objects.get(slug=slug)
 
@@ -71,7 +72,7 @@ def edit_customer(request,slug):
     }
     return render(request,'customers/customer-edit.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_customer(request,slug):
     try:
         customer = Customer.objects.get(slug=slug)
@@ -94,7 +95,7 @@ def filter_customers(request):
     return JsonResponse({'customers': customers_data})
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def leads(request,status):
     leads = Lead.active_objects.filter(status=status.upper())
     context = {
@@ -105,7 +106,7 @@ def leads(request,status):
     }
     return render(request,'leads/leads.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_lead(request):
     categories = Category.active_objects.all()
 
@@ -152,19 +153,21 @@ def add_lead(request):
     }
     return render(request,'leads/lead-add.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def view_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     followups = Followup.active_objects.filter(lead=lead)
+    staffs = Technician.active_objects.all()
     context = {
         'main' : 'leads',
         'sub' : lead.status.lower(),
         'lead' : lead,
-        'followups' : followups
+        'followups' : followups,
+        'staffs' : staffs
     }
     return render(request,'leads/lead-details.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def convert_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     lead.status = 'CONVERTED'
@@ -174,7 +177,7 @@ def convert_lead(request,slug):
     Work.objects.create(lead=lead)
     return redirect('works',slug='pending')
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def followup(request,slug):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -189,7 +192,7 @@ def followup(request,slug):
 
         return redirect('lead-view',slug=lead.slug)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     categories = Category.active_objects.all()
@@ -243,7 +246,7 @@ def edit_lead(request,slug):
     }
     return render(request,'leads/lead-edit.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_lead(request,slug):
     try:
         lead = Lead.objects.get(slug=slug)
@@ -254,3 +257,22 @@ def delete_lead(request,slug):
     except Exception as exception:
         messages.warning(request, exception)
     return redirect('leads',status=lead.status)
+
+@user_passes_test(lambda u: u.is_superuser)
+def assign_staff(request, slug):
+    lead = Lead.active_objects.get(slug=slug)
+    staffs = request.POST.getlist('staffs')
+    lead.staffs.set(staffs)
+    lead.save()
+    return redirect('lead-view',slug=lead.slug)
+
+
+@login_required
+def crete_requisition(request, slug):
+    lead = Lead.objects.get(slug=slug)
+    context = {
+        'main' : 'leads',
+        'sub' : 'pending',
+        'lead' : lead,
+    }
+    return render(request,'requisition/requisition-create.html',context)

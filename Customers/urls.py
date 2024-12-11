@@ -15,9 +15,13 @@ urlpatterns = [
     path('lead/edit/<slug:slug>/',views.edit_lead,name='lead-edit'),
     path('lead/delete/<slug:slug>/',views.delete_lead,name='lead-delete'),
     path('lead/convert/<slug:slug>/',views.convert_lead,name='lead-convert'),
+    path('lead/assign-staff/<slug:slug>/',views.assign_staff,name='assign-staff'),
 
     #FOLLOWUP
     path('followup/<slug:slug>/',views.followup,name='followup'),
 
-    path('filter-customers/',views.filter_customers,name='filter-customers')
+    path('filter-customers/',views.filter_customers,name='filter-customers'),
+
+    #REQUISITION
+    path('requisition/<slug:slug>/', views.crete_requisition,name='create-requisition'),
 ]

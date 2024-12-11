@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from Accounts.models import TransactionCategory, BankAccount, Transaction
 from django.contrib import messages
 from datetime import datetime
@@ -8,7 +8,7 @@ from django.http import JsonResponse
 
 # Create your views here.
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def transaction_categories(request):
     categories = TransactionCategory.active_objects.all()
 
@@ -20,7 +20,7 @@ def transaction_categories(request):
 
     return render(request,'accounts/categories.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_transaction_category(request):
     if request.method == 'POST':
         type = request.POST.get('type')
@@ -43,7 +43,7 @@ def add_transaction_category(request):
 
     return render(request,'accounts/category-add.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_transaction_category(request,slug):
     category = TransactionCategory.objects.get(slug=slug)
 
@@ -69,7 +69,7 @@ def edit_transaction_category(request,slug):
 
     return render(request,'accounts/category-edit.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def bank_accounts(request):
     accounts = BankAccount.active_objects.all()
     context = {
@@ -79,7 +79,7 @@ def bank_accounts(request):
     }
     return render(request,'accounts/bank-accounts.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_bank_account(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -103,7 +103,7 @@ def add_bank_account(request):
 
     return render(request,'accounts/bank-account-add.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_bank_account(request,slug):
     account = BankAccount.objects.get(slug=slug)
     if request.method == 'POST':
@@ -129,7 +129,7 @@ def edit_bank_account(request,slug):
 
     return render(request,'accounts/bank-account-edit.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def transactions(request):
     transactions = Transaction.active_objects.all()
     context = {
@@ -146,7 +146,7 @@ def filter_category(request):
 
     return JsonResponse({'categories': category_data})
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_transaction(request):
     accounts = BankAccount.active_objects.all()
     if request.method == 'POST':
@@ -177,7 +177,7 @@ def add_transaction(request):
 
     return render(request,'accounts/transaction-add.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_transaction(request,slug):
     accounts = BankAccount.active_objects.all()
     transaction = Transaction.objects.get(slug=slug)
@@ -212,7 +212,7 @@ def edit_transaction(request,slug):
     }
     return render(request,'accounts/transaction-edit.html',context)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_transaction(request,slug):
     try:
         transaction = Transaction.objects.get(slug=slug)

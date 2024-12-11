@@ -537,87 +537,27 @@
                         </li> -->
                     {% endif %}
 
-                    <!-- <li>
-                        <a href="javascript:;" class="side-menu {% if main == 'procurement' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="file-text"></i> </div>
-                            <div class="side-menu__title">
-                                Procurement
-                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                            </div>
-                        </a>
-                        <ul class="{% if main == 'procurement' %} side-menu__sub-open {% endif %}">
-                            <li>
-                                <a href="" class="side-menu {% if sub == 'requisitions' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Requisitions </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="" class="side-menu {% if sub == 'quotations' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Quotations </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="" class="side-menu {% if sub == 'proposals' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Proposals </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li>
-                        <a href="javascript:;" class="side-menu {% if main == 'reports' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="file-text"></i> </div>
-                            <div class="side-menu__title">
-                                Reports
-                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
-                            </div>
-                        </a>
-                        <ul class="{% if main == 'reports' %} side-menu__sub-open {% endif %}">
-                            <li>
-                                <a href="" class="side-menu {% if sub == 'finance' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Finance </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="" class="side-menu {% if sub == 'sales' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Sales </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="" class="side-menu {% if sub == 'works' %} side-menu--active {% endif %}">
-                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                    <div class="side-menu__title"> Works </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li>
-                        <a href="{% url 'calls' %}" class="side-menu {% if main == 'refferels' %} side-menu--active {% endif %}">
-                            <div class="side-menu__icon"> <i data-lucide="award"></i> </div>
-                            <div class="side-menu__title"> Refferels </div>
-                        </a>
-                    </li> -->
-
                     {% if user.is_technician %}
                         <li>
+                            <a href="{% url 'assigned-works' %}" class="side-menu {% if main == 'assigned-works' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="file-text"></i> </div>
+                                <div class="side-menu__title"> Assigned Works </div>
+                            </a>
+                        </li>
+
+                        <!-- <li>
                             <a href="{% url 'attandance-add' %}" class="side-menu {% if main == 'attendance' %} side-menu--active {% endif %}">
                                 <div class="side-menu__icon"> <i data-lucide="clipboard"></i> </div>
                                 <div class="side-menu__title"> Attandance </div>
                             </a>
-                        </li>
+                        </li> -->
 
-                        <li>
+                        <!-- <li>
                             <a href="{% url 'work-expenses' %}" class="side-menu {% if main == 'expense' %} side-menu--active {% endif %}">
                                 <div class="side-menu__icon"> <i data-lucide="dollar-sign"></i> </div>
                                 <div class="side-menu__title"> Work Expense </div>
                             </a>
-                        </li>
+                        </li> -->
                     {% endif %}
                 </ul>
             </nav>

@@ -4,6 +4,7 @@ from Core.models import save_data
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 from Services.models import Category, Service
+from Technicians.models import Technician
 
 # Create your models here.
 
@@ -56,6 +57,8 @@ class Lead(BaseModel):
     category = models.ForeignKey(Category,on_delete=models.PROTECT)
     service = models.ForeignKey(Service,on_delete=models.PROTECT)
     info = models.TextField(null=True,blank=True)
+
+    staffs = models.ManyToManyField(Technician)
 
     def __str__(self):
         return self.name

@@ -1,0 +1,101 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- BEGIN: Profile Info -->
+    <div class="intro-y box px-5 pt-5 mt-5">
+        <div class="flex flex-col lg:flex-row dark:border-darkmode-400 pb-5 -mx-5">
+            <div class="flex-1 px-5 items-center justify-center">
+                <div class="flex flex-col justify-center items-center mt-4">
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> {{ lead.name }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ lead.mobile }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ lead.email }} </div>
+                </div>
+            </div>
+            <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
+                <div class="flex flex-col justify-center items-center mt-4">
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i> {{ lead.location }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ lead.category }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ lead.service }} </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Profile Info -->
+
+    <div class="intro-y box mt-5">
+        <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+            <h2 class="text-2xl mx-auto mt-3 mb-3">Create Requisition</h2>
+        </div>
+        <div class="px-3 sm:px-10 py-5">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5">
+                    <div class="intro-y col-span-12 sm:col-span-4">
+                        <input name="name" type="text" class="form-control" placeholder="Enter item name here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-4">
+                        <input name="quantity" type="text" class="form-control" placeholder="Enter item quantity here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-4">
+                        <button class="btn btn-primary w-full" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-report sm:mt-2">
+        <tbody>
+            {% for category in categories %}
+                <tr class="intro-x">
+                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                    <td class="font-medium text-center whitespace-nowrap">
+                        <a href="{% url 'category-details' category.slug %}">{{ category.name }}</a>
+                    </td>
+
+                    <td class="text-center whitespace-nowrap">ECAT-0{{ category.auto_id }}</td>
+
+                    <td class="table-report__action w-56">
+                        <div class="flex justify-center items-center">
+                            <a class="flex items-center text-warning mx-2" href="{% url 'category-details' category.slug %}">
+                                <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                            </a>
+
+                            <a class="flex items-center mx-2" href="{% url 'category-edit' category.slug %}">
+                                <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                            </a>
+
+                            {% if category.services == 0 %}
+                                <a class="flex items-center text-danger mx-2" href="{% url 'category-delete' category.slug %}" onclick="return confirm('Are you sure you want to delete the category ?');">
+                                    <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+<!-- END: Content -->
+{% endblock content %}
