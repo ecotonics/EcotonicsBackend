@@ -6,7 +6,55 @@ from Core.middlewares import RequestMiddleware
 from Customers.models import Lead
 from Technicians.models import Technician
 
+UNITS = (
+    ('NOS','NOS'),
+    ('METERS','METERS'),
+    ('KILOGRAMS','KILOGRAMS'),
+)
+
 # Create your models here.
+
+class Requisition(BaseModel):
+    date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=50, default='PENDING')
+    prepared = models.ForeignKey(Technician, on_delete=models.CASCADE)
+    lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.lead.name
+    
+    class Meta:
+        verbose_name = _('Requisition')
+        verbose_name_plural = _('Requisitions')
+        ordering = ("-date_added",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.lead.name)
+
+        super(Requisition, self).save(*args, **kwargs)
+
+class RequisitionItem(BaseModel):
+    requisition = models.ForeignKey(Requisition, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    unit = models.CharField(max_length=50, choices=UNITS)
+    quantity = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = _('RequisitionItem')
+        verbose_name_plural = _('RequisitionItems')
+        ordering = ("-date_added",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.name)
+
+        super(RequisitionItem, self).save(*args, **kwargs)
 
 class Work(BaseModel):
     status = models.CharField(max_length=20,default='PENDING')

@@ -113,54 +113,48 @@
             <div class="col-span-12 mt-5">
                 <div class="intro-y block sm:flex items-center h-10">
                     <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
-                        <a href="{% url 'create-requisition' lead.slug %}" class="btn btn-primary text-white mx-2">CREATE REQUISITION</a>
+                        <a href="javascript:;" data-tw-toggle="modal" data-tw-target="#requisition-modal" class="btn btn-primary text-white mx-2">CREATE REQUISITION</a>
                     </div>
                 </div>
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                    {% if categories %}
+                    {% if requisitions %}
                         <table class="table table-report sm:mt-2">
                             <thead>
                                 <tr>
                                     <th class="text-center whitespace-nowrap">NO</th>
-                                    <th class="text-center whitespace-nowrap">NAME</th>
-                                    <th class="text-center whitespace-nowrap">CATEGORY ID</th>
-                                    <th class="text-center whitespace-nowrap">SERVICES</th>
+                                    <th class="text-center whitespace-nowrap">DATE</th>
+                                    <th class="text-center whitespace-nowrap">ITEMS</th>
+                                    <th class="text-center whitespace-nowrap">PREPARED BY</th>
                                     <th class="text-center whitespace-nowrap">STATUS</th>
                                     <th class="text-center whitespace-nowrap">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for category in categories %}
+                                {% for requisition in requisitions %}
                                     <tr class="intro-x">
                                         <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
 
+                                        <td class="text-center whitespace-nowrap">{{ requisition.date | date:'d M Y' | upper }}</td>
+
+                                        <td class="text-center whitespace-nowrap">0</td>
+
                                         <td class="font-medium text-center whitespace-nowrap">
-                                            <a href="{% url 'category-details' category.slug %}">{{ category.name }}</a>
+                                            <a href="{% url 'technician-details' requisition.prepared.slug %}">{{ requisition.prepared }}</a>
                                         </td>
 
-                                        <td class="text-center whitespace-nowrap">ECAT-0{{ category.auto_id }}</td>
-
-                                        <td class="text-center whitespace-nowrap">{{ category.services }}</td>
-
                                         <td class="">
-                                            <p class="text-center whitespace-nowrap text-success">{{ category.status }}</p>
+                                            <p class="text-center whitespace-nowrap text-success">{{ requisition.status }}</p>
                                         </td>
 
                                         <td class="table-report__action w-56">
                                             <div class="flex justify-center items-center">
-                                                <a class="flex items-center text-warning mx-2" href="{% url 'category-details' category.slug %}">
+                                                <a class="flex items-center text-warning mx-2" href="{% url 'requisition' requisition.slug %}">
                                                     <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
                                                 </a>
 
-                                                <a class="flex items-center mx-2" href="{% url 'category-edit' category.slug %}">
+                                                <a class="flex items-center mx-2" href="{% url 'update-requisition' requisition.slug %}">
                                                     <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
                                                 </a>
-
-                                                {% if category.services == 0 %}
-                                                    <a class="flex items-center text-danger mx-2" href="{% url 'category-delete' category.slug %}" onclick="return confirm('Are you sure you want to delete the category ?');">
-                                                        <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
-                                                    </a>
-                                                {% endif %}
                                             </div>
                                         </td>
                                     </tr>
@@ -187,11 +181,6 @@
         </div>
         <div id="example-tab-3" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-3-tab">
             <div class="col-span-12 mt-5">
-                <div class="intro-y block sm:flex items-center h-10">
-                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
-                        <a href="" class="btn btn-primary text-white mx-2">CREATE PROPOSAL</a>
-                    </div>
-                </div>
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
                     {% if categories %}
                         <table class="table table-report sm:mt-2">
@@ -443,5 +432,26 @@
         </form>
     </div>
 </div>
+<!-- END: Modal Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="requisition-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{% url 'create-requisition' lead.slug %}">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="p-5 text-center"> <i data-lucide="check-circle" class="w-16 h-16 text-success mx-auto mt-3"></i>
+                        <div class="text-3xl mt-5">Are you sure?</div>
+                        <div class="text-slate-500 mt-2">Do you really want to create requisition ? <br>This process cannot be undone.</div>
+                    </div>
+                    <div class="px-5 pb-8 text-center"> 
+                        <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button> 
+                        <button type="submit" class="btn btn-success text-white w-24">Create</button> 
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> 
 <!-- END: Modal Content -->
 {% endblock content %}

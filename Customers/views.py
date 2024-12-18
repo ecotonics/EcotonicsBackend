@@ -7,6 +7,7 @@ from Customers.models import Lead, Followup
 from django.apps import apps
 from django.http import JsonResponse
 from Technicians.models import Technician
+from Works.models import Requisition
 
 # Create your views here.
 
@@ -158,12 +159,15 @@ def view_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     followups = Followup.active_objects.filter(lead=lead)
     staffs = Technician.active_objects.all()
+    requisitions = Requisition.active_objects.filter(lead=lead)
+
     context = {
         'main' : 'leads',
         'sub' : lead.status.lower(),
         'lead' : lead,
         'followups' : followups,
-        'staffs' : staffs
+        'staffs' : staffs,
+        'requisitions' : requisitions,
     }
     return render(request,'leads/lead-details.html',context)
 
@@ -265,14 +269,3 @@ def assign_staff(request, slug):
     lead.staffs.set(staffs)
     lead.save()
     return redirect('lead-view',slug=lead.slug)
-
-
-@login_required
-def crete_requisition(request, slug):
-    lead = Lead.objects.get(slug=slug)
-    context = {
-        'main' : 'leads',
-        'sub' : 'pending',
-        'lead' : lead,
-    }
-    return render(request,'requisition/requisition-create.html',context)

@@ -1,13 +1,77 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
-from Works.models import Work, Attendance
+from Works.models import Requisition, RequisitionItem, Work, Attendance
 from Accounts.models import TransactionCategory, Transaction, Expense
 from Technicians.models import Technician
 from datetime import datetime
 today = datetime.today()
 from django.contrib import messages
+from Customers.models import Lead
 
 # Create your views here.
+
+@login_required
+def crete_requisition(request, slug):
+    lead = Lead.objects.get(slug=slug)
+
+    requisition = Requisition.objects.create(lead=lead, prepared=request.user)
+
+    return redirect('update-requisition', slug=requisition.slug)
+
+@login_required
+def requisition(request, slug):
+    requisition = Requisition.objects.get(slug=slug)
+    items = RequisitionItem.objects.filter(requisition=requisition).order_by('-id')
+
+    context = {
+        'main' : 'leads',
+        'sub' : 'pending',
+        'requisition' : requisition,
+        'lead' : requisition.lead,
+        'items' : items
+    }
+    return render(request,'requisition/requisition.html',context)
+
+@login_required
+def edit_requisition(request, slug):
+    requisition = Requisition.objects.get(slug=slug)
+    items = RequisitionItem.objects.filter(requisition=requisition).order_by('-id')
+
+    context = {
+        'main' : 'leads',
+        'sub' : 'pending',
+        'requisition' : requisition,
+        'lead' : requisition.lead,
+        'items' : items
+    }
+    return render(request,'requisition/requisition-update.html',context)
+
+@login_required
+def add_requisition_item(request, slug):
+    requisition = Requisition.objects.get(slug=slug)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        unit = request.POST.get('unit')
+        quantity = request.POST.get('quantity')
+
+        try:
+            RequisitionItem.objects.create(requisition=requisition, name=name, unit=unit, quantity=quantity)
+            messages.success(request,'Item added successfully...')
+        except Exception as exception:
+            messages.warning(request,str(exception))
+
+    return redirect('update-requisition', slug=slug)
+
+@login_required
+def delete_requisition_item(request, slug):
+    item = RequisitionItem.objects.get(slug=slug)
+    requisition = item.requisition
+    item.delete()
+    messages.success(request,'Item deleted successfully...')
+    
+    return redirect('update-requisition', slug=requisition.slug)
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def works(request,status):

@@ -21,7 +21,4 @@ urlpatterns = [
     path('followup/<slug:slug>/',views.followup,name='followup'),
 
     path('filter-customers/',views.filter_customers,name='filter-customers'),
-
-    #REQUISITION
-    path('requisition/<slug:slug>/', views.crete_requisition,name='create-requisition'),
 ]
