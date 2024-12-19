@@ -14,7 +14,11 @@ from Customers.models import Lead
 def crete_requisition(request, slug):
     lead = Lead.objects.get(slug=slug)
 
-    requisition = Requisition.objects.create(lead=lead, prepared=request.user)
+    try:
+        requisition = Requisition.objects.create(lead=lead, prepared=request.user)
+    except Exception as exception:
+        messages.error(request, exception)
+        return redirect('lead-view', slug=lead.slug)
 
     return redirect('update-requisition', slug=requisition.slug)
 
