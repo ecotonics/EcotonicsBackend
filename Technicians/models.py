@@ -48,12 +48,12 @@ class Designation(BaseModel):
 
 class Technician(BaseModel):
     status = models.IntegerField(default=1)
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
     location = models.CharField(max_length=50)
     aadhar = models.CharField(max_length=12)
     blood = models.CharField(max_length=3)
-    department = models.ForeignKey(Department,on_delete=models.SET_NULL,null=True)
-    designation = models.ForeignKey(Designation,on_delete=models.SET_NULL,null=True)
+    department = models.OneToOneField(Department,on_delete=models.SET_NULL,null=True)
+    designation = models.OneToOneField(Designation,on_delete=models.SET_NULL,null=True)
     contact_name = models.CharField(max_length=50)
     contact_number = models.CharField(max_length=15)
     relation = models.CharField(max_length=50)

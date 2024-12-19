@@ -139,7 +139,11 @@
                                         <td class="text-center whitespace-nowrap">0</td>
 
                                         <td class="font-medium text-center whitespace-nowrap">
-                                            <a href="{% url 'technician-details' requisition.prepared.slug %}">{{ requisition.prepared }}</a>
+                                            {% if requisition.prepared.technician %}
+                                                <a href="{% url 'technician-details' requisition.prepared.technician.slug %}">{{ requisition.prepared.technician }}</a>
+                                            {% else %}
+                                                <p>{{ requisition.prepared }}</p>
+                                            {% endif %}
                                         </td>
 
                                         <td class="">

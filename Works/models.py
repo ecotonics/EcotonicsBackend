@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 from Customers.models import Lead
 from Technicians.models import Technician
+from Users.models import User
 
 UNITS = (
     ('NOS','NOS'),
@@ -17,7 +18,7 @@ UNITS = (
 class Requisition(BaseModel):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=50, default='PENDING')
-    prepared = models.ForeignKey(Technician, on_delete=models.CASCADE)
+    prepared = models.ForeignKey(User, on_delete=models.CASCADE)
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
 
     def __str__(self):
