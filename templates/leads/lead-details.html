@@ -136,7 +136,7 @@
 
                                         <td class="text-center whitespace-nowrap">{{ requisition.date | date:'d M Y' | upper }}</td>
 
-                                        <td class="text-center whitespace-nowrap">0</td>
+                                        <td class="text-center whitespace-nowrap">{{ requisition.items }}</td>
 
                                         <td class="font-medium text-center whitespace-nowrap">
                                             {% if requisition.prepared.technician %}
@@ -262,7 +262,7 @@
                     </div>
                 </div>
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                    {% if lead.staffs %}
+                    {% if lead.staffs.all %}
                         <table class="table table-report sm:mt-2">
                             <thead>
                                 <tr>
@@ -275,7 +275,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for staff in staffs %}
+                                {% for staff in lead.staffs.all %}
                                     <tr class="intro-x">
                                         <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
 

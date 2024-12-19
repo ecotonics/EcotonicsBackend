@@ -8,6 +8,7 @@ from django.apps import apps
 from django.http import JsonResponse
 from Technicians.models import Technician
 from Works.models import Requisition
+from django.db.models import Count
 
 # Create your views here.
 
@@ -159,7 +160,7 @@ def view_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     followups = Followup.active_objects.filter(lead=lead)
     staffs = Technician.active_objects.all()
-    requisitions = Requisition.active_objects.filter(lead=lead)
+    requisitions = Requisition.active_objects.filter(lead=lead).annotate(items=Count('requisitionitem'))
 
     context = {
         'main' : 'leads',
