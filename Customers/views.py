@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from Technicians.models import Technician
 from Works.models import Requisition
 from django.db.models import Count
+from Works.models import Work
 
 # Create your views here.
 
@@ -155,12 +156,11 @@ def add_lead(request):
     }
     return render(request,'leads/lead-add.html',context)
 
-@user_passes_test(lambda u: u.is_superuser)
+@login_required
 def view_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     followups = Followup.active_objects.filter(lead=lead)
     staffs = Technician.active_objects.all()
-    requisitions = Requisition.active_objects.filter(lead=lead).annotate(items=Count('requisitionitem'))
 
     context = {
         'main' : 'leads',
@@ -168,19 +168,22 @@ def view_lead(request,slug):
         'lead' : lead,
         'followups' : followups,
         'staffs' : staffs,
-        'requisitions' : requisitions,
     }
     return render(request,'leads/lead-details.html',context)
 
 @user_passes_test(lambda u: u.is_superuser)
 def convert_lead(request,slug):
-    lead = Lead.objects.get(slug=slug)
-    lead.status = 'CONVERTED'
-    lead.save()
-
-    Work = apps.get_model('Works', 'Work')
-    Work.objects.create(lead=lead)
-    return redirect('works',slug='pending')
+    try:
+        lead = Lead.objects.get(slug=slug)
+        lead.status = 'CONVERTED'
+        work = Work.objects.create(lead=lead)
+        work.technicians.set(lead.staffs.all())
+        lead.save()
+        return redirect('works',status='pending')
+    
+    except Exception as exception:
+        messages.warning(request,exception)
+        return redirect('lead-view',slug=lead.slug)
 
 @user_passes_test(lambda u: u.is_superuser)
 def followup(request,slug):
@@ -270,3 +273,37 @@ def assign_staff(request, slug):
     lead.staffs.set(staffs)
     lead.save()
     return redirect('lead-view',slug=lead.slug)
+
+@login_required
+def update_requirements(request, slug):
+    lead = Lead.objects.get(slug=slug)
+
+    if request.method == 'POST':
+        lead.primary_requirements = request.POST.get('primary_requirements')
+        lead.scope_of_work = request.POST.get('scope_of_work')
+        lead.site_condetion = request.POST.get('site_condetion')
+        lead.additional_requirements = request.POST.get('additional_requirements')
+        lead.customer_preferences = request.POST.get('customer_preferences')
+
+        try:
+            lead.save()
+            messages.success(request, 'Requirements updated successfully')
+            return redirect('lead-view', slug=lead.slug)
+        
+        except Exception as exception:
+            messages.warning(request, str(exception))
+            return redirect('update-requirements', slug=lead.slug)
+
+    context = {
+        'main' : 'leads',
+        'sub' : lead.status.lower(),
+        'lead' : lead,
+    }
+    return render(request, 'leads/requirements.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def lead_update_toggle(request, slug):
+    lead = Lead.objects.get(slug=slug)
+    lead.is_update_allowed = not lead.is_update_allowed
+    lead.save()
+    return redirect('lead-view', slug=lead.slug)

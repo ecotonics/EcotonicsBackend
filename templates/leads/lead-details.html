@@ -17,26 +17,7 @@
         {% endfor %}
     {% endif %}
 
-    <!-- BEGIN: Profile Info -->
-    <div class="intro-y box px-5 pt-5 mt-5">
-        <div class="flex flex-col lg:flex-row dark:border-darkmode-400 pb-5 -mx-5">
-            <div class="flex-1 px-5 items-center justify-center">
-                <div class="flex flex-col justify-center items-center mt-4">
-                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> {{ lead.name }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ lead.mobile }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ lead.email }} </div>
-                </div>
-            </div>
-            <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
-                <div class="flex flex-col justify-center items-center mt-4">
-                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i> {{ lead.location }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ lead.category }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ lead.service }} </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END: Profile Info -->
+    {% include 'leads/leadinfo.html' %}
 
     <!-- BEGIN: Lead Followups -->
     <div class="nav nav-boxed-tabs mt-5" role="tablist">
@@ -45,22 +26,28 @@
                 Followups
             </button>
         </div>
+
         <div id="example-2-tab" class="nav-item flex-1" role="presentation">
             <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-2" type="button" role="tab" aria-controls="example-tab-2" aria-selected="false">
-                Requisitions
+                Requirements
             </button>
         </div>
+
         <div id="example-3-tab" class="nav-item flex-1" role="presentation">
             <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-3" type="button" role="tab" aria-controls="example-tab-3" aria-selected="false">
-                Proposals
-            </button>
-        </div>
-        <div id="example-4-tab" class="nav-item flex-1" role="presentation">
-            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-4" type="button" role="tab" aria-controls="example-tab-4" aria-selected="false">
                 Staffs
             </button>
         </div>
+
+        {% if user.is_superuser %}
+            <div id="example-4-tab" class="nav-item flex-1" role="presentation">
+                <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-4" type="button" role="tab" aria-controls="example-tab-4" aria-selected="false">
+                    Proposal
+                </button>
+            </div>
+        {% endif %}
     </div>
+
     <div class="tab-content mt-5">
         <div id="example-tab-1" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="example-1-tab">
             <div class="col-span-12 md:col-span-6 xl:col-span-4 2xl:col-span-12 mt-3">
@@ -70,7 +57,12 @@
                     </h2>
 
                     {% if lead.status == 'PENDING' %}
-                        <button class="ml-auto btn btn-primary" data-tw-toggle="modal" data-tw-target="#timeline-modal">ADD FOLLOWUPS</button>
+                        <div class="ml-auto">
+                            <button class="ml-auto btn btn-primary mx-2" data-tw-toggle="modal" data-tw-target="#timeline-modal">ADD FOLLOWUPS</button>
+                            {% if user.is_superuser %}
+                                <button class="ml-auto btn btn-primary mx-2" data-tw-toggle="modal" data-tw-target="#convert-modal">CONVERT TO WORK</button>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </div>
                 <div class="mt-5 relative before:block before:absolute before:w-px before:h-[85%] before:bg-slate-200 before:dark:bg-darkmode-400 before:ml-5 before:mt-5">
@@ -109,158 +101,87 @@
                 </div>
             </div>
         </div>
+
         <div id="example-tab-2" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-2-tab">
-            <div class="col-span-12 mt-5">
-                <div class="intro-y block sm:flex items-center h-10">
-                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
-                        <a href="javascript:;" data-tw-toggle="modal" data-tw-target="#requisition-modal" class="btn btn-primary text-white mx-2">CREATE REQUISITION</a>
+            <div class="intro-y col-span-12">
+                <div class="intro-y box mt-5">
+                    <div id="faq-accordion-3" class="accordion accordion-boxed p-5">
+
+                        {% if lead.primary_requirements %}
+                            <div class="accordion-item">
+                                <p>Primary Requirements</p>
+                                <div class="mt-3">
+                                    <div class="accordion-body text-slate-600 dark:text-slate-500 leading-relaxed">{{ lead.primary_requirements }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if lead.scope_of_work %}
+                            <div class="accordion-item">
+                                <p>Scope of Work</p>
+                                <div class="mt-3">
+                                    <div class="accordion-body text-slate-600 dark:text-slate-500 leading-relaxed">{{ lead.scope_of_work }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if lead.site_condetion %}
+                            <div class="accordion-item">
+                                <p>Site Condetion</p>
+                                <div class="mt-3">
+                                    <div class="accordion-body text-slate-600 dark:text-slate-500 leading-relaxed">{{ lead.site_condetion }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if lead.additional_requirements %}
+                            <div class="accordion-item">
+                                <p>Additional Requirements</p>
+                                <div class="mt-3">
+                                    <div class="accordion-body text-slate-600 dark:text-slate-500 leading-relaxed">{{ lead.additional_requirements }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if lead.customer_preferences %}
+                            <div class="accordion-item">
+                                <p>Customer Preferances</p>
+                                <div class="mt-3">
+                                    <div class="accordion-body text-slate-600 dark:text-slate-500 leading-relaxed">{{ lead.customer_preferences }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if lead.status == 'PENDING' %}
+                            <div class="flex justify-center mt-5">
+                                
+                                {% if user.is_superuser %}
+                                    <a href="{% url 'lead-requirements' lead.slug %}" class="btn btn-primary btn-sm px-3 mx-2"> UPDATE REQUIREMENTS</a>
+                                    <a href="{% url 'lead-update-toggle' lead.slug %}" class="btn btn-warning btn-sm px-3 mx-2"> {% if lead.is_update_allowed %} DESABLE {% else %} ENABLE {% endif %} EDITING</a>
+                                {% else %}
+                                    {% if lead.is_update_allowed %}
+                                        <a href="{% url 'lead-requirements' lead.slug %}" class="btn btn-primary btn-sm px-3 mx-2"> UPDATE REQUIREMENTS</a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </div>
-                </div>
-                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                    {% if requisitions %}
-                        <table class="table table-report sm:mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="text-center whitespace-nowrap">NO</th>
-                                    <th class="text-center whitespace-nowrap">DATE</th>
-                                    <th class="text-center whitespace-nowrap">ITEMS</th>
-                                    <th class="text-center whitespace-nowrap">PREPARED BY</th>
-                                    <th class="text-center whitespace-nowrap">STATUS</th>
-                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for requisition in requisitions %}
-                                    <tr class="intro-x">
-                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-
-                                        <td class="text-center whitespace-nowrap">{{ requisition.date | date:'d M Y' | upper }}</td>
-
-                                        <td class="text-center whitespace-nowrap">{{ requisition.items }}</td>
-
-                                        <td class="font-medium text-center whitespace-nowrap">
-                                            {% if requisition.prepared.technician %}
-                                                <a href="{% url 'technician-details' requisition.prepared.technician.slug %}">{{ requisition.prepared.technician }}</a>
-                                            {% else %}
-                                                <p>{{ requisition.prepared }}</p>
-                                            {% endif %}
-                                        </td>
-
-                                        <td class="">
-                                            <p class="text-center whitespace-nowrap text-success">{{ requisition.status }}</p>
-                                        </td>
-
-                                        <td class="table-report__action w-56">
-                                            <div class="flex justify-center items-center">
-                                                <a class="flex items-center text-warning mx-2" href="{% url 'requisition' requisition.slug %}">
-                                                    <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
-                                                </a>
-
-                                                <a class="flex items-center mx-2" href="{% url 'update-requisition' requisition.slug %}">
-                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                            <table class="table table-report -mt-2">
-                                <tbody>
-                                    <tr class="intro-x width">
-                                        <td class=" width" style="width:100%;">
-                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
-                                            </i>
-                                        <div style="text-align: center;">No data available!</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    {% endif %}
                 </div>
             </div>
         </div>
+
+        
         <div id="example-tab-3" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-3-tab">
             <div class="col-span-12 mt-5">
-                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                    {% if categories %}
-                        <table class="table table-report sm:mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="text-center whitespace-nowrap">NO</th>
-                                    <th class="text-center whitespace-nowrap">NAME</th>
-                                    <th class="text-center whitespace-nowrap">CATEGORY ID</th>
-                                    <th class="text-center whitespace-nowrap">SERVICES</th>
-                                    <th class="text-center whitespace-nowrap">STATUS</th>
-                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for category in categories %}
-                                    <tr class="intro-x">
-                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-
-                                        <td class="font-medium text-center whitespace-nowrap">
-                                            <a href="{% url 'category-details' category.slug %}">{{ category.name }}</a>
-                                        </td>
-
-                                        <td class="text-center whitespace-nowrap">ECAT-0{{ category.auto_id }}</td>
-
-                                        <td class="text-center whitespace-nowrap">{{ category.services }}</td>
-
-                                        <td class="">
-                                            <p class="text-center whitespace-nowrap text-success">{{ category.status }}</p>
-                                        </td>
-
-                                        <td class="table-report__action w-56">
-                                            <div class="flex justify-center items-center">
-                                                <a class="flex items-center text-warning mx-2" href="{% url 'category-details' category.slug %}">
-                                                    <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
-                                                </a>
-
-                                                <a class="flex items-center mx-2" href="{% url 'category-edit' category.slug %}">
-                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
-                                                </a>
-
-                                                {% if category.services == 0 %}
-                                                    <a class="flex items-center text-danger mx-2" href="{% url 'category-delete' category.slug %}" onclick="return confirm('Are you sure you want to delete the category ?');">
-                                                        <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
-                                                    </a>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                            <table class="table table-report -mt-2">
-                                <tbody>
-                                    <tr class="intro-x width">
-                                        <td class=" width" style="width:100%;">
-                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
-                                            </i>
-                                        <div style="text-align: center;">No data available!</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                {% if user.is_superuser %}
+                    {% if lead.status == 'PENDING' %}
+                        <div class="intro-y block sm:flex items-center h-10">
+                            <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                                <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#technician-modal">ASSIGN STAFF</button>
+                            </div>
                         </div>
                     {% endif %}
-                </div>
-            </div>
-        </div>
-        <div id="example-tab-4" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-4-tab">
-            <div class="col-span-12 mt-5">
-                <div class="intro-y block sm:flex items-center h-10">
-                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
-                        <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#technician-modal">ASSIGN STAFF</button>
-                    </div>
-                </div>
+                {% endif %}
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
                     {% if lead.staffs.all %}
                         <table class="table table-report sm:mt-2">
@@ -335,32 +256,17 @@
                 </div>
             </div>
         </div>
+
+        {% if user.is_superuser %}
+            <div id="example-tab-4" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-4-tab">
+                
+            </div>
+        {% endif %}
     </div>
     <!-- END: Lead Followups -->
 
 </div>
 <!-- END: Content -->
-
-<!-- BEGIN: Modal Content -->
-<div id="convert-modal" class="modal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form action="{% url 'lead-convert' lead.slug %}" method="post">
-            {% csrf_token %}
-            <div class="modal-content">
-                <div class="modal-body p-0">
-                    <div class="p-5 text-center"> <i data-lucide="check-circle" class="w-16 h-16 text-success mx-auto mt-3"></i>
-                        <div class="text-3xl mt-5">Convert Lead!</div>
-                        <div class="text-slate-500 mt-2">Are you sure you want to convert the lead to work !</div>
-                    </div>
-                    <div class="px-5 pb-8 text-center">
-                        <button type="submit" data-tw-dismiss="modal" class="btn btn-primary w-24">Confirm</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<!-- END: Modal Content -->
 
 <!-- BEGIN: Modal Content -->
 <div id="timeline-modal" class="modal" tabindex="-1" aria-hidden="true">
@@ -439,14 +345,14 @@
 <!-- END: Modal Content -->
 
 <!-- BEGIN: Modal Content -->
-<div id="requisition-modal" class="modal" tabindex="-1" aria-hidden="true">
+<div id="convert-modal" class="modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{% url 'create-requisition' lead.slug %}">
+        <form action="{% url 'convert-lead' lead.slug %}">
             <div class="modal-content">
                 <div class="modal-body p-0">
                     <div class="p-5 text-center"> <i data-lucide="check-circle" class="w-16 h-16 text-success mx-auto mt-3"></i>
                         <div class="text-3xl mt-5">Are you sure?</div>
-                        <div class="text-slate-500 mt-2">Do you really want to create requisition ? <br>This process cannot be undone.</div>
+                        <div class="text-slate-500 mt-2">Do you really want to convert this lead to work ? <br>This process cannot be undone.</div>
                     </div>
                     <div class="px-5 pb-8 text-center"> 
                         <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button> 

@@ -1,0 +1,22 @@
+<!-- BEGIN: Profile Info -->
+<div class="intro-y box px-5 pt-5 mt-5">
+    <div class="flex flex-col lg:flex-row dark:border-darkmode-400 pb-5 -mx-5">
+        <div class="flex-1 px-5 items-center justify-center">
+            <div class="flex flex-col justify-center items-center mt-4">
+                <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> {{ lead.name }} </div>
+                <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ lead.mobile }} </div>
+                {% if lead.email %}
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ lead.email }} </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
+            <div class="flex flex-col justify-center items-center mt-4">
+                <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i> {{ lead.location }} </div>
+                <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ lead.category }} </div>
+                <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ lead.service }} </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: Profile Info -->

@@ -9,6 +9,16 @@ from django.http import JsonResponse
 # Create your views here.
 
 @user_passes_test(lambda u: u.is_superuser)
+def overview(request):
+
+    context = {
+        'main' : 'accounts',
+        'sub' : 'overview',
+    }
+
+    return render(request,'accounts/overview.html',context)
+
+@user_passes_test(lambda u: u.is_superuser)
 def transaction_categories(request):
     categories = TransactionCategory.active_objects.all()
 

@@ -16,7 +16,6 @@ TRANSACTION = (
 SOURCE = (
     ('PETTY','PETTY'),
     ('SELF','SELF'),
-    ('COMPANY','COMPANY'),
     ('CREDIT','CREDIT'),
 )
 

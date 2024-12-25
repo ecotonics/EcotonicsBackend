@@ -18,58 +18,126 @@
     {% endif %}
 
     <!-- BEGIN: Profile Info -->
-    <div class="intro-y box px-5 pt-5 mt-5">
-        <div class="flex flex-col lg:flex-row border-b border-slate-200/60 dark:border-darkmode-400 pb-5 -mx-5">
-            <div class="flex flex-1 px-5 items-center justify-center">
-                <div class="flex flex-col justify-center items-center mt-4">
-                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> {{ work.lead.name }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ work.lead.mobile }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ work.lead.email }} </div>
-                </div>
-            </div>
-            <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
-                <div class="flex flex-col justify-center items-center mt-4">
-                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i> {{ work.lead.location }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ work.lead.category }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ work.lead.service }} </div>
-                </div>
-            </div>
-            <div class="mt-6 lg:mt-0 flex-1 flex items-center justify-center px-5 border-t lg:border-0 border-slate-200/60 dark:border-darkmode-400 pt-5 lg:pt-0">
-                <div class="text-center rounded-md w-20 py-3">
-                    <div class="font-medium text-xl">{{ work.technicians.count }}</div>
-                    <div class="text-slate-500">Technicians</div>
-                </div>
-                <div class="text-center rounded-md w-20 py-3">
-                    <div class="font-medium text-xl">22 D</div>
-                    <div class="text-slate-500">Worked</div>
-                </div>
-                <div class="text-center rounded-md w-20 py-3">
-                    <div class="font-medium text-xl">76.78K</div>
-                    <div class="text-slate-500">Accounts</div>
+    {% include 'works/workinfo.html' %}
+    <!-- END: technician Info -->
+
+    <div class="nav nav-boxed-tabs mt-5" role="tablist">
+        <div id="example-1-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2 active" data-tw-toggle="pill" data-tw-target="#example-tab-1" type="button" role="tab" aria-controls="example-tab-1" aria-selected="true">
+                Material Requisition
+            </button>
+        </div>
+
+        <div id="example-2-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-2" type="button" role="tab" aria-controls="example-tab-2" aria-selected="false">
+                Technicians
+            </button>
+        </div>
+
+        <div id="example-3-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-3" type="button" role="tab" aria-controls="example-tab-3" aria-selected="false">
+                Accounts
+            </button>
+        </div>
+
+        <div id="example-4-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-4" type="button" role="tab" aria-controls="example-tab-4" aria-selected="false">
+                Attandance
+            </button>
+        </div>
+    </div>
+
+    <div class="tab-content mt-5">
+        <div id="example-tab-1" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="example-1-tab">
+            <div class="col-span-12 mt-5">
+
+                {% if work.status == 'PENDING' %}
+                    <div class="intro-y block sm:flex items-center h-10">
+                        <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                            <a href="javascript:;" data-tw-toggle="modal" data-tw-target="#requisition-modal" class="btn btn-primary text-white mx-2">CREATE REQUISITION</a>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                    {% if requisitions %}
+                        <table class="table table-report sm:mt-2">
+                            <thead>
+                                <tr>
+                                    <th class="text-center whitespace-nowrap">NO</th>
+                                    <th class="text-center whitespace-nowrap">DATE</th>
+                                    <th class="text-center whitespace-nowrap">ITEMS</th>
+                                    <th class="text-center whitespace-nowrap">PREPARED BY</th>
+                                    <th class="text-center whitespace-nowrap">STATUS</th>
+                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for requisition in requisitions %}
+                                    <tr class="intro-x">
+                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                        <td class="text-center whitespace-nowrap">{{ requisition.date | date:'d M Y' | upper }}</td>
+
+                                        <td class="text-center whitespace-nowrap">{{ requisition.items }}</td>
+
+                                        <td class="font-medium text-center whitespace-nowrap">
+                                            {% if requisition.prepared.technician %}
+                                                <a href="{% url 'technician-details' requisition.prepared.technician.slug %}">{{ requisition.prepared.technician }}</a>
+                                            {% else %}
+                                                <p>{{ requisition.prepared }}</p>
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="">
+                                            <p class="text-center whitespace-nowrap text-success">{{ requisition.status }}</p>
+                                        </td>
+
+                                        <td class="table-report__action w-56">
+                                            <div class="flex justify-center items-center">
+                                                <a class="flex items-center text-warning mx-2" href="{% url 'requisition' requisition.slug %}">
+                                                    <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                                </a>
+
+                                                <a class="flex items-center mx-2" href="{% url 'update-requisition' requisition.slug %}">
+                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                            <table class="table table-report -mt-2">
+                                <tbody>
+                                    <tr class="intro-x width">
+                                        <td class=" width" style="width:100%;">
+                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                            </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        <ul class="nav nav-link-tabs flex-col sm:flex-row justify-center lg:justify-start text-center" role="tablist" >
-            <li id="technician-tab" class="nav-item" role="presentation">
-                <a href="javascript:;" class="nav-link py-4 flex items-center active" data-tw-target="#technician" aria-controls="technician" aria-selected="true" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="user"></i> technician </a>
-            </li>
-            <li id="account-tab" class="nav-item" role="presentation">
-                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#account" aria-selected="false" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Account </a>
-            </li>
-            <li id="attendance-tab" class="nav-item" role="presentation">
-                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#attendance" aria-selected="false" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="clipboard"></i> Attendance </a>
-            </li>
-        </ul>
-    </div>
-    <!-- END: technician Info -->
-    <div class="tab-content mt-5">
-        <div id="technician" class="tab-pane active" role="tabpanel" aria-labelledby="technician-tab">
+
+        <div id="example-tab-2" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-2-tab">
             <div class="col-span-12 mt-5">
-                <div class="intro-y block sm:flex items-center h-10">
-                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
-                        <button class="btn btn-success text-white mx-2" data-tw-toggle="modal" data-tw-target="#technician-modal">ASSIGN TECHNICIANS</button>
+
+                {% if work.status == 'PENDING' and user.is_superuser %}
+                    <div class="intro-y block sm:flex items-center h-10">
+                        <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                            <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#technician-modal">ASSIGN TECHNICIAN</button>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
+
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
                     {% if work.technicians.all %}
                         <table class="table table-report sm:mt-2">
@@ -79,7 +147,8 @@
                                     <th class="text-center whitespace-nowrap">NAME</th>
                                     <th class="text-center whitespace-nowrap">PHOTO</th>
                                     <th class="text-center whitespace-nowrap">MOBILE</th>
-                                    <th class="text-center whitespace-nowrap">EMAIL</th>
+                                    <th class="text-center whitespace-nowrap">STATUS</th>
+                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -106,7 +175,21 @@
 
                                         <td class="text-center whitespace-nowrap">{{ technician.user.mobile }}</td>
 
-                                        <td class="text-center whitespace-nowrap">{{ technician.user.email }}</td>
+                                        <td class="text-center whitespace-nowrap">
+                                            {% if technician.status == 1 %}
+                                                <p class="text-success">IN SERVICE</p>
+                                            {% elif technician.status == 0 %}
+                                                <p class="text-danger">NOT IN SERVICE</p>
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="table-report__action w-56">
+                                            <div class="flex justify-center items-center">
+                                                <a class="flex items-center mx-2 text-warning" href="{% url 'technician-details' technician.slug %}">
+                                                    <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            </div>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -129,8 +212,8 @@
                 </div>
             </div>
         </div>
-
-        <div id="account" class="tab-pane" role="tabpanel" aria-labelledby="account-tab">
+        
+        <div id="example-tab-3" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-3-tab">
             <div class="col-span-12 mt-5">
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
                     {% if expenses %}
@@ -170,11 +253,13 @@
                                         <td class="text-center whitespace-nowrap text-danger font-medium">{{ expense.amount }}</td>
 
                                         <td class="table-report__action w-24">
-                                            <div class="flex justify-center items-center">
-                                                <a class="flex items-center text-danger" href="" onclick="return confirm('Are you sure you want to delete the transaction ?');">
-                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                </a>
-                                            </div>
+                                            {% if user.is_superuser or expense.technician == user.technician %}
+                                                <div class="flex justify-center items-center">
+                                                    <a class="flex items-center text-danger" href="" onclick="return confirm('Are you sure you want to delete the transaction ?');">
+                                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                    </a>
+                                                </div>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -199,7 +284,7 @@
             </div>
         </div>
 
-        <div id="attendance" class="tab-pane" role="tabpanel" aria-labelledby="attendance-tab">
+        <div id="example-tab-4" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-4-tab">
             <div class="col-span-12 mt-5">
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
                     {% if attendances %}
@@ -278,6 +363,12 @@
                     <div class="col-span-12 sm:col-span-12">
                         <select name="technicians" id="" class="tom-select" multiple>
                             <option value="">Search Technicians</option>
+                            {% if work.technicians %}
+                                {% for technician in work.technicians.all %}
+                                    <option value="{{ technician.id }}" selected>{{ technician.user.first_name }} ({{ technician.designation }})</option>
+                                {% endfor %}
+                            {% endif %}
+
                             {% for technician in technicians %}
                                 <option value="{{ technician.id }}">{{ technician.user.first_name }} ({{ technician.designation }})</option>
                             {% endfor %}
@@ -295,5 +386,47 @@
         </form>
     </div>
 </div>
+<!-- END: Modal Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="convert-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="p-5 text-center"> <i data-lucide="check-circle" class="w-16 h-16 text-success mx-auto mt-3"></i>
+                        <div class="text-3xl mt-5">Are you sure?</div>
+                        <div class="text-slate-500 mt-2">Do you really want to convert this lead to work ? <br>This process cannot be undone.</div>
+                    </div>
+                    <div class="px-5 pb-8 text-center"> 
+                        <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button> 
+                        <button type="submit" class="btn btn-success text-white w-24">Create</button> 
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> 
+<!-- END: Modal Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="requisition-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{% url 'create-requisition' work.slug %}">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="p-5 text-center"> <i data-lucide="check-circle" class="w-16 h-16 text-success mx-auto mt-3"></i>
+                        <div class="text-3xl mt-5">Are you sure?</div>
+                        <div class="text-slate-500 mt-2">Do you really want to create requisition ? <br>This process cannot be undone.</div>
+                    </div>
+                    <div class="px-5 pb-8 text-center"> 
+                        <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-24 mr-1">Cancel</button> 
+                        <button type="submit" class="btn btn-success text-white w-24">Create</button> 
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> 
 <!-- END: Modal Content -->
 {% endblock content %}

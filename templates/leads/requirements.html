@@ -1,0 +1,66 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% include 'leads/leadinfo.html' %}
+
+    <!-- BEGIN: Vertical Form -->
+    <div class="intro-y box mt-5">
+        <div class="px-3 sm:px-10 py-5">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5">
+
+                    <div class="intro-y col-span-12 sm:col-span-12">
+                        <label for="input-wizard-2" class="form-label">Primary Requirements</label>
+                        <textarea name="primary_requirements" id="" cols="10" rows="5" placeholder="Enter primary requirements" class="form-control">{{ lead.primary_requirements }}</textarea>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-12">
+                        <label for="input-wizard-2" class="form-label">Scope of Work</label>
+                        <textarea name="scope_of_work" id="" cols="10" rows="5" placeholder="Enter scope of work" class="form-control">{{ lead.scope_of_work }}</textarea>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-12">
+                        <label for="input-wizard-2" class="form-label">Site Condetion</label>
+                        <textarea name="site_condetion" id="" cols="10" rows="5" placeholder="Enter site condetion" class="form-control">{{ lead.site_condetion }}</textarea>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-12">
+                        <label for="input-wizard-2" class="form-label">Additional Requirements</label>
+                        <textarea name="additional_requirements" id="" cols="10" rows="5" placeholder="Enter additional requirements" class="form-control">{{ lead.additional_requirements }}</textarea>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-12">
+                        <label for="input-wizard-2" class="form-label">Customer Preferances</label>
+                        <textarea name="customer_preferences" id="" cols="10" rows="5" placeholder="Enter customer preferances" class="form-control">{{ lead.customer_preferences }}</textarea>
+                    </div>
+
+                    <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
+                        <a class="btn btn-outline-secondary w-24 ml-2" href="{% url 'lead-view' lead.slug %}">Cancel</a>
+                        <button class="btn btn-primary w-24 ml-2" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END: Vertical Form -->
+
+</div>
+<!-- END: Content -->
+{% endblock content %}

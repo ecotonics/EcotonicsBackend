@@ -45,6 +45,7 @@ class Customer(BaseModel):
 class Lead(BaseModel):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=LEAD_STATUS, default='PENDING')
+    is_update_allowed = models.BooleanField(default=True)
 
     type = models.CharField(max_length=50, choices=TYPE)
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE, null=True, blank=True)
@@ -57,6 +58,12 @@ class Lead(BaseModel):
     category = models.ForeignKey(Category,on_delete=models.PROTECT)
     service = models.ForeignKey(Service,on_delete=models.PROTECT)
     info = models.TextField(null=True,blank=True)
+
+    primary_requirements = models.TextField(null=True, blank=True)
+    scope_of_work = models.TextField(null=True, blank=True)
+    site_condetion = models.TextField(null=True, blank=True)
+    additional_requirements = models.TextField(null=True, blank=True)
+    customer_preferences = models.TextField(null=True, blank=True)
 
     staffs = models.ManyToManyField(Technician)
 

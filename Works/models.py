@@ -13,16 +13,41 @@ UNITS = (
     ('KILOGRAMS','KILOGRAMS'),
 )
 
-# Create your models here.
+WORK_STATUS = (
+    ('PENDING', 'PENDING'),
+    ('ONGOING', 'ONGOING'),
+    ('COMPLETED', 'COMPLETED')
+)
+
+class Work(BaseModel):
+    status = models.CharField(max_length=20, choices=WORK_STATUS, default='PENDING')
+    date = models.DateField(auto_now_add=True)
+    lead = models.OneToOneField(Lead,on_delete=models.CASCADE)
+    technicians = models.ManyToManyField(Technician)
+
+    def __str__(self):
+        return self.lead.name
+
+    class Meta:
+        verbose_name = _('Work')
+        verbose_name_plural = _('Works')
+        ordering = ("-date_added",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.lead.name)
+
+        super(Work, self).save(*args, **kwargs)
 
 class Requisition(BaseModel):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=50, default='PENDING')
     prepared = models.ForeignKey(User, on_delete=models.CASCADE)
-    lead = models.ForeignKey(Lead, on_delete=models.CASCADE)
+    work = models.ForeignKey(Work, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.lead.name
+        return self.work.lead.name
     
     class Meta:
         verbose_name = _('Requisition')
@@ -32,7 +57,7 @@ class Requisition(BaseModel):
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)
         request = request.thread_local.current_request
-        save_data(self, request, self.lead.name)
+        save_data(self, request, self.work.lead.name)
 
         super(Requisition, self).save(*args, **kwargs)
 
@@ -57,31 +82,9 @@ class RequisitionItem(BaseModel):
 
         super(RequisitionItem, self).save(*args, **kwargs)
 
-class Work(BaseModel):
-    status = models.CharField(max_length=20,default='PENDING')
-    date = models.DateField(auto_now_add=True)
-    lead = models.ForeignKey(Lead,on_delete=models.CASCADE)
-    technicians = models.ManyToManyField(Technician)
-
-    def __str__(self):
-        return self.lead.name
-
-    class Meta:
-        verbose_name = _('Work')
-        verbose_name_plural = _('Works')
-        ordering = ("-date_added",)
-
-    def save(self, request=None, *args, **kwargs):
-        request = RequestMiddleware(get_response=None)
-        request = request.thread_local.current_request
-        save_data(self, request, self.lead.name)
-
-        super(Work, self).save(*args, **kwargs)
-
-
 class Attendance(BaseModel):
     date = models.DateField(auto_now_add=True)
-    status = models.IntegerField(default=1)
+    status = models.CharField(default='PENDING', max_length=20)
     technician = models.ForeignKey(Technician,on_delete=models.CASCADE)
     work = models.ForeignKey(Work,on_delete=models.CASCADE)
     start_time = models.TimeField(null=True,blank=True)

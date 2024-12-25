@@ -5,7 +5,11 @@ from Technicians.models import Department, Designation, Technician
 from django.contrib import messages
 from django.db import transaction
 from Works.models import Work, Attendance
-from django.db.models import Count
+from django.db.models import Count, Sum
+from Customers.models import Lead
+from Accounts.models import Expense
+from datetime import datetime
+today = datetime.today()
 
 # Create your views here.
 
@@ -311,11 +315,27 @@ def edit_technician(request,slug):
 @login_required
 def technician_details(request,slug):
     technician = Technician.objects.get(slug=slug)
+    sites = Lead.active_objects.filter(staffs__in=[technician], status='PENDING')
+    works = Work.active_objects.filter(technicians__in=[technician])
+    attendances = Attendance.objects.filter(technician=technician)
+    expenses = Expense.active_objects.filter(technician=technician).order_by('-id')
+    self_expense = expenses.filter(source='SELF').aggregate(total=Sum('amount'))['total']
+    petty_expense = expenses.filter(source='PETTY').aggregate(total=Sum('amount'))['total']
+    credit_expense = expenses.filter(source='CREDIT').aggregate(total=Sum('amount'))['total']
+    petty_balance = 0.0
 
     context = {
         'main' : 'workforce',
         'sub' : 'technicians',
-        'technician' : technician
+        'technician' : technician,
+        'sites' : sites,
+        'works' : works,
+        'attendances' : attendances,
+        'expenses' : expenses,
+        'self_expense' : self_expense,
+        'petty_expense' : petty_expense,
+        'credit_expense' : credit_expense,
+        'petty_balance' : petty_balance
     }
 
     return render(request,'workforce/technician-details.html',context)
@@ -335,12 +355,19 @@ def delete_technician(request,slug):
 
 @login_required
 def attandance(request):
-    attandances = Attendance.active_objects.filter(status=1)
+    attandances = Attendance.active_objects.filter(status='PENDING')
+    if request.user.is_superuser:
+        clocked = False
+    else:
+        attandance = Attendance.active_objects.filter(date=today).exists()
+        if attandance:
+            clocked = True
 
     context = {
         'main' : 'workforce',
         'sub' : 'attandance',
-        'attandances' : attandances
+        'attandances' : attandances,
+        'clocked' : clocked
     }
     return render(request,'workforce/attandance.html',context)
 
@@ -387,7 +414,7 @@ def add_attandance(request):
     return render(request,'workforce/attandance-add.html',context)
 
 @login_required
-def edit_attandance(request):
+def edit_attandance(request, slug):
     context = {
         'main' : 'workforce',
         'sub' : 'attandance'
