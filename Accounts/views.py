@@ -5,15 +5,24 @@ from django.contrib import messages
 from datetime import datetime
 today = datetime.today()
 from django.http import JsonResponse
+from django.db.models import Sum
 
 # Create your views here.
 
 @user_passes_test(lambda u: u.is_superuser)
 def overview(request):
+    transactions = Transaction.active_objects.all()[:10]
+    total_income = Transaction.objects.filter(type='INCOME').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_expense = Transaction.objects.filter(type='EXPENSE').aggregate(Sum('amount'))['amount__sum'] or 0
+    balance = total_income - total_expense
 
     context = {
         'main' : 'accounts',
         'sub' : 'overview',
+        'transactions' : transactions,
+        'total_income' : float(total_income),
+        'total_expense' : float(total_expense),
+        'balance' : float(balance)
     }
 
     return render(request,'accounts/overview.html',context)
