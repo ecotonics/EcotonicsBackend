@@ -12,8 +12,8 @@ from django.db.models import Sum
 @user_passes_test(lambda u: u.is_superuser)
 def overview(request):
     transactions = Transaction.active_objects.all()[:10]
-    total_income = Transaction.objects.filter(type='INCOME').aggregate(Sum('amount'))['amount__sum'] or 0
-    total_expense = Transaction.objects.filter(type='EXPENSE').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_income = Transaction.active_objects.filter(type='INCOME').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_expense = Transaction.active_objects.filter(type='EXPENSE').aggregate(Sum('amount'))['amount__sum'] or 0
     balance = total_income - total_expense
 
     context = {
