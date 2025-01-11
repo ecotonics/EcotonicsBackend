@@ -16,50 +16,50 @@
                         <a href="" class="ml-auto flex items-center text-primary"> <i data-lucide="refresh-ccw" class="w-4 h-4 mr-3"></i> Reload Data </a>
                     </div>
                     <div class="grid grid-cols-12 gap-6 mt-5">
-                        <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <a href="{% url 'customers' 'enterprise' %}" class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
                             <div class="report-box zoom-in">
                                 <div class="box p-5">
                                     <div class="flex">
-                                        <i data-lucide="users" class="report-box__icon text-primary"></i>
+                                        <i data-lucide="users" class="report-box__icon text-warning"></i>
                                     </div>
                                     <div class="text-3xl font-medium leading-8 mt-6">{{ customers.count }}</div>
                                     <div class="text-base text-slate-500 mt-1">Total Customers</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        </a>
+                        <a href="{% url 'leads' 'pending' %}" class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
                             <div class="report-box zoom-in">
                                 <div class="box p-5">
                                     <div class="flex">
-                                        <i data-lucide="box" class="report-box__icon text-pending"></i>
+                                        <i data-lucide="box" class="report-box__icon text-warning"></i>
                                     </div>
-                                    <div class="text-3xl font-medium leading-8 mt-6">{{ pending_works.count }}</div>
-                                    <div class="text-base text-slate-500 mt-1">Pending Works</div>
+                                    <div class="text-3xl font-medium leading-8 mt-6">{{ pending_leads.count }}</div>
+                                    <div class="text-base text-slate-500 mt-1">Pending Leads</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        </a>
+                        <a href="{% url 'works' 'pending' %}" class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
                             <div class="report-box zoom-in">
                                 <div class="box p-5">
                                     <div class="flex">
                                         <i data-lucide="activity" class="report-box__icon text-warning"></i>
                                     </div>
+                                    <div class="text-3xl font-medium leading-8 mt-6">{{ pending_works.count }}</div>
+                                    <div class="text-base text-slate-500 mt-1">Pending Works</div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="{% url 'works' 'ongoing' %}" class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                            <div class="report-box zoom-in">
+                                <div class="box p-5">
+                                    <div class="flex">
+                                        <i data-lucide="box" class="report-box__icon text-warning"></i>
+                                    </div>
                                     <div class="text-3xl font-medium leading-8 mt-6">{{ ongoing_works.count }}</div>
                                     <div class="text-base text-slate-500 mt-1">Ongoing Works</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
-                            <div class="report-box zoom-in">
-                                <div class="box p-5">
-                                    <div class="flex">
-                                        <i data-lucide="check-circle" class="report-box__icon text-success"></i>
-                                    </div>
-                                    <div class="text-3xl font-medium leading-8 mt-6">{{ completed_works.count }}</div>
-                                    <div class="text-base text-slate-500 mt-1">Completed Works</div>
-                                </div>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 <!-- END: General Report -->

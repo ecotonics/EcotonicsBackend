@@ -8,6 +8,7 @@ from Works.models import Work
 @login_required
 def dashboard(request):
     works = Work.active_objects.all()
+    leads = Lead.active_objects.all()
     customers = Customer.active_objects.all()
 
     context = {
@@ -15,6 +16,7 @@ def dashboard(request):
         'customers' : customers,
         'pending_works' : works.filter(status='PENDING'),
         'ongoing_works' : works.filter(status='ONGOING'),
-        'completed_works' : works.filter(status='COMPLETED')
+        'completed_works' : works.filter(status='COMPLETED'),
+        'pending_leads' : leads.filter(status='PENDING')
     }
     return render(request,'dashboard/index.html',context)
