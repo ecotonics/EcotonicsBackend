@@ -1,0 +1,195 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+    <!-- BEGIN: Profile Info -->
+    <div class="intro-y box px-5 pt-5 mt-5">
+        <div class="flex flex-col lg:flex-row border-b border-slate-200/60 dark:border-darkmode-400 pb-5 -mx-5">
+            <div class="flex flex-1 px-5 items-center justify-center lg:justify-start">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 flex-none lg:w-32 lg:h-32 image-fit relative">
+                    {% if customer.photo %}
+                        <img alt="" class="rounded-full" src="{{ customer.photo.url }}">
+                    {% else %}
+                        <img alt="" class="rounded-full" src="{% static 'backend/images/preview.jpg' %}">
+                    {% endif %}
+                </div>
+                <div class="ml-5">
+                    <div class="truncate sm:whitespace-normal font-medium text-lg">{{ customer.name }}</div>
+                    <div class="text-slate-500">{{ customer.location }} / CX-0{{ customer.auto_id }}</div>
+                </div>
+            </div>
+            <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
+                <div class="font-medium text-center lg:text-left lg:mt-3">Contact Details</div>
+                <div class="flex flex-col justify-center items-center lg:items-start mt-4">
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ customer.mobile }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ customer.email }} </div>
+                    <!-- <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="twitter" class="w-4 h-4 mr-2"></i> Twitter Al Pacino </div> -->
+                </div>
+            </div>
+            <div class="mt-6 lg:mt-0 flex-1 flex items-center justify-center px-5 border-t lg:border-0 border-slate-200/60 dark:border-darkmode-400 pt-5 lg:pt-0">
+                <div class="text-center rounded-md w-40 py-3">
+                    <div class="font-medium text-xl">{{ works.count }}</div>
+                    <div class="text-slate-500">Works Completed</div>
+                </div>
+                <div class="text-center rounded-md w-40 py-3">
+                    <div class="font-medium text-xl">{{ revenue | default:'0.00' }}</div>
+                    <div class="text-slate-500">Revenue Generated</div>
+                </div>
+                <div class="text-center rounded-md w-40 py-3">
+                    <div class="font-medium text-xl">0</div>
+                    <div class="text-slate-500">Working Days</div>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-link-tabs flex-col sm:flex-row justify-center lg:justify-start text-center" role="tablist">
+            <li id="lead-tab" class="nav-item" role="presentation">
+                <a href="javascript:;" class="nav-link py-4 flex items-center active" data-tw-target="#lead" aria-selected="false" role="tab"> 
+                    <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Leads 
+                </a>
+            </li>
+
+            <li id="work-tab" class="nav-item" role="presentation">
+                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#work" aria-selected="false" role="tab"> 
+                    <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Works 
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- END: Profile Info -->
+    <div class="tab-content mt-5">
+
+        <div id="lead" class="tab-pane active" role="tabpanel" aria-labelledby="lead-tab">
+            <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                {% if leads %}
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">DATE</th>
+                                <th class="text-center whitespace-nowrap">WORK</th>
+                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lead in leads %}
+                                <tr class="intro-x">
+                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                    <td class="font-medium text-center whitespace-nowrap">{{ lead.date | date:'d M Y'}}</td>
+
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ lead.service }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ lead.service.category }}</div>
+                                    </td>
+
+                                    <td class="font-medium text-center whitespace-nowrap">
+                                        {% if lead.status == 'PENDING' %}
+                                            <span class="text-warning">{{ lead.status }}</span>
+                                        {% elif lead.status == 'CONVERTED' %}
+                                            <span class="text-success">{{ lead.status }}</span>
+                                        {% else %}
+                                            <span class="text-danger">{{ lead.status }}</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="table-report__action w-56">
+                                        <div class="flex justify-center items-center">
+                                            <a class="flex items-center mx-2 text-warning" href="{% url 'lead-view' lead.slug %}">
+                                                <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                            </a>
+                                            {% if lead.status == 'PENDING' %}
+                                                <a class="flex items-center mx-2" href="{% url 'lead-edit' lead.slug %}">
+                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                                <a class="flex items-center text-danger mx-2" href="{% url 'lead-delete' lead.slug %}" onclick="return confirm('Are you sure you want to cancel the lead ?');">
+                                                    <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
+                            <tbody>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                    <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="work" class="tab-pane" role="tabpanel" aria-labelledby="work-tab">
+            <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                {% if works %}
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">DATE</th>
+                                <th class="text-center whitespace-nowrap">CUSTOMER</th>
+                                <th class="text-center whitespace-nowrap">WORK TYPE</th>
+                                <th class="text-center whitespace-nowrap">WORK</th>
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for work in works %}
+                                <tr class="intro-x">
+                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+                                    <td class="font-medium text-center whitespace-nowrap">{{ work.lead.date | date:'d M Y'}}</td>
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ work.lead.name }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ work.lead.mobile }}</div>
+                                    </td>
+                                    <td class="text-center whitespace-nowrap">{{ work.lead.type | capfirst }}</td>
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ work.lead.service }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ work.lead.service.category }}</div>
+                                    </td>
+                                    <td class="table-report__action w-56">
+                                        <div class="flex justify-center items-center">
+                                            <a class="flex items-center mx-2 text-warning" href="{% url 'work-details' work.slug %}">
+                                                <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
+                            <tbody>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                    <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- END: Content -->
+{% endblock content %}

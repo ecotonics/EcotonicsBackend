@@ -139,7 +139,7 @@
                 {% endif %}
 
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                    {% if work.technicians.all %}
+                    {% if work.staffs.all %}
                         <table class="table table-report sm:mt-2">
                             <thead>
                                 <tr>
@@ -152,40 +152,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for technician in work.technicians.all %}
+                                {% for staff in work.staffs.all %}
                                     <tr class="intro-x">
                                         <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
 
                                         <td class="text-center">
-                                            <a href="" class="font-medium whitespace-nowrap">{{ technician }}</a>
-                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ technician.designation }} / {{ technician.department }}</div>
+                                            <a href="" class="font-medium whitespace-nowrap">{{ staff }}</a>
+                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ staff.designation }} / {{ staff.department }}</div>
                                         </td>
 
                                         <td class="">
                                             <div class="flex justify-center">
                                                 <div class="w-10 h-10 image-fit zoom-in">
-                                                    {% if technician.user.photo %}
-                                                        <img alt="" class="tooltip rounded-full" src="{{ technician.user.photo.url }}" title="{{ technician }}">
+                                                    {% if staff.user.photo %}
+                                                        <img alt="" class="tooltip rounded-full" src="{{ staff.user.photo.url }}" title="{{ staff }}">
                                                     {% else %}
-                                                        <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ technician }}">
+                                                        <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ staff }}">
                                                     {% endif %}
                                                 </div>
                                             </div>
                                         </td>
 
-                                        <td class="text-center whitespace-nowrap">{{ technician.user.mobile }}</td>
+                                        <td class="text-center whitespace-nowrap">{{ staff.user.mobile }}</td>
 
                                         <td class="text-center whitespace-nowrap">
-                                            {% if technician.status == 1 %}
+                                            {% if staff.status == 1 %}
                                                 <p class="text-success">IN SERVICE</p>
-                                            {% elif technician.status == 0 %}
+                                            {% elif staff.status == 0 %}
                                                 <p class="text-danger">NOT IN SERVICE</p>
                                             {% endif %}
                                         </td>
 
                                         <td class="table-report__action w-56">
                                             <div class="flex justify-center items-center">
-                                                <a class="flex items-center mx-2 text-warning" href="{% url 'technician-details' technician.slug %}">
+                                                <a class="flex items-center mx-2 text-warning" href="{% url 'staff-details' staff.slug %}">
                                                     <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
                                                 </a>
                                             </div>
@@ -215,51 +215,55 @@
         
         <div id="example-tab-3" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-3-tab">
             <div class="col-span-12 mt-5">
+                <div class="intro-y block sm:flex items-center h-10">
+                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#transaction-modal">ADD TRANSACTION</button>
+                    </div>
+                </div>
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                    {% if expenses %}
+                    {% if transactions %}
                         <table class="table table-report sm:mt-2">
                             <thead>
                                 <tr>
                                     <th class="text-center whitespace-nowrap">NO</th>
                                     <th class="text-center whitespace-nowrap">DATE</th>
-                                    <th class="text-center whitespace-nowrap">CREATED</th>
+                                    <th class="text-center whitespace-nowrap">TYPE</th>
                                     <th class="text-center whitespace-nowrap">CATEGORY</th>
                                     <th class="text-center whitespace-nowrap">TITLE</th>
-                                    <th class="text-center whitespace-nowrap">DESCRIPTION</th>
+                                    <th class="text-center whitespace-nowrap">ACCOUNT</th>
                                     <th class="text-center whitespace-nowrap">AMOUNT</th>
                                     <th class="text-center whitespace-nowrap">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for expense in expenses %}
+                                {% for transaction in transactions %}
                                     <tr class="intro-x">
                                         <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-
-                                        <td class="text-center whitespace-nowrap">{{ expense.date | date:'d M Y' }}</td>
-
-                                        <td class="text-center">
-                                            <a href="" class="font-medium whitespace-nowrap">{{ expense.technician | default:'Admin' }}</a>
-                                            {% if work.technican %}
-                                                <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ expense.technician.designation }} / {{ expense.technician.department }}</div>
-                                            {% endif %}
-                                        </td>
-
-                                        <td class="text-center whitespace-nowrap">{{ expense.category }}</td>
-
-                                        <td class="text-center whitespace-nowrap font-medium">{{ expense.title }}</td>
-
-                                        <td class="text-center whitespace-nowrap font-medium">{{ expense.description }}</td>
-
-                                        <td class="text-center whitespace-nowrap text-danger font-medium">{{ expense.amount }}</td>
-
-                                        <td class="table-report__action w-24">
-                                            {% if user.is_superuser or expense.technician == user.technician %}
-                                                <div class="flex justify-center items-center">
-                                                    <a class="flex items-center text-danger" href="" onclick="return confirm('Are you sure you want to delete the transaction ?');">
-                                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                    </a>
-                                                </div>
-                                            {% endif %}
+    
+                                        <td class="text-center whitespace-nowrap">{{ transaction.date | date:'d M Y' }}</td>
+    
+                                        {% if transaction.type == 'INCOME' %}
+                                            <td class="text-center whitespace-nowrap text-success">INCOME</td>
+                                        {% elif transaction.type == 'EXPENSE' %}
+                                            <td class="text-center whitespace-nowrap text-danger">EXPENSE</td>
+                                        {% endif %}
+    
+                                        <td class="text-center whitespace-nowrap">{{ transaction.category }}</td>
+                                        <td class="text-center whitespace-nowrap font-medium">{{ transaction.title }}</td>
+                                        <td class="text-center whitespace-nowrap">{{ transaction.account }}</td>
+    
+                                        {% if transaction.type == 'INCOME' %}
+                                            <td class="text-center whitespace-nowrap text-success font-medium">{{ transaction.amount }}</td>
+                                        {% elif transaction.type == 'EXPENSE' %}
+                                            <td class="text-center whitespace-nowrap text-danger font-medium">{{ transaction.amount }}</td>
+                                        {% endif %}
+    
+                                        <td class="table-report__action w-56">
+                                            <div class="flex justify-center items-center">
+                                                <a class="flex items-center text-danger" href="{% url 'transaction-delete' transaction.slug %}" onclick="return confirm('Are you sure you want to delete the transaction ?');">
+                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -355,22 +359,22 @@
             <div class="modal-content">
                 <!-- BEGIN: Modal Header -->
                 <div class="modal-header">
-                    <h2 class="font-medium text-base mr-auto">Technicians</h2>
+                    <h2 class="font-medium text-base mr-auto">Staffs</h2>
                 </div>
                 <!-- END: Modal Header -->
                 <!-- BEGIN: Modal Body -->
                 <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
                     <div class="col-span-12 sm:col-span-12">
-                        <select name="technicians" id="" class="tom-select" multiple>
-                            <option value="">Search Technicians</option>
-                            {% if work.technicians %}
-                                {% for technician in work.technicians.all %}
-                                    <option value="{{ technician.id }}" selected>{{ technician.user.first_name }} ({{ technician.designation }})</option>
+                        <select name="staffs" id="" class="tom-select" multiple>
+                            <option value="">Search Staffs</option>
+                            {% if work.staffs %}
+                                {% for staff in work.staff.all %}
+                                    <option value="{{ staff.id }}" selected>{{ staff.user.first_name }} ({{ staff.designation }})</option>
                                 {% endfor %}
                             {% endif %}
 
-                            {% for technician in technicians %}
-                                <option value="{{ technician.id }}">{{ technician.user.first_name }} ({{ technician.designation }})</option>
+                            {% for staff in staffs %}
+                                <option value="{{ staff.id }}">{{ staff.user.first_name }} ({{ staff.designation }})</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -428,5 +432,77 @@
         </form>
     </div>
 </div> 
+<!-- END: Modal Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="transaction-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <form action="{% url 'add-expense' %}" method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+                <!-- BEGIN: Modal Header -->
+                <div class="modal-header">
+                    <h2 class="font-medium text-base mr-auto">Expenses</h2>
+                </div>
+                <!-- END: Modal Header -->
+                <!-- BEGIN: Modal Body -->
+                <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                    <input type="hidden" name="work" value="{{ work.slug }}">
+                    <input type="hidden" name="page" value="work">
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Date</label>
+                        <input value="{{ today | date:'Y-m-d' }}" type="date" name="date" id="" class="form-control">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Transaction Type</label>
+                        <select name="type" id="transaction-type" class="form-control">
+                            <option value="">Select Transaction Type</option>
+                            <option value="INCOME">INCOME</option>
+                            <option value="EXPENSE">EXPENSE</option>
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Transaction Category</label>
+                        <select name="category" id="transaction-category" class="form-control">
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Title</label>
+                        <input type="text" name="title" id="" class="form-control" placeholder="Enter transaction title">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Account</label>
+                        <div class="intro-y col-span-12 sm:col-span-6">
+                            <select name="account" id="transaction-category" class="form-control">
+                                <option value="">Select Account</option>
+                                {% for account in accounts %}
+                                    <option value="{{ account.slug }}">{{ account.name }} {{ account.account }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Amount</label>
+                        <input step="0.01" type="number" name="amount" id="" class="form-control" placeholder="Enter transaction amount">
+                    </div>
+                </div>
+                <!-- END: Modal Body -->
+                <!-- BEGIN: Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+                    <button type="submit" class="btn btn-primary w-20">Submit</button>
+                </div>
+                <!-- END: Modal Footer -->
+            </div>
+        </form>
+    </div>
+</div>
 <!-- END: Modal Content -->
 {% endblock content %}

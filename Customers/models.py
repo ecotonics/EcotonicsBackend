@@ -4,7 +4,7 @@ from Core.models import save_data
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 from Services.models import Category, Service
-from Technicians.models import Technician
+from Workforce.models import Staff
 
 # Create your models here.
 
@@ -19,12 +19,18 @@ LEAD_STATUS = (
     ('FAILED', 'FAILED')
 )
 
+CUSTOMER_STATUS = (
+    ('active','Active'),
+    ('inactive','Inactive'),
+)
+
 class Customer(BaseModel):
+    active = models.BooleanField(default=True)
     type = models.CharField(max_length=50, choices=TYPE)
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=50)
     mobile = models.CharField(max_length=15)
-    email = models.EmailField()
+    email = models.EmailField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -32,7 +38,7 @@ class Customer(BaseModel):
     class Meta:
         verbose_name = _('Customer')
         verbose_name_plural = _('Customers')
-        ordering = ("-date_added",)
+        ordering = ("name",)
 
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)
@@ -65,7 +71,7 @@ class Lead(BaseModel):
     additional_requirements = models.TextField(null=True, blank=True)
     customer_preferences = models.TextField(null=True, blank=True)
 
-    staffs = models.ManyToManyField(Technician)
+    staffs = models.ManyToManyField(Staff)
 
     def __str__(self):
         return self.name

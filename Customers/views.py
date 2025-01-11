@@ -6,16 +6,17 @@ from Services.models import Category, Service
 from Customers.models import Lead, Followup
 from django.apps import apps
 from django.http import JsonResponse
-from Technicians.models import Technician
+from Workforce.models import Staff
 from Works.models import Requisition
-from django.db.models import Count
+from django.db.models import Count, Sum
 from Works.models import Work
+from Accounts.models import Transaction, BankAccount
 
 # Create your views here.
 
 @user_passes_test(lambda u: u.is_superuser)
 def customers(request,type):
-    customers = Customer.active_objects.filter(type=type)
+    customers = Customer.active_objects.filter(type=type).order_by('name').order_by('-active')
     context = {
         'main' : 'customers',
         'sub' : type,
@@ -76,10 +77,30 @@ def edit_customer(request,slug):
     return render(request,'customers/customer-edit.html',context)
 
 @user_passes_test(lambda u: u.is_superuser)
+def customer_details(request,slug):
+    customer = Customer.objects.get(slug=slug)
+    leads = Lead.active_objects.filter(customer=customer)
+    works = Work.active_objects.filter(lead__customer=customer, status='COMPLETED')
+    transactions = Transaction.active_objects.filter(customer=customer)
+    revenue = transactions.aggregate(total=Sum('amount'))['total']
+
+    context = {
+        'main' : 'customers',
+        'sub' : customer.type,
+        'customer' : customer,
+        'leads' : leads,
+        'works' : works,
+        'transactions' : transactions,
+        'revenue' : revenue
+    }
+
+    return render(request, 'customers/customer-details.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
 def delete_customer(request,slug):
     try:
         customer = Customer.objects.get(slug=slug)
-        customer.is_deleted=True
+        customer.active=False
         customer.save()
         messages.error(request, 'Customer deleted successfully ...!')
 
@@ -160,7 +181,9 @@ def add_lead(request):
 def view_lead(request,slug):
     lead = Lead.objects.get(slug=slug)
     followups = Followup.active_objects.filter(lead=lead)
-    staffs = Technician.active_objects.all()
+    staffs = Staff.active_objects.all()
+    accounts = BankAccount.active_objects.all()
+    transactions = Transaction.active_objects.filter(lead=lead)
 
     context = {
         'main' : 'leads',
@@ -168,6 +191,8 @@ def view_lead(request,slug):
         'lead' : lead,
         'followups' : followups,
         'staffs' : staffs,
+        'accounts' : accounts,
+        'transactions' : transactions
     }
     return render(request,'leads/lead-details.html',context)
 
@@ -177,7 +202,7 @@ def convert_lead(request,slug):
         lead = Lead.objects.get(slug=slug)
         lead.status = 'CONVERTED'
         work = Work.objects.create(lead=lead)
-        work.technicians.set(lead.staffs.all())
+        work.staffs.set(lead.staffs.all())
         lead.save()
         return redirect('works',status='pending')
     

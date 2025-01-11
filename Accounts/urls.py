@@ -8,6 +8,9 @@ urlpatterns = [
     path('transaction/categories/add/', views.add_transaction_category, name='transaction-category-add'),
     path('transaction/categories/edit/<slug:slug>/', views.edit_transaction_category, name='transaction-category-edit'),
 
+    path('expense/add/',views.add_expense,name='add-expense'),
+    # path('expense/delete/<slug:slug>/',views.delete_work_expense,name='delete-work-expense'),
+
     path('banks/',views.bank_accounts,name='bank-accounts'),
     path('bank/add/',views.add_bank_account,name='bank-account-add'),
     path('bank/edit/<slug:slug>/',views.edit_bank_account,name='bank-account-edit'),

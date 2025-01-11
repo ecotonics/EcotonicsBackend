@@ -36,8 +36,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center whitespace-nowrap">NO</th>
-                                <th class="text-center whitespace-nowrap">NAME</th>
-                                <th class="text-center whitespace-nowrap">CUSTOMER ID</th>
+                                <th class="text-center whitespace-nowrap">CUSTOMER</th>
                                 <th class="text-center whitespace-nowrap">MOBILE</th>
                                 <th class="text-center whitespace-nowrap">EMAIL</th>
                                 <th class="text-center whitespace-nowrap">STATUS</th>
@@ -48,21 +47,36 @@
                             {% for customer in customers %}
                                 <tr class="intro-x">
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                    <td>
-                                        <p href="" class="font-medium text-center whitespace-nowrap">{{ customer.name }}</p>
+
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ customer.name }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ customer.location }} / CX-0{{ customer.auto_id }}</div>
                                     </td>
-                                    <td class="text-center whitespace-nowrap">CX-00{{ customer.auto_id }}</td>
+
                                     <td class="text-center whitespace-nowrap">{{ customer.mobile }}</td>
                                     <td class="text-center whitespace-nowrap">{{ customer.email }}</td>
-                                    <td class="text-center whitespace-nowrap text-success">Active</td>
+
+                                    <td class="text-center whitespace-nowrap">
+                                        {% if customer.active %}
+                                            <p class="text-success">Active</p>
+                                        {% else %}
+                                            <p class="text-danger">Inactive</p>
+                                        {% endif %}
+                                    </td>
+
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
+                                            <a class="flex items-center text-warning mx-2" href="{% url 'customer-details' customer.slug %}">
+                                                <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                            </a>
                                             <a class="flex items-center mx-2" href="{% url 'customer-edit' customer.slug %}">
                                                 <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
                                             </a>
-                                            <a class="flex items-center text-danger mx-2" href="{% url 'customer-delete' customer.slug %}" onclick="return confirm('Are you sure you want to delete the customer ?');">
-                                                <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
-                                            </a>
+                                            {% if customer.active %}
+                                                <a class="flex items-center text-danger mx-2" href="{% url 'customer-delete' customer.slug %}" onclick="return confirm('Are you sure you want to make the customer inactive ?');">
+                                                    <i data-lucide="x-circle" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            {% endif %}
                                         </div>
                                     </td>
                                 </tr>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Accounts.models import TransactionCategory,BankAccount,Transaction,Expense
+from Accounts.models import TransactionCategory,BankAccount,Transaction
 
 # Register your models here.
 
@@ -18,8 +18,3 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ['date','type','category','title','account','amount','is_deleted']
 
 admin.site.register(Transaction, TransactionAdmin)
-
-class ExpenseAdmin(admin.ModelAdmin):
-    list_display = ['date','work','technician','category','title','amount','is_deleted']
-
-admin.site.register(Expense, ExpenseAdmin)

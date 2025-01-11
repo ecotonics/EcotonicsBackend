@@ -18,7 +18,7 @@ class Category(BaseModel):
     class Meta:
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
-        ordering = ("-date_added",)
+        ordering = ("name",)
 
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)
@@ -40,7 +40,7 @@ class Service(BaseModel):
     class Meta:
         verbose_name = _('Service')
         verbose_name_plural = _('Services')
-        ordering = ("-date_added",)
+        ordering = ("name",)
 
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)

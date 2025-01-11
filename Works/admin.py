@@ -19,6 +19,6 @@ class RequisitionItemAdmin(admin.ModelAdmin):
 admin.site.register(RequisitionItem, RequisitionItemAdmin)
 
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ['date','status','technician','work','start_time','end_time','is_deleted']
+    list_display = ['date','status','staff','work','start_time','end_time','is_deleted']
 
 admin.site.register(Attendance, AttendanceAdmin)

@@ -6,6 +6,9 @@ from datetime import datetime
 today = datetime.today()
 from django.http import JsonResponse
 from django.db.models import Sum
+from Customers.models import Customer, Lead
+from Works.models import Work
+from Workforce.models import Staff
 
 # Create your views here.
 
@@ -241,3 +244,52 @@ def delete_transaction(request,slug):
     except Exception as exception:
         messages.warning(request,str(exception))
     return redirect('transactions')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def add_expense(request):
+    date = request.POST.get('date')
+
+    lead = request.POST.get('lead') or None
+    work = request.POST.get('work') or None
+    customer = request.POST.get('customer') or None
+    staff = request.POST.get('staff') or None
+    category = request.POST.get('category') or None
+
+    title = request.POST.get('title')
+    account = request.POST.get('account')
+    amount = request.POST.get('amount')
+
+    page = request.POST.get('page')
+    
+    if lead:
+        lead = Lead.objects.get(slug=lead)
+    
+    if work:
+        work = Work.objects.get(slug=work)
+
+    if customer:
+        customer = Customer.objects.get(slug=customer)
+
+    if staff:
+        staff = Staff.objects.get(slug=staff)
+
+    if category:
+        category = TransactionCategory.objects.get(slug=category)
+
+    if account:
+        account = BankAccount.objects.get(slug=account)
+
+    try:
+        Transaction.objects.create(
+            date=date, lead=lead, work=work, customer=customer, staff=staff, category=category, type=category.type, title=title, account=account, amount=amount
+        )
+        messages.success(request, 'Expense added')
+
+    except Exception as exception:
+        messages.warning(request, exception)
+
+    if page == 'lead':
+        return redirect('lead-view', slug=lead.slug)
+    elif page == 'work':
+        return request('work-details', slug=work.slug)

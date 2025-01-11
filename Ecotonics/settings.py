@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'Dashboard',
     'Services',
     'Customers',
-    'Technicians',
+    'Workforce',
     'Accounts',
     'Works',
 ]

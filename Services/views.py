@@ -10,7 +10,7 @@ from Works.models import Work
 
 @user_passes_test(lambda u: u.is_superuser)
 def categories(request):
-    categories = Category.active_objects.all().annotate(services=Count('service'))
+    categories = Category.active_objects.all().annotate(services=Count('service')).order_by('name')
 
     context = {
         'main' : 'services',
@@ -97,7 +97,7 @@ def delete_category(request,slug):
 
 @user_passes_test(lambda u: u.is_superuser)
 def services(request):
-    services = Service.active_objects.all()
+    services = Service.active_objects.all().order_by('category')
 
     context = {
         'main' : 'services',

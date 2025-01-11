@@ -4,7 +4,7 @@ from Core.models import save_data
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 from Customers.models import Lead
-from Technicians.models import Technician
+from Workforce.models import Staff
 from Users.models import User
 
 UNITS = (
@@ -23,7 +23,7 @@ class Work(BaseModel):
     status = models.CharField(max_length=20, choices=WORK_STATUS, default='PENDING')
     date = models.DateField(auto_now_add=True)
     lead = models.OneToOneField(Lead,on_delete=models.CASCADE)
-    technicians = models.ManyToManyField(Technician)
+    staffs = models.ManyToManyField(Staff)
 
     def __str__(self):
         return self.lead.name
@@ -85,13 +85,13 @@ class RequisitionItem(BaseModel):
 class Attendance(BaseModel):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(default='PENDING', max_length=20)
-    technician = models.ForeignKey(Technician,on_delete=models.CASCADE)
+    staff = models.ForeignKey(Staff,on_delete=models.CASCADE)
     work = models.ForeignKey(Work,on_delete=models.CASCADE)
     start_time = models.TimeField(null=True,blank=True)
     end_time = models.TimeField(null=True,blank=True)
 
     def __str__(self):
-        return f'{self.technician.user.first_name}'
+        return f'{self.staff.user.first_name}'
 
     class Meta:
         verbose_name = _('Attendance')
@@ -101,6 +101,6 @@ class Attendance(BaseModel):
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)
         request = request.thread_local.current_request
-        save_data(self, request, self.technician.user.username)
+        save_data(self, request, self.staff.user.username)
 
         super(Attendance, self).save(*args, **kwargs)

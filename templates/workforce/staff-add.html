@@ -1,0 +1,138 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- BEGIN: Vertical Form -->
+    <div class="intro-y box mt-5">
+        <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+            <h2 class="text-3xl mx-auto mt-3 mb-3">ADD STAFF</h2>
+        </div>
+        <div class="px-3 sm:px-10 py-5">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5">
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Name</label>
+                        <input name="name" type="text" class="form-control" placeholder="Enter staff name here" required maxlength="50">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Photo</label>
+                        <input name="photo" type="file" class="form-control file" required accept=".jpg, .jpeg, .png">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Mobile Number</label>
+                        <input name="mobile" type="text" class="form-control" placeholder="enter mobile number here" required maxlength="15">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Email</label>
+                        <input name="email" type="email" class="form-control" placeholder="Enter email here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-4">
+                        <label for="input-wizard-2" class="form-label">Location</label>
+                        <input name="location" type="text" class="form-control" placeholder="Enter location here" required maxlength="50">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-4">
+                        <label for="input-wizard-2" class="form-label">Aadhar Number</label>
+                        <input name="aadhar" type="text" class="form-control" placeholder="Enter aadhar number here" required maxlength="15">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-4">
+                        <label for="input-wizard-2" class="form-label">Blood Group</label>
+                        <input name="bg" type="text" class="form-control" placeholder="Enter blood group here" required maxlength="3">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Department</label>
+                        <select name="department" id="" class="form-control" required>
+                            <option value="">Select Department</option>
+                            {% for department in departments %}
+                                <option value="{{ department.auto_id }}">{{ department }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Designation</label>
+                        <select name="designation" id="" class="form-control" required>
+                            <option value="">Select Designation</option>
+                            {% for designation in designations %}
+                                <option value="{{ designation.auto_id }}">{{ designation }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12">
+                        <hr>
+                        <h1 class="text-center mt-3 mb-3">Emergency Contact Details</h1>
+                        <hr>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Contact Name</label>
+                        <input name="contact_name" type="text" class="form-control" placeholder="Enter emergency contact name here" required maxlength="50">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Relation</label>
+                        <input name="relation" type="text" class="form-control" placeholder="Enter relation with staff here" required maxlength="50">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Contact Number</label>
+                        <input name="contact_number" type="text" class="form-control" placeholder="Enter contat number here" required maxlength="15">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Contact Address</label>
+                        <input name="address" type="text" class="form-control" placeholder="Enter contat address here" required maxlength="100">
+                    </div>
+
+                    <div class="intro-y col-span-12">
+                        <hr>
+                        <h1 class="text-center mt-3 mb-3">Login Credentials</h1>
+                        <hr>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Username</label>
+                        <input name="username" type="text" class="form-control" placeholder="Enter username" required maxlength="20">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Password</label>
+                        <input value="123456" name="password" id="password" type="text" class="form-control" placeholder="Enter password" required maxlength="20">
+                    </div>
+
+                    <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
+                        <a class="btn btn-outline-secondary w-24 ml-2" href="{% url 'staffs' %}">Cancel</a>
+                        <button id="submit" class="btn btn-primary w-24 ml-2" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END: Vertical Form -->
+</div>
+<!-- END: Content -->
+{% endblock content %}
