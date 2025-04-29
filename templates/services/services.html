@@ -40,7 +40,6 @@
                                 <th class="text-center whitespace-nowrap">CATEGORY</th>
                                 <th class="text-center whitespace-nowrap">SERVICE ID</th>
                                 <th class="text-center whitespace-nowrap">WORKS</th>
-                                <th class="text-center whitespace-nowrap">STATUS</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
                         </thead>
@@ -61,15 +60,11 @@
 
                                     <td class="text-center whitespace-nowrap">{{ service.works | default:'0' }}</td>
 
-                                    <td class="">
-                                        <p class="text-center whitespace-nowrap text-success">{{ service.status }}</p>
-                                    </td>
-
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
-                                            <a class="flex items-center text-warning mx-2" href="{% url 'service-details' service.slug %}">
+                                            <!-- <a class="flex items-center text-warning mx-2" href="{% url 'service-details' service.slug %}">
                                                 <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
-                                            </a>
+                                            </a> -->
 
                                             <a class="flex items-center mx-2" href="{% url 'service-edit' service.slug %}">
                                                 <i data-lucide="edit" class="w-4 h-4 mx-2"></i>

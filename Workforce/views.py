@@ -82,7 +82,7 @@ def department_details(request,slug):
         'main' : 'workforce',
         'sub' : 'departments',
         'department' : department,
-        'designations,' : designations,
+        # 'designations,' : designations,
         'staffs' : staffs
     }
     return render(request,'workforce/department-details.html',context)

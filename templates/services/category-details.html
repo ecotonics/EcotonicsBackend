@@ -19,7 +19,7 @@
 
     <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12 mt-10">
-            <h1 class="text-center text-3xl">{{ category }}</h1>
+            <h1 class="text-center text-3xl">{{ category }} Services</h1>
             <hr class="mt-5">
         </div>
 
@@ -40,7 +40,6 @@
                                 <th class="text-center whitespace-nowrap">CATEGORY</th>
                                 <th class="text-center whitespace-nowrap">SERVICE ID</th>
                                 <th class="text-center whitespace-nowrap">WORKS</th>
-                                <th class="text-center whitespace-nowrap">STATUS</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
                         </thead>
@@ -58,10 +57,6 @@
                                     <td class="text-center whitespace-nowrap">ESER-{{ service.auto_id }}</td>
 
                                     <td class="text-center whitespace-nowrap">{{ service.works | default:'0' }}</td>
-
-                                    <td class="">
-                                        <p class="text-center whitespace-nowrap text-success">{{ service.status }}</p>
-                                    </td>
 
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">

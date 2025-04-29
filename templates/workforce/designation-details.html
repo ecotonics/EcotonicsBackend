@@ -19,7 +19,7 @@
 
     <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12 mt-10">
-            <h1 class="text-center text-3xl">{{ department }}</h1>
+            <h1 class="text-center text-3xl">{{ designation }} / {{ designation.department }}</h1>
             <hr class="mt-5">
         </div>
 
@@ -31,41 +31,55 @@
                 </div>
             </div>
             <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                {% if services %}
+                {% if staffs %}
                     <table class="table table-report sm:mt-2">
                         <thead>
                             <tr>
                                 <th class="text-center whitespace-nowrap">NO</th>
                                 <th class="text-center whitespace-nowrap">NAME</th>
-                                <th class="text-center whitespace-nowrap">CATEGORY</th>
-                                <th class="text-center whitespace-nowrap">SERVICE ID</th>
-                                <th class="text-center whitespace-nowrap">WORKS</th>
+                                <th class="text-center whitespace-nowrap">PHOTO</th>
+                                <th class="text-center whitespace-nowrap">MOBILE</th>
                                 <th class="text-center whitespace-nowrap">STATUS</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for service in services %}
+                            {% for staff in staffs %}
                                 <tr class="intro-x">
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
 
-                                    <td>
-                                        <p href="" class="font-medium text-center whitespace-nowrap">{{ service.name }}</p>
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ staff }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ staff.designation }} / {{ staff.department }}</div>
                                     </td>
 
-                                    <td class="text-center whitespace-nowrap">{{ service.category }}</td>
-
-                                    <td class="text-center whitespace-nowrap">ESER-{{ service.auto_id }}</td>
-
-                                    <td class="text-center whitespace-nowrap">{{ service.works | default:'0' }}</td>
-
                                     <td class="">
-                                        <p class="text-center whitespace-nowrap text-success">{{ service.status }}</p>
+                                        <div class="flex justify-center">
+                                            <div class="w-10 h-10 image-fit zoom-in">
+                                                {% if staff.user.photo %}
+                                                    <img alt="" class="tooltip rounded-full" src="{{ staff.user.photo.url }}" title="{{ staff }}">
+                                                {% else %}
+                                                    <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ staff }}">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-center whitespace-nowrap">{{ staff.user.mobile }}</td>
+
+                                    <td class="text-center whitespace-nowrap">
+                                        {% if staff.status == 1 %}
+                                            <p class="text-success">IN SERVICE</p>
+                                        {% elif staff.status == 0 %}
+                                            <p class="text-danger">NOT IN SERVICE</p>
+                                        {% endif %}
                                     </td>
 
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
-                                            <a class="flex items-center text-warning" href=""> <i data-lucide="eye" class="w-4 h-4 mr-3"></i></a>
+                                            <a class="flex items-center mx-2 text-warning" href="">
+                                                <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
