@@ -1,0 +1,306 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- BEGIN: Profile Info -->
+    <div class="intro-y box px-5 pt-5 mt-5">
+        <div class="flex flex-col lg:flex-row dark:border-darkmode-400 pb-5 -mx-5">
+            <div class="flex-1 px-5 items-center justify-center">
+                <div class="flex flex-col justify-center items-center mt-4">
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> {{ on_call.customer.name }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ on_call.customer.mobile }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ on_call.customer.email | default:'None' }} </div>
+                </div>
+            </div>
+            <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
+                <div class="flex flex-col justify-center items-center mt-4">
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i> {{ on_call.customer.location }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ on_call.category }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ on_call.service }} </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="intro-y box p-5 mt-5">
+        {{ on_call.info }}
+    </div>
+    <!-- END: Profile Info -->
+
+    <!-- BEGIN: Lead Followups -->
+    <div class="nav nav-boxed-tabs mt-5" role="tablist">
+        <div id="example-3-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2 active" data-tw-toggle="pill" data-tw-target="#example-tab-3" type="button" role="tab" aria-controls="example-tab-3" aria-selected="true">
+                {% if user.is_superuser %} Technicians {% else %} Collegues {% endif %}
+            </button>
+        </div>
+
+        <div id="example-4-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-4" type="button" role="tab" aria-controls="example-tab-4" aria-selected="false">
+                Expenses
+            </button>
+        </div>
+    </div>
+
+    <div class="tab-content mt-5">
+        
+        <div id="example-tab-3" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="example-3-tab">
+            <div class="col-span-12 mt-5">
+                {% if user.is_superuser %}
+                    {% if on_call.status == 'PENDING' %}
+                        <div class="intro-y block sm:flex items-center h-10">
+                            <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                                <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#technician-modal">ASSIGN TECHNICIANS</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                    {% if on_call.staffs.all %}
+                        <table class="table table-report sm:mt-2">
+                            <thead>
+                                <tr>
+                                    <th class="text-center whitespace-nowrap">NO</th>
+                                    <th class="text-center whitespace-nowrap">NAME</th>
+                                    <th class="text-center whitespace-nowrap">PHOTO</th>
+                                    <th class="text-center whitespace-nowrap">MOBILE</th>
+                                    {% if user.is_superuser %}
+                                        <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for staff in on_call.staffs.all %}
+                                    <tr class="intro-x">
+                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                        <td class="text-center">
+                                            <a href="" class="font-medium whitespace-nowrap">{{ staff }}</a>
+                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ staff.designation }} / {{ staff.department }}</div>
+                                        </td>
+
+                                        <td class="">
+                                            <div class="flex justify-center">
+                                                <div class="w-10 h-10 image-fit zoom-in">
+                                                    {% if staff.user.photo %}
+                                                        <img alt="" class="tooltip rounded-full" src="{{ staff.user.photo.url }}" title="{{ staff }}">
+                                                    {% else %}
+                                                        <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview.jpg' %}" title="{{ staff }}">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td class="text-center whitespace-nowrap">{{ staff.user.mobile }}</td>
+                                        
+                                        {% if user.is_superuser %}
+                                            <td class="table-report__action w-56">
+                                                <div class="flex justify-center items-center">
+                                                    <a class="flex items-center mx-2 text-warning" href="{% url 'staff-details' staff.slug %}">
+                                                        <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                            <table class="table table-report -mt-2">
+                                <tbody>
+                                    <tr class="intro-x width">
+                                        <td class=" width" style="width:100%;">
+                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                            </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div id="example-tab-4" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-4-tab">
+            <div class="col-span-12 mt-5">
+                <div class="intro-y block sm:flex items-center h-10">
+                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#transaction-modal">ADD EXPENSE</button>
+                    </div>
+                </div>
+                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                    {% if expenses %}
+                        <table class="table table-report sm:mt-2">
+                            <thead>
+                                <tr>
+                                    <th class="text-center whitespace-nowrap">NO</th>
+                                    <th class="text-center whitespace-nowrap">DATE</th>
+                                    <th class="text-center whitespace-nowrap">ADDED BY</th>
+                                    <th class="text-center whitespace-nowrap">TITLE</th>
+                                    <th class="text-center whitespace-nowrap">CATEGORY</th>
+                                    <th class="text-center whitespace-nowrap">AMOUNT</th>
+                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for expense in expenses %}
+                                    <tr class="intro-x">
+                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+                                        
+                                        <td class="text-center whitespace-nowrap">{{ expense.date | date:'d M Y' }}</td>
+
+                                        <td class="text-center">
+                                            <a href="" class="font-medium whitespace-nowrap">{{ expense.staff.user.first_name }}</a>
+                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ expense.staff.designation }} / {{ expense.staff.department }}</div>
+                                        </td>
+
+                                        <td class="text-center whitespace-nowrap">{{ expense.title }}</td>
+
+                                        <td class="text-center whitespace-nowrap">{{ expense.category }}</td>
+
+                                        <td class="text-center whitespace-nowrap">{{ expense.amount }}</td>
+
+                                        <td class="table-report__action w-56">
+                                            <div class="flex justify-center items-center">
+                                                {% if expense.staff == user.staff or user.is_superuser %}
+                                                    <a class="flex items-center text-danger mx-2" href="{% url 'delete-on-call-expense' expense.slug %}" onclick="return confirm('Are you sure you want to delete the expense ?');">
+                                                        <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                            <table class="table table-report -mt-2">
+                                <tbody>
+                                    <tr class="intro-x width">
+                                        <td class=" width" style="width:100%;">
+                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                            </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Lead Followups -->
+
+</div>
+<!-- END: Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="technician-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <form action="{% url 'assign-on-call-technician' on_call.slug %}" method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+                <!-- BEGIN: Modal Header -->
+                <div class="modal-header">
+                    <h2 class="font-medium text-base mr-auto">Staffs</h2>
+                </div>
+                <!-- END: Modal Header -->
+                <!-- BEGIN: Modal Body -->
+                <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                    <div class="col-span-12 sm:col-span-12">
+                        <select name="staffs" id="" class="tom-select" multiple>
+                            <option value="">Search Staff</option>
+                            {% if on_call.staffs %}
+                                {% for staff in on_call.staffs.all %}
+                                    <option value="{{ staff.id }}" selected>{{ staff.user.first_name }} ({{ staff.designation }})</option>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% for staff in staffs %}
+                                <option value="{{ staff.id }}">{{ staff.user.first_name }} ({{ staff.designation }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <!-- END: Modal Body -->
+                <!-- BEGIN: Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+                    <button type="submit" class="btn btn-primary w-20">Submit</button>
+                </div>
+                <!-- END: Modal Footer -->
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END: Modal Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="transaction-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <form action="{% url 'add-on-call-expense' on_call.slug %}" method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+                <!-- BEGIN: Modal Header -->
+                <div class="modal-header">
+                    <h2 class="font-medium text-base mr-auto">Expenses</h2>
+                </div>
+                <!-- END: Modal Header -->
+
+                <!-- BEGIN: Modal Body -->
+                <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Transaction Category</label>
+                        <select name="category" class="form-control">
+                            <option value="">Select Category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.slug }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Amount</label>
+                        <input step="0.01" type="number" name="amount" id="" class="form-control" placeholder="Enter transaction amount">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-12">
+                        <label for="input-wizard-2" class="form-label">Title</label>
+                        <input type="text" name="title" id="" class="form-control" placeholder="Enter transaction title">
+                    </div>
+                </div>
+                <!-- END: Modal Body -->
+                <!-- BEGIN: Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+                    <button type="submit" class="btn btn-primary w-20">Submit</button>
+                </div>
+                <!-- END: Modal Footer -->
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END: Modal Content -->
+{% endblock content %}

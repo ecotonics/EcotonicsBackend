@@ -4,7 +4,7 @@ from Core.models import save_data
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 from Workforce.models import Staff
-from Works.models import Work
+from Works.models import Work, OnCall
 from Customers.models import Customer, Lead
 
 # Create your models here.
@@ -69,18 +69,19 @@ class BankAccount(BaseModel):
 
 class Transaction(BaseModel):
     date = models.DateField()
-    status = models.CharField(max_length=50, choices=TRANSACTION_STATUS, )
+    status = models.CharField(max_length=50, choices=TRANSACTION_STATUS, default='pending')
 
-    type = models.CharField(max_length=25,choices=TRANSACTION)
-    category = models.ForeignKey(TransactionCategory,on_delete=models.CASCADE)
+    type = models.CharField(max_length=25, choices=TRANSACTION)
+    category = models.ForeignKey(TransactionCategory, on_delete=models.CASCADE)
 
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True, blank=True)
     work = models.ForeignKey(Work, on_delete=models.CASCADE, null=True, blank=True)
+    on_call = models.ForeignKey(OnCall, on_delete=models.CASCADE, null=True, blank=True)
     staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
 
     title = models.CharField(max_length=200)
-    account = models.ForeignKey(BankAccount,on_delete=models.CASCADE)
+    account = models.ForeignKey(BankAccount,on_delete=models.CASCADE, null=True, blank=True)
     amount = models.FloatField(default=0.00)
 
     def __str__(self):
@@ -94,6 +95,6 @@ class Transaction(BaseModel):
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)
         request = request.thread_local.current_request
-        save_data(self, request, self.title)
+        save_data(self, request, self.category)
 
         super(Transaction, self).save(*args, **kwargs)

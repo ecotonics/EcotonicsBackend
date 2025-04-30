@@ -54,6 +54,7 @@
                                 <th class="text-center whitespace-nowrap">SITE</th>
                                 <th class="text-center whitespace-nowrap">START TIME</th>
                                 <th class="text-center whitespace-nowrap">END TIME</th>
+                                <th class="text-center whitespace-nowrap">STATUS</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
                         </thead>
@@ -65,36 +66,54 @@
 
                                     {% if user.is_superuser %}
                                         <td class="text-center">
-                                            <a href="" class="font-medium whitespace-nowrap">{{ attandance.technician }}</a>
-                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ attandance.technician.designation }} / {{ attandance.technician.department }}</div>
+                                            <a href="" class="font-medium whitespace-nowrap">{{ attandance.staff }}</a>
+                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ attandance.staff.designation }} / {{ attandance.staff.department }}</div>
                                         </td>
                                         <td class="">
                                             <div class="flex justify-center">
                                                 <div class="w-10 h-10 image-fit zoom-in">
-                                                    {% if attandance.technician.user.photo %}
-                                                        <img alt="" class="tooltip rounded-full" src="{{ attandance.technician.user.photo.url }}" title="{{ technician }}">
+                                                    {% if attandance.staff.user.photo %}
+                                                        <img alt="" class="tooltip rounded-full" src="{{ attandance.staff.user.photo.url }}" title="{{ attandance.staff }}">
                                                     {% else %}
-                                                        <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ technician }}">
+                                                        <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ attandance.staff }}">
                                                     {% endif %}
                                                 </div>
                                             </div>
                                         </td>
                                     {% endif %}
 
-                                    <td class="text-center whitespace-nowrap">{{ attandance.work }}</td>
+                                    <td class="text-center whitespace-nowrap">{{ attandance.on_call.site_name }}</td>
                                     <td class="text-center whitespace-nowrap text-success">{{ attandance.start_time | date:"h:i A" }}</td>
                                     <td class="text-center whitespace-nowrap text-warning">{{ attandance.end_time | date:"h:i A" }}</td>
+
+                                    <td class="text-center whitespace-nowrap">
+                                        {% if attandance.status == 'APPROVED' %}
+                                            <p class="text-success">{{ attandance.status }}</p>
+                                        {% elif attandance.status == 'REJECTED' %}
+                                            <p class="text-danger">{{ attandance.status }}</p>
+                                        {% else %}
+                                            <p class="text-warning">{{ attandance.status }}</p>
+                                        {% endif %}
+                                    </td>
+
                                     <td class="table-report__action w-36">
                                         <div class="flex justify-center items-center">
-                                            {% if user.is_superuser %}
+
+                                            {% if user.is_superuser and attandance.status != 'APPROVED' %}
                                                 <a class="flex items-center text-success" href="{% url 'attandance-approve' attandance.slug %}" onclick="return confirm('Are you sure you want to approve the attendance ?');">
                                                     <i data-lucide="check-circle" class="w-4 h-4 mx-2"></i>
                                                 </a>
                                             {% endif %}
                                             
-                                            {% if not user.is_superuser %}
+                                            {% if user.is_superuser or attandance.status == 'PENDING' %}
                                                 <a class="flex items-center text-warning mx-2" href="{% url 'attandance-edit' attandance.slug %}">
                                                     <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            {% endif %}
+
+                                            {% if user.is_superuser and attandance.status != 'REJECTED' %}
+                                                <a class="flex items-center text-danger" href="{% url 'attandance-reject' attandance.slug %}" onclick="return confirm('Are you sure you want to reject the attendance ?');">
+                                                    <i data-lucide="x-circle" class="w-4 h-4 mx-2"></i>
                                                 </a>
                                             {% endif %}
                                         </div>

@@ -38,7 +38,7 @@ class DeletedManager(models.Manager):
 class BaseModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
-    auto_id = models.PositiveIntegerField(db_index=True, unique=True,editable=False)
+    auto_id = models.PositiveIntegerField(db_index=True, unique=True, editable=False, null=True, blank=True)
 
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True,editable=False,related_name="creator_%(app_label)s_%(class)s_objects", limit_choices_to={'is_active': True}, on_delete=models.CASCADE)
     updater = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True,editable=False, related_name="updater_%(app_label)s_%(class)s_objects", limit_choices_to={'is_active': True}, on_delete=models.CASCADE)

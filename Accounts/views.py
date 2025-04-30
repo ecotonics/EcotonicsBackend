@@ -35,7 +35,7 @@ def transaction_categories(request):
     categories = TransactionCategory.active_objects.all()
 
     context = {
-        'main' : 'accounts',
+        'main' : 'masters',
         'sub' : 'categories',
         'categories' : categories
     }
@@ -59,7 +59,7 @@ def add_transaction_category(request):
             return redirect('transaction-category-add')
 
     context = {
-        'main' : 'accounts',
+        'main' : 'masters',
         'sub' : 'categories',
     }
 
@@ -84,7 +84,7 @@ def edit_transaction_category(request,slug):
             return redirect('transaction-category-edit',slug=category.slug)
 
     context = {
-        'main' : 'accounts',
+        'main' : 'masters',
         'sub' : 'categories',
         'category' : category
     }
@@ -95,7 +95,7 @@ def edit_transaction_category(request,slug):
 def bank_accounts(request):
     accounts = BankAccount.active_objects.all()
     context = {
-        'main' : 'accounts',
+        'main' : 'masters',
         'sub' : 'bank-accounts',
         'accounts' : accounts
     }
@@ -119,7 +119,7 @@ def add_bank_account(request):
             return redirect('bank-account-add')
 
     context = {
-        'main' : 'accounts',
+        'main' : 'masters',
         'sub' : 'bank-accounts',
     }
 
@@ -144,7 +144,7 @@ def edit_bank_account(request,slug):
             return redirect('bank-account-edit',slug=account.slug)
 
     context = {
-        'main' : 'accounts',
+        'main' : 'masters',
         'sub' : 'bank-accounts',
         'account' : account
     }

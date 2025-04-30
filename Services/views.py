@@ -192,22 +192,6 @@ def service_details(request,slug):
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-@user_passes_test(lambda u: u.is_superuser)
-def calls(request):
-    context = {
-        'main' : 'calls'
-    }
-    return render(request,'calls/calls.html',context)
-
-@user_passes_test(lambda u: u.is_superuser)
-def add_call(request):
-    context = {
-        'main' : 'calls'
-    }
-    return render(request,'calls/call-add.html',context)
-
-#-----------------------------------------------------------------------------------------------------------------------------------
-
 def filter_service(request):
     slug = request.GET.get('slug')
     services_list = Service.active_objects.filter(category__slug=slug).values('slug', 'name')

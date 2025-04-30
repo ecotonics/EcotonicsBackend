@@ -1,10 +1,10 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from Users.models import User
 from Workforce.models import Department, Designation, Staff
 from django.contrib import messages
 from django.db import transaction
-from Works.models import Work, Attendance
+from Works.models import Work, Attendance, OnCall
 from django.db.models import Count, Sum
 from Customers.models import Lead
 from datetime import datetime
@@ -355,13 +355,16 @@ def delete_staff(request,slug):
 
 @login_required
 def attandance(request):
-    attandances = Attendance.active_objects.filter(status='PENDING')
-    if request.user.is_superuser:
-        clocked = False
-    else:
+    if not request.user.is_superuser:
+        attandances = Attendance.active_objects.filter(staff=request.user.staff)
         attandance = Attendance.active_objects.filter(date=today).exists()
         if attandance:
             clocked = True
+        else:
+            clocked = False
+    else:
+        attandances = Attendance.active_objects.all()
+        clocked = False
 
     context = {
         'main' : 'workforce',
@@ -373,33 +376,34 @@ def attandance(request):
 
 @login_required
 def add_attandance(request):
-    staffs = Staff.active_objects.all()
+    technicians = Staff.active_objects.all()
     works = Work.active_objects.all()
 
+    if not request.user.is_superuser:
+        on_calls = OnCall.active_objects.filter(staffs__in=[request.user.staff])
+    else:
+        on_calls = OnCall.active_objects.all()
+
     if request.method == 'POST':
-        staff = request.POST.get('staff')
-        work = request.POST.get('work')
+        technician = request.POST.get('technician')
+        on_call = request.POST.get('on_call')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
 
         try:
             if request.user.is_superuser:
-                staff = Staff.objects.get(slug=staff)
+                staff = Staff.objects.get(slug=technician)
             else:
                 staff = Staff.objects.get(user=request.user)
 
-            work = Work.objects.get(slug=work)
+            on_call = OnCall.active_objects.get(slug=on_call)
 
             Attendance.objects.create(
-                staff=staff, work=work, start_time=start_time, end_time=end_time
+                staff=staff, on_call=on_call, start_time=start_time, end_time=end_time
             )
 
             messages.success(request,'Attendance added successfully')
-
-            if request.user.is_superuser:
-                return redirect('attandance')
-            else:
-                return redirect('dashboard')
+            return redirect('attandance')
 
         except Exception as exception:
             messages.warning(request,exception)
@@ -408,16 +412,55 @@ def add_attandance(request):
     context = {
         'main' : 'workforce',
         'sub' : 'attandance',
-        'staffs' : staffs,
-        'works' : works
+        'technicians' : technicians,
+        'works' : works,
+        'on_calls' : on_calls
     }
     return render(request,'workforce/attandance-add.html',context)
 
 @login_required
 def edit_attandance(request, slug):
+    technicians = Staff.active_objects.all()
+    attandance = Attendance.active_objects.filter(slug=slug).first()
+
+    if not request.user.is_superuser:
+        on_calls = OnCall.active_objects.filter(staffs__in=[request.user.staff])
+    else:
+        on_calls = OnCall.active_objects.all()
+
+    if request.method == 'POST':
+        technician = request.POST.get('technician')
+        on_call = request.POST.get('on_call')
+        start_time = request.POST.get('start_time')
+        end_time = request.POST.get('end_time')
+
+        try:
+            if request.user.is_superuser:
+                staff = Staff.objects.get(slug=technician)
+            else:
+                staff = Staff.objects.get(user=request.user)
+
+            on_call = OnCall.active_objects.filter(slug=on_call).first()
+
+            attandance.stat_time = start_time
+            attandance.end_time = end_time
+            attandance.staff = staff
+            attandance.on_call = on_call
+            attandance.save()
+
+            messages.success(request,'Attendance added successfully')
+            return redirect('attandance')
+
+        except Exception as exception:
+            messages.warning(request,exception)
+            return redirect('attandance-edit', slug=slug)
+
     context = {
         'main' : 'workforce',
-        'sub' : 'attandance'
+        'sub' : 'attandance',
+        'attandance' : attandance,
+        'on_calls' : on_calls,
+        'technicians' : technicians
     }
     return render(request,'workforce/attandance-edit.html',context)
 
@@ -429,19 +472,20 @@ def delete_attandance(request):
 def approve_attendance(request,slug):
     try:
         attandance = Attendance.objects.get(slug=slug)
-        attandance.status = 2
+        attandance.status = 'APPROVED'
         attandance.save()
         messages.success(request,'Attendance approved')
     except Exception as exception:
         messages.error(request,exception)
 
     return redirect('attandance')
+    
 
 @login_required
 def reject_attendance(request,slug):
     try:
         attandance = Attendance.objects.get(slug=slug)
-        attandance.status = 0
+        attandance.status = 'REJECTED'
         attandance.save()
         messages.success(request,'Attendance rejected')
     except Exception as exception:

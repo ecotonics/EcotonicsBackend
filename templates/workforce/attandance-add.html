@@ -41,10 +41,10 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Work Site</label>
-                        <select name="work" id="" class="form-control">
+                        <select name="on_call" id="" class="form-control">
                             <option value="">Select Work Site</option>
-                            {% for work in works %}
-                                <option value="{{ work.slug }}">{{ work }}</option>
+                            {% for on_call in on_calls %}
+                                <option value="{{ on_call.slug }}">{{ on_call.site_name }}</option>
                             {% endfor %}
                         </select>
                     </div>

@@ -1,0 +1,81 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
+                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- BEGIN: Vertical Form -->
+    <div class="intro-y box mt-5">
+        <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+            <h2 class="text-3xl mx-auto mt-3 mb-3">EDIT ON CALL</h2>
+        </div>
+        <div class="px-3 sm:px-10 py-5">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5">
+
+                    <div class="intro-y col-span-6">
+                        <label for="input-wizard-2" class="form-label">Site Name</label>
+                        <input name="site_name" value="{{ on_call.site_name }}" type="text" class="form-control" placeholder="Enter site name here" maxlength="100" required>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Customer</label>
+                        <select name="customer" id="customers" class="form-control">
+                            <option value="{{ on_call.customer.slug }}">{{ on_call.customer }}</option>
+                            {% for customer in customers %}
+                                <option value="{{ customer.slug }}">{{ customer }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Service Category</label>
+                        <select name="category" id="service-category" class="form-control">
+                            <option value="{{ on_call.category.slug }}">{{ on_call.category }}</option>
+                            {% for category in categories %}
+                                <option value="{{ category.slug }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Service</label>
+                        <select name="service" id="services" class="form-control">
+                            <option value="{{ on_call.service.slug }}">{{ on_call.service }}</option>
+                            {% for service in services %}
+                                <option value="{{ service.slug }}">{{ service }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-12">
+                        <label for="input-wizard-2" class="form-label">Informations</label>
+                        <textarea name="info" id="" cols="10" rows="5" placeholder="Enter informations" class="form-control">{{ on_call.info }}</textarea>
+                    </div>
+
+                    <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
+                        <a class="btn btn-outline-secondary w-24 ml-2" href="{% url 'on-calls' %}">Cancel</a>
+                        <button class="btn btn-primary w-24 ml-2" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END: Vertical Form -->
+</div>
+<!-- END: Content -->
+{% endblock content %}

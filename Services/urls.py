@@ -16,9 +16,5 @@ urlpatterns = [
     path('service/delete/<slug:slug>/',views.delete_service,name='service-delete'),
     path('service/details/<slug:slug>/',views.service_details,name='service-details'),
 
-    # SERVICE CALLS
-    path('calls/',views.calls,name='calls'),
-    path('call/add/',views.add_call,name='call-add'),
-
     path('filter-service/',views.filter_service,name='filter-service')
 ]

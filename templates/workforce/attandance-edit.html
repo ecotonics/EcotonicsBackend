@@ -31,7 +31,7 @@
                         <div class="intro-y col-span-12 sm:col-span-6">
                             <label for="input-wizard-2" class="form-label">Technician</label>
                             <select name="technician" id="" class="form-control">
-                                <option value="">Select Technician</option>
+                                <option value="{{ attandance.staff.slug }}">{{ attandance.staff }}</option>
                                 {% for technician in technicians %}
                                     <option value="{{ technician.slug }}">{{ technician }} ({{ technician.designation }})</option>
                                 {% endfor %}
@@ -41,22 +41,22 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Work Site</label>
-                        <select name="work" id="" class="form-control">
-                            <option value="">Select Work Site</option>
-                            {% for work in works %}
-                                <option value="{{ work.slug }}">{{ work }}</option>
+                        <select name="on_call" id="" class="form-control">
+                            <option value="{{ attandance.on_call.slug }}">{{ attandance.on_call.site_name }}</option>
+                            {% for on_call in on_calls %}
+                                <option value="{{ on_call.slug }}">{{ on_call.site_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">From Time</label>
-                        <input type="time" name="start_time" id="" class="form-control">
+                        <input value="{{ attandance.start_time | time:'H:i' }}" type="time" name="start_time" id="" class="form-control">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">To Time</label>
-                        <input type="time" name="end_time" id="" class="form-control">
+                        <input value="{{ attandance.end_time | time:'H:i' }}" type="time" name="end_time" id="" class="form-control">
                     </div>
 
                     <!-- <div class="intro-y col-span-12 sm:col-span-12">
