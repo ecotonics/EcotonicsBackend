@@ -93,7 +93,14 @@
                                 <div class="menu__title"> Assigned Works </div>
                             </a>
                         </li>
-                    {% endif %}
+
+                        {% endif %}
+                    <li>
+                        <a href="{% url 'attandance' %}" class="menu menu--active">
+                            <div class="menu__icon"> <i data-lucide="clipboard"></i> </div>
+                            <div class="menu__title"> Attandance </div>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
