@@ -24,35 +24,47 @@
                 <div class="font-medium text-center lg:text-left lg:mt-3">Contact Details</div>
                 <div class="flex flex-col justify-center items-center lg:items-start mt-4">
                     <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ customer.mobile }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ customer.email }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ customer.email | default:'None' }} </div>
                     <!-- <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="twitter" class="w-4 h-4 mr-2"></i> Twitter Al Pacino </div> -->
                 </div>
             </div>
             <div class="mt-6 lg:mt-0 flex-1 flex items-center justify-center px-5 border-t lg:border-0 border-slate-200/60 dark:border-darkmode-400 pt-5 lg:pt-0">
                 <div class="text-center rounded-md w-40 py-3">
-                    <div class="font-medium text-xl">{{ works.count }}</div>
-                    <div class="text-slate-500">Works Completed</div>
+                    <div class="font-medium text-xl">{{ on_calls.count | default:'0' }}</div>
+                    <div class="text-slate-500">Total Works</div>
                 </div>
                 <div class="text-center rounded-md w-40 py-3">
-                    <div class="font-medium text-xl">{{ revenue | default:'0.00' }}</div>
-                    <div class="text-slate-500">Revenue Generated</div>
+                    <div class="font-medium text-xl">{{ p_l | default:'0.00' }}</div>
+                    <div class="text-slate-500">P / L Generated</div>
                 </div>
                 <div class="text-center rounded-md w-40 py-3">
-                    <div class="font-medium text-xl">0</div>
-                    <div class="text-slate-500">Working Days</div>
+                    <div class="font-medium text-xl">{{ attandances.count | default:'0' }}</div>
+                    <div class="text-slate-500">Worked Count</div>
                 </div>
             </div>
         </div>
         <ul class="nav nav-link-tabs flex-col sm:flex-row justify-center lg:justify-start text-center" role="tablist">
             <li id="lead-tab" class="nav-item" role="presentation">
                 <a href="javascript:;" class="nav-link py-4 flex items-center active" data-tw-target="#lead" aria-selected="false" role="tab"> 
-                    <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Leads 
+                    <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Works 
                 </a>
             </li>
 
-            <li id="work-tab" class="nav-item" role="presentation">
-                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#work" aria-selected="false" role="tab"> 
-                    <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Works 
+            <li id="attandance-tab" class="nav-item" role="presentation">
+                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#attandance" aria-selected="false" role="tab"> 
+                    <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Attandance 
+                </a>
+            </li>
+
+            <li id="expense-tab" class="nav-item" role="presentation">
+                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#expense" aria-selected="false" role="tab"> 
+                    <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Expenses 
+                </a>
+            </li>
+
+            <li id="revenue-tab" class="nav-item" role="presentation">
+                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#revenue" aria-selected="false" role="tab"> 
+                    <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Revenue 
                 </a>
             </li>
         </ul>
@@ -62,50 +74,55 @@
 
         <div id="lead" class="tab-pane active" role="tabpanel" aria-labelledby="lead-tab">
             <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                {% if leads %}
+                {% if on_calls %}
                     <table class="table table-report sm:mt-2">
                         <thead>
                             <tr>
                                 <th class="text-center whitespace-nowrap">NO</th>
-                                <th class="text-center whitespace-nowrap">DATE</th>
-                                <th class="text-center whitespace-nowrap">WORK</th>
+                                <th class="text-center whitespace-nowrap">SITE</th>
+                                <th class="text-center whitespace-nowrap">SERVICE</th>
+                                <!-- <th class="text-center whitespace-nowrap">REVENUE</th>
+                                <th class="text-center whitespace-nowrap">EXPENSES</th>
+                                <th class="text-center whitespace-nowrap">P / L</th> -->
                                 <th class="text-center whitespace-nowrap">STATUS</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for lead in leads %}
+                            {% for call in on_calls %}
                                 <tr class="intro-x">
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-
-                                    <td class="font-medium text-center whitespace-nowrap">{{ lead.date | date:'d M Y'}}</td>
+                                    
+                                    <td class="text-center whitespace-nowrap">{{ call.site_name }}</td>
 
                                     <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ lead.service }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ lead.service.category }}</div>
+                                        <a href="" class="font-medium whitespace-nowrap">{{ call.service }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ call.service.category }}</div>
                                     </td>
 
-                                    <td class="font-medium text-center whitespace-nowrap">
-                                        {% if lead.status == 'PENDING' %}
-                                            <span class="text-warning">{{ lead.status }}</span>
-                                        {% elif lead.status == 'CONVERTED' %}
-                                            <span class="text-success">{{ lead.status }}</span>
-                                        {% else %}
-                                            <span class="text-danger">{{ lead.status }}</span>
+                                    <!-- <td class="text-center whitespace-nowrap">{{ call.total_revenue | default:'0' }}</td> -->
+
+                                    <!-- <td class="text-center whitespace-nowrap">{{ call.total_expense | default:'0' }}</td> -->
+
+                                    <!-- <td class="text-center whitespace-nowrap">{{ call.pl | default:'0' }}</td> -->
+
+                                    <td class="text-center whitespace-nowrap">
+                                        {% if call.status == 'PENDING' %}
+                                            <p class="text-warning">{{ call.status }}</p>
+                                        {% elif call.status == 0 %}
+                                            <p class="text-success">NOT IN SERVICE</p>
                                         {% endif %}
                                     </td>
 
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
-                                            <a class="flex items-center mx-2 text-warning" href="{% url 'lead-view' lead.slug %}">
+                                            <a class="flex items-center mx-2 text-warning" href="{% url 'on-call-details' call.slug %}">
                                                 <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
                                             </a>
-                                            {% if lead.status == 'PENDING' %}
-                                                <a class="flex items-center mx-2" href="{% url 'lead-edit' lead.slug %}">
+
+                                            {% if call.status == "PENDING" %}
+                                                <a class="flex items-center mx-2" href="{% url 'on-call-edit' call.slug %}">
                                                     <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
-                                                </a>
-                                                <a class="flex items-center text-danger mx-2" href="{% url 'lead-delete' lead.slug %}" onclick="return confirm('Are you sure you want to cancel the lead ?');">
-                                                    <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
                                                 </a>
                                             {% endif %}
                                         </div>
@@ -132,43 +149,177 @@
             </div>
         </div>
 
-        <div id="work" class="tab-pane" role="tabpanel" aria-labelledby="work-tab">
+        <div id="attandance" class="tab-pane" role="tabpanel" aria-labelledby="attandance-tab">
             <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                {% if works %}
+                {% if attandances %}
                     <table class="table table-report sm:mt-2">
                         <thead>
                             <tr>
                                 <th class="text-center whitespace-nowrap">NO</th>
                                 <th class="text-center whitespace-nowrap">DATE</th>
-                                <th class="text-center whitespace-nowrap">CUSTOMER</th>
-                                <th class="text-center whitespace-nowrap">WORK TYPE</th>
-                                <th class="text-center whitespace-nowrap">WORK</th>
-                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                <th class="text-center whitespace-nowrap">TECHNICIAN</th>
+                                <th class="text-center whitespace-nowrap">PHOTO</th>
+                                <th class="text-center whitespace-nowrap">SITE</th>
+                                <th class="text-center whitespace-nowrap">START TIME</th>
+                                <th class="text-center whitespace-nowrap">END TIME</th>
+                                <th class="text-center whitespace-nowrap">STATUS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for work in works %}
+                            {% for attandance in attandances %}
                                 <tr class="intro-x">
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                    <td class="font-medium text-center whitespace-nowrap">{{ work.lead.date | date:'d M Y'}}</td>
+                                    <td class="text-center whitespace-nowrap">{{ attandance.date | date:'d M Y' }}</td>
                                     <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ work.lead.name }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ work.lead.mobile }}</div>
+                                        <a href="" class="font-medium whitespace-nowrap">{{ attandance.staff }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ attandance.staff.designation }} / {{ attandance.staff.department }}</div>
                                     </td>
-                                    <td class="text-center whitespace-nowrap">{{ work.lead.type | capfirst }}</td>
-                                    <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ work.lead.service }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ work.lead.service.category }}</div>
-                                    </td>
-                                    <td class="table-report__action w-56">
-                                        <div class="flex justify-center items-center">
-                                            <a class="flex items-center mx-2 text-warning" href="{% url 'work-details' work.slug %}">
-                                                <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
-                                            </a>
+                                    <td class="">
+                                        <div class="flex justify-center">
+                                            <div class="w-10 h-10 image-fit zoom-in">
+                                                {% if attandance.staff.user.photo %}
+                                                    <img alt="" class="tooltip rounded-full" src="{{ attandance.staff.user.photo.url }}" title="{{ attandance.staff }}">
+                                                {% else %}
+                                                    <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ attandance.staff }}">
+                                                {% endif %}
+                                            </div>
                                         </div>
+                                    </td>
+                                    <td class="text-center whitespace-nowrap">{{ attandance.on_call.site_name }}</td>
+                                    <td class="text-center whitespace-nowrap text-success">{{ attandance.start_time | date:"h:i A" }}</td>
+                                    <td class="text-center whitespace-nowrap text-warning">{{ attandance.end_time | date:"h:i A" }}</td>
+
+                                    <td class="text-center whitespace-nowrap">
+                                        {% if attandance.status == 'APPROVED' %}
+                                            <p class="text-success">{{ attandance.status }}</p>
+                                        {% elif attandance.status == 'REJECTED' %}
+                                            <p class="text-danger">{{ attandance.status }}</p>
+                                        {% else %}
+                                            <p class="text-warning">{{ attandance.status }}</p>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
+                            <tbody>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                    <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="expense" class="tab-pane" role="tabpanel" aria-labelledby="expense-tab">
+            <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                {% if expenses %}
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">DATE</th>
+                                <th class="text-center whitespace-nowrap">SITE</th>
+                                <th class="text-center whitespace-nowrap">ADDED BY</th>
+                                <th class="text-center whitespace-nowrap">TITLE</th>
+                                <th class="text-center whitespace-nowrap">CATEGORY</th>
+                                <th class="text-center whitespace-nowrap">AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                                <tr class="intro-x">
+                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+                                    
+                                    <td class="text-center whitespace-nowrap">{{ expense.date | date:'d M Y' }}</td>
+
+                                    <td class="text-center whitespace-nowrap">{{ expense.on_call.site_name }}</td>
+
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ expense.staff.user.first_name }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ expense.staff.designation }} / {{ expense.staff.department }}</div>
+                                    </td>
+
+                                    <td class="text-center whitespace-nowrap">{{ expense.title }}</td>
+
+                                    <td class="text-center whitespace-nowrap">{{ expense.category }}</td>
+
+                                    <td class="text-center text-danger font-bold whitespace-nowrap">{{ expense.amount }}</td>
+                                </tr>
+                            {% endfor %}
+                                <tr>
+                                    <td colspan="6" class="text-center whitespace-nowrap"></td>
+                                    <td class="text-center whitespace-nowrap font-bold text-danger text-2xl">{{ expense_amount }}</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
+                            <tbody>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                    <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="revenue" class="tab-pane" role="tabpanel" aria-labelledby="revenue-tab">
+            <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                {% if revenues %}
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">DATE</th>
+                                <th class="text-center whitespace-nowrap">SITE</th>
+                                <th class="text-center whitespace-nowrap">ADDED BY</th>
+                                <th class="text-center whitespace-nowrap">TITLE</th>
+                                <th class="text-center whitespace-nowrap">CATEGORY</th>
+                                <th class="text-center whitespace-nowrap">AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for revenue in revenues %}
+                                <tr class="intro-x">
+                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+                                    
+                                    <td class="text-center whitespace-nowrap">{{ revenue.date | date:'d M Y' }}</td>
+
+                                    <td class="text-center whitespace-nowrap">{{ revenue.on_call.site_name }}</td>
+
+                                    <td class="text-center">
+                                        <a href="" class="font-medium whitespace-nowrap">{{ revenue.staff.user.first_name }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ revenue.staff.designation }} / {{ revenue.staff.department }}</div>
+                                    </td>
+
+                                    <td class="text-center whitespace-nowrap">{{ revenue.title }}</td>
+
+                                    <td class="text-center whitespace-nowrap">{{ revenue.category }}</td>
+
+                                    <td class="text-center text-danger font-bold whitespace-nowrap">{{ revenue.amount }}</td>
+                                </tr>
+                            {% endfor %}
+                                <tr>
+                                    <td colspan="6" class="text-center whitespace-nowrap"></td>
+                                    <td class="text-center whitespace-nowrap font-bold text-danger text-2xl">{{ revenue_amount }}</td>
+                                </tr>
                         </tbody>
                     </table>
                 {% else %}

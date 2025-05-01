@@ -16,7 +16,7 @@
                     {% endif %}
                 </div>
                 <div class="ml-5">
-                    <div class="w-24 sm:w-40 truncate sm:whitespace-normal font-medium text-lg">{{ staff.user }}</div>
+                    <div class="w-24 sm:w-40 truncate sm:whitespace-normal font-medium text-lg">{{ staff.user.first_name }}</div>
                     <div class="text-slate-500">{{ staff.designation }} / {{ staff.department }}</div>
                 </div>
             </div>
@@ -29,23 +29,23 @@
                 </div>
             </div>
             <div class="mt-6 lg:mt-0 flex-1 flex items-center justify-center px-5 border-t lg:border-0 border-slate-200/60 dark:border-darkmode-400 pt-5 lg:pt-0">
-                <div class="text-center rounded-md w-20 py-3">
-                    <div class="font-medium text-primary text-xl">201</div>
-                    <div class="text-slate-500">Orders</div>
+                <div class="text-center rounded-md py-3 px-3">
+                    <div class="font-medium text-xl">{{ attandances.count }}</div>
+                    <div class="text-slate-500">Worked Days</div>
                 </div>
-                <div class="text-center rounded-md w-20 py-3">
-                    <div class="font-medium text-primary text-xl">1k</div>
-                    <div class="text-slate-500">Purchases</div>
+                <div class="text-center rounded-md py-3 px-3">
+                    <div class="font-medium text-xl">{{ on_calls.count }}</div>
+                    <div class="text-slate-500">Worked Sites</div>
                 </div>
-                <div class="text-center rounded-md w-20 py-3">
-                    <div class="font-medium text-primary text-xl">492</div>
-                    <div class="text-slate-500">Reviews</div>
+                <div class="text-center rounded-md py-3 px-3">
+                    <div class="font-medium text-xl">0</div>
+                    <div class="text-slate-500">Something</div>
                 </div>
             </div>
         </div>
         <ul class="nav nav-link-tabs flex-col sm:flex-row justify-center lg:justify-start text-center" role="tablist" >
             <li id="profile-tab" class="nav-item" role="presentation">
-                <a href="javascript:;" class="nav-link py-4 flex items-center active" data-tw-target="#profile" aria-controls="profile" aria-selected="true" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="user"></i> Profile </a>
+                <a href="javascript:;" class="nav-link py-4 flex items-center active" data-tw-target="#profile" aria-controls="profile" aria-selected="true" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="user"></i> Personal Details </a>
             </li>
             <li id="attandance-tab" class="nav-item" role="presentation">
                 <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#attandance" aria-selected="false" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Attandance </a>
@@ -54,10 +54,7 @@
                 <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#payments" aria-selected="false" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Payments </a>
             </li>
             <li id="work-tab" class="nav-item" role="presentation">
-                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#work" aria-selected="false" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Works </a>
-            </li>
-            <li id="sites-tab" class="nav-item" role="presentation">
-                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#sites" aria-selected="false" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Sites </a>
+                <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#work" aria-selected="false" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="shield"></i> Work Sites </a>
             </li>
             <li id="-tab" class="nav-item" role="presentation">
                 <a href="javascript:;" class="nav-link py-4 flex items-center" data-tw-target="#change-password" aria-selected="false" role="tab" > <i class="w-4 h-4 mr-2" data-lucide="lock"></i> Change Password </a>
@@ -70,122 +67,152 @@
     <!-- END: Profile Info -->
     <div class="tab-content mt-5">
         <div id="profile" class="tab-pane active" role="tabpanel" aria-labelledby="profile-tab">
-            <div class="grid grid-cols-12 gap-6">
-                <!-- BEGIN: Work In Progress -->
-                <div class="intro-y box col-span-12 lg:col-span-12">
-                    <div class="flex items-center px-5 py-5 sm:py-0 border-b border-slate-200/60 dark:border-darkmode-400">
-                        <h2 class="font-medium text-base mr-auto">
-                            Work In Progress
-                        </h2>
-                        <div class="dropdown ml-auto sm:hidden">
-                            <a class="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false" data-tw-toggle="dropdown"> <i data-lucide="more-horizontal" class="w-5 h-5 text-slate-500"></i> </a>
-                            <div class="nav nav-tabs dropdown-menu w-40" role="tablist">
-                                <ul class="dropdown-content">
-                                    <li> <a id="work-in-progress-mobile-new-tab" href="javascript:;" data-tw-toggle="tab" data-tw-target="#work-in-progress-new" class="dropdown-item" role="tab" aria-controls="work-in-progress-new" aria-selected="true">New</a> </li>
-                                    <li> <a id="work-in-progress-mobile-last-week-tab" href="javascript:;" data-tw-toggle="tab" data-tw-target="#work-in-progress-last-week" class="dropdown-item" role="tab" aria-selected="false">Last Week</a> </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <ul class="nav nav-link-tabs w-auto ml-auto hidden sm:flex" role="tablist" >
-                            <li id="work-in-progress-new-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-5 active" data-tw-target="#work-in-progress-new" aria-controls="work-in-progress-new" aria-selected="true" role="tab" > New </a> </li>
-                            <li id="work-in-progress-last-week-tab" class="nav-item" role="presentation"> <a href="javascript:;" class="nav-link py-5" data-tw-target="#work-in-progress-last-week" aria-selected="false" role="tab" > Last Week </a> </li>
-                        </ul>
-                    </div>
-                    <div class="p-5">
-                        <div class="tab-content">
-                            <div id="work-in-progress-new" class="tab-pane active" role="tabpanel" aria-labelledby="work-in-progress-new-tab">
-                                <div>
-                                    <div class="flex">
-                                        <div class="mr-auto">Pending Tasks</div>
-                                        <div>20%</div>
-                                    </div>
-                                    <div class="progress h-1 mt-2">
-                                        <div class="progress-bar w-1/2 bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="mt-5">
-                                    <div class="flex">
-                                        <div class="mr-auto">Completed Tasks</div>
-                                        <div>2 / 20</div>
-                                    </div>
-                                    <div class="progress h-1 mt-2">
-                                        <div class="progress-bar w-1/4 bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <div class="mt-5">
-                                    <div class="flex">
-                                        <div class="mr-auto">Tasks In Progress</div>
-                                        <div>42</div>
-                                    </div>
-                                    <div class="progress h-1 mt-2">
-                                        <div class="progress-bar w-3/4 bg-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <a href="" class="btn btn-secondary block w-40 mx-auto mt-5">View More Details</a>
-                            </div>
-                        </div>
-                    </div>
+            <div class="grid grid-cols-12 gap-4 gap-y-5 mt-5 box px-5 py-10">
+
+                <div class="intro-y col-span-12 lg:col-span-3">
+                    <p class="mb-2">Name</p>
+                    <p class="form-control p-3">{{ staff.user.first_name }}</p>
                 </div>
-                <!-- END: Work In Progress -->
+
+                <div class="intro-y col-span-12 lg:col-span-3">
+                    <p class="mb-2">Mobile Number</p>
+                    <p class="form-control p-3">{{ staff.user.mobile }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-3">
+                    <p class="mb-2">Email</p>
+                    <p class="form-control p-3">{{ staff.user.email }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-3">
+                    <p class="mb-2">Location</p>
+                    <p class="form-control p-3">{{ staff.location }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-3">
+                    <p class="mb-2">Aadhar Number</p>
+                    <p class="form-control p-3">{{ staff.aadhar }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-3">
+                    <p class="mb-2">Blood Group</p>
+                    <p class="form-control p-3">{{ staff.blood }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-3">
+                    <p class="mb-2">Department</p>
+                    <p class="form-control p-3">{{ staff.department }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-3">
+                    <p class="mb-2">Designation</p>
+                    <p class="form-control p-3">{{ staff.designation }}</p>
+                </div>
+
+                <div class="intro-y col-span-12">
+                    <hr>
+                    <h1 class="text-center mt-3 mb-3">Emergency Contact Details</h1>
+                    <hr>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-6">
+                    <p class="mb-2">Contact Name</p>
+                    <p class="form-control p-3">{{ staff.contact_name }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-6">
+                    <p class="mb-2">Relation</p>
+                    <p class="form-control p-3">{{ staff.relation }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-6">
+                    <p class="mb-2">Contact Number</p>
+                    <p class="form-control p-3">{{ staff.contact_number }}</p>
+                </div>
+
+                <div class="intro-y col-span-12 lg:col-span-6">
+                    <p class="mb-2">Contact Address</p>
+                    <p class="form-control p-3">{{ staff.address }}</p>
+                </div>
             </div>
         </div>
 
         <div id="attandance" class="tab-pane" role="tabpanel" aria-labelledby="attandance-tab">
             <div class="col-span-12 mt-5">
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                    {% if attendances %}
-                        <table class="table table-report sm:mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="text-center whitespace-nowrap">NO</th>
-                                    <th class="text-center whitespace-nowrap">STAFF</th>
-                                    <th class="text-center whitespace-nowrap">PHOTO</th>
-                                    <th class="text-center whitespace-nowrap">SITE</th>
-                                    <th class="text-center whitespace-nowrap">START TIME</th>
-                                    <th class="text-center whitespace-nowrap">END TIME</th>
+                    {% if attandances %}
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">DATE</th>
+                                <th class="text-center whitespace-nowrap">SITE</th>
+                                <th class="text-center whitespace-nowrap">START TIME</th>
+                                <th class="text-center whitespace-nowrap">END TIME</th>
+                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attandance in attandances %}
+                                <tr class="intro-x">
+                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+                                    <td class="text-center whitespace-nowrap">{{ attandance.date | date:'d M Y' }}</td>
+                                    <td class="text-center whitespace-nowrap">{{ attandance.on_call.site_name }}</td>
+                                    <td class="text-center whitespace-nowrap text-success">{{ attandance.start_time | date:"h:i A" }}</td>
+                                    <td class="text-center whitespace-nowrap text-warning">{{ attandance.end_time | date:"h:i A" }}</td>
+
+                                    <td class="text-center whitespace-nowrap">
+                                        {% if attandance.status == 'APPROVED' %}
+                                            <p class="text-success">{{ attandance.status }}</p>
+                                        {% elif attandance.status == 'REJECTED' %}
+                                            <p class="text-danger">{{ attandance.status }}</p>
+                                        {% else %}
+                                            <p class="text-warning">{{ attandance.status }}</p>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="table-report__action w-36">
+                                        <div class="flex justify-center items-center">
+
+                                            {% if attandance.status != 'APPROVED' %}
+                                                <a class="flex items-center text-success" href="{% url 'attandance-approve' attandance.slug %}" onclick="return confirm('Are you sure you want to approve the attendance ?');">
+                                                    <i data-lucide="check-circle" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            {% endif %}
+                                            
+                                            {% if attandance.status == 'PENDING' %}
+                                                <a class="flex items-center text-warning mx-2" href="{% url 'attandance-edit' attandance.slug %}">
+                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            {% endif %}
+
+                                            {% if attandance.status != 'REJECTED' %}
+                                                <a class="flex items-center text-danger" href="{% url 'attandance-reject' attandance.slug %}" onclick="return confirm('Are you sure you want to reject the attendance ?');">
+                                                    <i data-lucide="x-circle" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
                             <tbody>
-                                {% for attendance in attendances %}
-                                    <tr class="intro-x">
-                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                        <td class="text-center">
-                                            <a href="" class="font-medium whitespace-nowrap">{{ attendance.staff }}</a>
-                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ attendance.staff.designation }} / {{ attendance.staff.department }}</div>
-                                        </td>
-                                        <td class="">
-                                            <div class="flex justify-center">
-                                                <div class="w-10 h-10 image-fit zoom-in">
-                                                    {% if attendance.staff.user.photo %}
-                                                        <img alt="" class="tooltip rounded-full" src="{{ attendance.staff.user.photo.url }}" title="{{ staff }}">
-                                                    {% else %}
-                                                        <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview-11.jpg' %}" title="{{ staff }}">
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center whitespace-nowrap">{{ attendance.work }}</td>
-                                        <td class="text-center whitespace-nowrap text-success">{{ attendance.start_time | date:"h:i A" }}</td>
-                                        <td class="text-center whitespace-nowrap text-warning">{{ attendance.end_time | date:"h:i A" }}</td>
-                                    </tr>
-                                {% endfor %}
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                    <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
-                    {% else %}
-                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                            <table class="table table-report -mt-2">
-                                <tbody>
-                                    <tr class="intro-x width">
-                                        <td class=" width" style="width:100%;">
-                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
-                                            </i>
-                                        <div style="text-align: center;">No data available!</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    {% endif %}
+                    </div>
+                {% endif %}
                 </div>
             </div>
         </div>
@@ -197,7 +224,7 @@
                         <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
                             <div class="report-box zoom-in">
                                 <div class="box p-5 flex">
-                                    <div class="text-3xl font-medium leading-8">{{ self_expense | default:0.0 }}</div>
+                                    <div class="text-3xl font-medium leading-8">{{ expense_amount | default:0.0 }}</div>
                                     <div class="text-base text-danger font-medium ml-auto">SELF EXPENSE</div>
                                 </div>
                             </div>
@@ -237,10 +264,9 @@
                                     <tr>
                                         <th class="text-center whitespace-nowrap">NO</th>
                                         <th class="text-center whitespace-nowrap">DATE</th>
+                                        <th class="text-center whitespace-nowrap">SITE</th>
                                         <th class="text-center whitespace-nowrap">CATEGORY</th>
                                         <th class="text-center whitespace-nowrap">TITLE</th>
-                                        <th class="text-center whitespace-nowrap">SOURCE</th>
-                                        <th class="text-center whitespace-nowrap">DESCRIPTION</th>
                                         <th class="text-center whitespace-nowrap">AMOUNT</th>
                                         <th class="text-center whitespace-nowrap">ACTIONS</th>
                                     </tr>
@@ -251,25 +277,21 @@
                                             <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
         
                                             <td class="text-center whitespace-nowrap">{{ expense.date | date:'d M Y' }}</td>
+
+                                            <td class="text-center whitespace-nowrap">{{ expense.on_call }}</td>
         
                                             <td class="text-center whitespace-nowrap">{{ expense.category }}</td>
         
                                             <td class="text-center whitespace-nowrap font-medium">{{ expense.title }}</td>
-        
-                                            <td class="text-center whitespace-nowrap font-medium">{{ expense.source }}</td>
-        
-                                            <td class="text-center whitespace-nowrap font-medium">{{ expense.description }}</td>
-        
+                        
                                             <td class="text-center whitespace-nowrap text-danger font-medium">{{ expense.amount }}</td>
         
                                             <td class="table-report__action w-24">
-                                                {% if user.is_superuser or expense.staff == user.staff %}
-                                                    <div class="flex justify-center items-center">
-                                                        <a class="flex items-center text-danger" href="{% url 'delete-work-expense' expense.slug %}" onclick="return confirm('Are you sure you want to delete the transaction ?');">
-                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
+                                                <div class="flex justify-center items-center">
+                                                    <a class="flex items-center text-danger" href="{% url 'delete-on-call-expense' expense.slug %}" onclick="return confirm('Are you sure you want to delete the transaction ?');">
+                                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -297,94 +319,57 @@
 
         <div id="work" class="tab-pane" role="tabpanel" aria-labelledby="work-tab">
             <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                {% if works %}
+                {% if on_calls %}
                     <table class="table table-report sm:mt-2">
                         <thead>
                             <tr>
                                 <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">SITE</th>
                                 <th class="text-center whitespace-nowrap">DATE</th>
                                 <th class="text-center whitespace-nowrap">CUSTOMER</th>
-                                <th class="text-center whitespace-nowrap">WORK TYPE</th>
-                                <th class="text-center whitespace-nowrap">WORK</th>
+                                <th class="text-center whitespace-nowrap">SERVICE</th>
+                                <th class="text-center whitespace-nowrap">STATUS</th>
                                 <th class="text-center whitespace-nowrap">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for work in works %}
+                            {% for call in on_calls %}
                                 <tr class="intro-x">
                                     <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                    <td class="font-medium text-center whitespace-nowrap">{{ work.lead.date | date:'d M Y'}}</td>
-                                    <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ work.lead.name }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ work.lead.mobile }}</div>
-                                    </td>
-                                    <td class="text-center whitespace-nowrap">{{ work.lead.type | capfirst }}</td>
-                                    <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ work.lead.service }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ work.lead.service.category }}</div>
-                                    </td>
-                                    <td class="table-report__action w-56">
-                                        <div class="flex justify-center items-center">
-                                            <a class="flex items-center mx-2 text-warning" href="{% url 'work-details' work.slug %}">
-                                                <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                        <table class="table table-report -mt-2">
-                            <tbody>
-                                <tr class="intro-x width">
-                                    <td class=" width" style="width:100%;">
-                                        <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
-                                        </i>
-                                    <div style="text-align: center;">No data available!</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+                                    
+                                    <td class="text-center whitespace-nowrap">{{ call.site_name }}</td>
 
-        <div id="sites" class="tab-pane" role="tabpanel" aria-labelledby="sites-tab">
-            <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                {% if sites %}
-                    <table class="table table-report sm:mt-2">
-                        <thead>
-                            <tr>
-                                <th class="text-center whitespace-nowrap">NO</th>
-                                <th class="text-center whitespace-nowrap">DATE</th>
-                                <th class="text-center whitespace-nowrap">CUSTOMER</th>
-                                <th class="text-center whitespace-nowrap">WORK TYPE</th>
-                                <th class="text-center whitespace-nowrap">WORK</th>
-                                <th class="text-center whitespace-nowrap">ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for site in sites %}
-                                <tr class="intro-x">
-                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                    <td class="font-medium text-center whitespace-nowrap">{{ site.date | date:'d M Y'}}</td>
+                                    <td class="text-center whitespace-nowrap">{{ call.date_added | date:'d M Y' }}</td>
+
                                     <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ site.name }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ site.mobile }}</div>
+                                        <a href="" class="font-medium whitespace-nowrap">{{ call.customer }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ call.customer.mobile }} / {{ call.customer.email | default:'None' }}</div>
                                     </td>
-                                    <td class="text-center whitespace-nowrap">{{ site.type | capfirst }}</td>
+
                                     <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ site.service }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ site.service.category }}</div>
+                                        <a href="" class="font-medium whitespace-nowrap">{{ call.service }}</a>
+                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ call.service.category }}</div>
                                     </td>
+
+                                    <td class="text-center whitespace-nowrap">
+                                        {% if call.status == 'PENDING' %}
+                                            <p class="text-warning">{{ call.status }}</p>
+                                        {% elif call.status == 0 %}
+                                            <p class="text-success">NOT IN SERVICE</p>
+                                        {% endif %}
+                                    </td>
+
                                     <td class="table-report__action w-56">
                                         <div class="flex justify-center items-center">
-                                            <a class="flex items-center mx-2 text-warning" href="{% url 'lead-view' site.slug %}">
+                                            <a class="flex items-center mx-2 text-warning" href="{% url 'on-call-details' call.slug %}">
                                                 <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
                                             </a>
+
+                                            {% if call.status == "PENDING" %}
+                                                <a class="flex items-center mx-2" href="{% url 'on-call-edit' call.slug %}">
+                                                    <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
+                                                </a>
+                                            {% endif %}
                                         </div>
                                     </td>
                                 </tr>
@@ -427,17 +412,13 @@
                             </div>
         
                             <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
-                                <a class="btn btn-outline-secondary w-24 ml-2" href="{% url 'categories' %}">Cancel</a>
+                                <a class="btn btn-outline-secondary w-24 ml-2" href="">Cancel</a>
                                 <button class="btn btn-primary w-24 ml-2" type="submit">Submit</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
-
-        <div id="settings" class="tab-pane" role="tabpanel" aria-labelledby="settings-tab">
-            <h1>Settings Tab</h1>
         </div>
     </div>
 </div>

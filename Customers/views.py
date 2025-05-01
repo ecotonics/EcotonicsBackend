@@ -8,8 +8,9 @@ from django.apps import apps
 from django.http import JsonResponse
 from Workforce.models import Staff
 from Works.models import Requisition
-from django.db.models import Count, Sum
-from Works.models import Work
+from django.db.models import Sum, Case, When, F, Value, DecimalField
+from django.db.models.functions import Coalesce
+from Works.models import Work, OnCall, Attendance
 from Accounts.models import Transaction, BankAccount
 
 # Create your views here.
@@ -79,19 +80,26 @@ def edit_customer(request,slug):
 @user_passes_test(lambda u: u.is_superuser)
 def customer_details(request,slug):
     customer = Customer.objects.get(slug=slug)
-    leads = Lead.active_objects.filter(customer=customer)
-    works = Work.active_objects.filter(lead__customer=customer, status='COMPLETED')
-    transactions = Transaction.active_objects.filter(customer=customer)
-    revenue = transactions.aggregate(total=Sum('amount'))['total']
+    attandances = Attendance.active_objects.filter(on_call__customer=customer, status='APPROVED')
+    expenses = Transaction.active_objects.filter(customer=customer, type='EXPENSE')
+    expense_amount = expenses.aggregate(total=Sum('amount'))['total'] or 0
+    revenues = Transaction.active_objects.filter(customer=customer, type='INCOME')
+    revenue_amount = revenues.aggregate(total=Sum('amount'))['total'] or 0
+    p_l = revenue_amount - expense_amount
+
+    on_calls = OnCall.active_objects.filter(customer=customer)
 
     context = {
         'main' : 'customers',
         'sub' : customer.type,
         'customer' : customer,
-        'leads' : leads,
-        'works' : works,
-        'transactions' : transactions,
-        'revenue' : revenue
+        'on_calls' : on_calls,
+        'attandances' : attandances,
+        'expenses' : expenses,
+        'revenues' : revenues,
+        'expense_amount' : expense_amount,
+        'revenue_amount' : revenue_amount,
+        'p_l' : p_l
     }
 
     return render(request, 'customers/customer-details.html', context)

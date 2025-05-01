@@ -317,11 +317,13 @@ def staff_details(request,slug):
     staff = Staff.objects.get(slug=slug)
     sites = Lead.active_objects.filter(staffs__in=[staff], status='PENDING')
     works = Work.active_objects.filter(staffs__in=[staff])
-    attendances = Attendance.objects.filter(staff=staff)
+    on_calls = OnCall.active_objects.filter(staffs__in=[staff])
+    attandances = Attendance.objects.filter(staff=staff)
     expenses = Transaction.active_objects.filter(staff=staff).order_by('-id')
-    self_expense = expenses.filter(source='SELF').aggregate(total=Sum('amount'))['total']
-    petty_expense = expenses.filter(source='PETTY').aggregate(total=Sum('amount'))['total']
-    credit_expense = expenses.filter(source='CREDIT').aggregate(total=Sum('amount'))['total']
+    expense_amount = expenses.aggregate(total=Sum('amount'))['total'] or 0
+    self_expense = 0.0
+    petty_expense = 0.0
+    credit_expense = 0.0
     petty_balance = 0.0
 
     context = {
@@ -330,12 +332,14 @@ def staff_details(request,slug):
         'staff' : staff,
         'sites' : sites,
         'works' : works,
-        'attendances' : attendances,
+        'attandances' : attandances,
         'expenses' : expenses,
+        'expense_amount' : expense_amount,
         'self_expense' : self_expense,
         'petty_expense' : petty_expense,
         'credit_expense' : credit_expense,
-        'petty_balance' : petty_balance
+        'petty_balance' : petty_balance,
+        'on_calls' : on_calls,
     }
 
     return render(request,'workforce/staff-details.html',context)
@@ -367,7 +371,7 @@ def attandance(request):
         clocked = False
 
     context = {
-        'main' : 'workforce',
+        'main' : 'attandance',
         'sub' : 'attandance',
         'attandances' : attandances,
         'clocked' : clocked

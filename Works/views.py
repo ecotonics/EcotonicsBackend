@@ -205,13 +205,15 @@ def on_call_details(request, slug):
     staffs = Staff.active_objects.all()
     categories = TransactionCategory.active_objects.filter(type='EXPENSE')
     expenses = Transaction.active_objects.filter(on_call=on_call)
+    expense_amount = expenses.aggregate(total=Sum('amount'))['total'] or 0
 
     context = {
         'main' : 'calls',
         'on_call' : on_call,
         'staffs' : staffs,
         'categories' : categories,
-        'expenses' : expenses
+        'expenses' : expenses,
+        'expense_amount' : expense_amount
     }
     return render(request, 'oncalls/call-details.html', context)
 
