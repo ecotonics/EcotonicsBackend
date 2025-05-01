@@ -385,14 +385,15 @@
                                         <div class="side-menu__title"> Overview </div>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="{% url 'transactions' %}" class="side-menu {% if sub == 'transactions' %} side-menu--active {% endif %}">
-                                        <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
-                                        <div class="side-menu__title"> Transactions </div>
-                                    </a>
-                                </li>
                             </ul>
                         </li> -->
+
+                        <li>
+                            <a href="{% url 'overview' %}" class="side-menu {% if main == 'accounts' %} side-menu--active {% endif %}">
+                                <div class="side-menu__icon"> <i data-lucide="dollar-sign"></i> </div>
+                                <div class="side-menu__title"> Accounts </div>
+                            </a>
+                        </li>
 
                         <li>
                             <a href="{% url 'on-calls' %}" class="side-menu {% if main == 'calls' %} side-menu--active {% endif %}">
