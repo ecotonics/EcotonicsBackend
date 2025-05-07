@@ -37,6 +37,11 @@
                                 {% endfor %}
                             </select>
                         </div>
+
+                        <div class="intro-y col-span-12 sm:col-span-6">
+                            <label for="input-wizard-2" class="form-label">Date</label>
+                            <input value="{{ today | date:'Y-m-d' }}" type="date" name="date" id="" class="form-control">
+                        </div>
                     {% endif %}
 
                     <div class="intro-y col-span-12 sm:col-span-6">

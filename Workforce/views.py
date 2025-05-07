@@ -391,6 +391,7 @@ def add_attandance(request):
     if request.method == 'POST':
         technician = request.POST.get('technician')
         on_call = request.POST.get('on_call')
+        date = request.POST.get('date')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
 
@@ -403,7 +404,7 @@ def add_attandance(request):
             on_call = OnCall.active_objects.get(slug=on_call)
 
             Attendance.objects.create(
-                staff=staff, on_call=on_call, start_time=start_time, end_time=end_time
+                staff=staff, on_call=on_call, date=date, start_time=start_time, end_time=end_time
             )
 
             messages.success(request,'Attendance added successfully')
@@ -418,7 +419,8 @@ def add_attandance(request):
         'sub' : 'attandance',
         'technicians' : technicians,
         'works' : works,
-        'on_calls' : on_calls
+        'on_calls' : on_calls,
+        'today' : today,
     }
     return render(request,'workforce/attandance-add.html',context)
 
@@ -435,6 +437,7 @@ def edit_attandance(request, slug):
     if request.method == 'POST':
         technician = request.POST.get('technician')
         on_call = request.POST.get('on_call')
+        date = request.POST.get('date')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
 
@@ -446,6 +449,7 @@ def edit_attandance(request, slug):
 
             on_call = OnCall.active_objects.filter(slug=on_call).first()
 
+            attandance.date = date
             attandance.stat_time = start_time
             attandance.end_time = end_time
             attandance.staff = staff

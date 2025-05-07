@@ -128,7 +128,7 @@ class OnCall(BaseModel):
 
 
 class Attendance(BaseModel):
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
     status = models.CharField(default='PENDING', max_length=20)
     staff = models.ForeignKey(Staff,on_delete=models.CASCADE)
     work = models.ForeignKey(Work,on_delete=models.CASCADE,null=True, blank=True)
