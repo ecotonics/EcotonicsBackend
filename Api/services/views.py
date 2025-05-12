@@ -24,10 +24,17 @@ class CategoryListCreate(generics.ListCreateAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
 
+        data = {
+            "categories": serializer.data,
+            "total_categories": Category.objects.count(),
+            "active_categories": Category.objects.filter(status="Active").count(),
+            "inactive_categories": Category.objects.filter(status="Inactive").count(),
+        }
+
         return Response({
             'status': 'success',
             'message': 'Categories retrieved successfully',
-            'data': serializer.data
+            'data': data
         }, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
