@@ -1,6 +1,7 @@
 from django.db import models
 from Core.models import BaseModel
 from Core.models import save_data
+from Core.choices import CategoryStatusChoices, ServiceStatusChoices
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 
@@ -8,7 +9,7 @@ from Core.middlewares import RequestMiddleware
 
 class Category(BaseModel):
     name = models.CharField(max_length=100)
-    status = models.CharField(max_length=25, default="Active")
+    status = models.CharField(max_length=25, choices=CategoryStatusChoices.choices, default=CategoryStatusChoices.ACTIVE)
 
     info = models.TextField(null=True,blank=True)
 
@@ -29,7 +30,7 @@ class Category(BaseModel):
 
 class Service(BaseModel):
     name = models.CharField(max_length=100)
-    status = models.CharField(max_length=25, default="Active")
+    status = models.CharField(max_length=25, choices=ServiceStatusChoices.choices, default=ServiceStatusChoices.ACTIVE)
 
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     info = models.TextField(null=True,blank=True)
