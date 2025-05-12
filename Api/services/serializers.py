@@ -11,8 +11,7 @@ class CategorySerializer(RepMixin, serializers.ModelSerializer):
         fields = ['id','slug','name','status','info','services']
 
     def get_services(self, category):
-        services = Service.objects.filter(category=category).count()
-        return services
+        return Service.objects.filter(category=category).count()
 
 
 class ServiceSerializer(RepMixin, serializers.ModelSerializer):
@@ -31,6 +30,5 @@ class ServiceSerializer(RepMixin, serializers.ModelSerializer):
         return service.category.id
 
     def get_on_calls(self, service):
-        on_calls = OnCall.objects.filter(service=service).count()
-        return on_calls
+        return OnCall.objects.filter(service=service).count()
 
