@@ -16,12 +16,19 @@ class CategorySerializer(RepMixin, serializers.ModelSerializer):
 
 
 class ServiceSerializer(RepMixin, serializers.ModelSerializer):
-    category_data = CategorySerializer(read_only=True)
+    category_name = serializers.SerializerMethodField()
+    category_id = serializers.SerializerMethodField()
     on_calls = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
-        fields = ['id','slug','name','status','category','category_data', 'info', 'on_calls']
+        fields = ['id','slug','name','status','category','category_name', 'category_id', 'info', 'on_calls']
+
+    def get_category_name(self, service):
+        return service.category.name
+
+    def get_category_id(self, service):
+        return service.category.id
 
     def get_on_calls(self, service):
         on_calls = OnCall.objects.filter(service=service).count()

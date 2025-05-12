@@ -5,17 +5,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 
-from Services.models import Category, Service
+from Workforce.models import Department, Designation
 
-from Api.services.serializers import CategorySerializer, ServiceSerializer
-from Api.services.filters import CategoryFilter, ServiceFilter
+from Api.workforce.serializers import DepartmentSerializer, DesignationSerializer
+from Api.workforce.filters import DepartmentFilter, DesignationFilter
 
 
-class CategoryListCreate(generics.ListCreateAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+class DepartmentListCreate(generics.ListCreateAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = CategoryFilter
+    filterset_class = DepartmentFilter
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
@@ -23,15 +23,12 @@ class CategoryListCreate(generics.ListCreateAPIView):
         serializer = self.get_serializer(queryset, many=True)
 
         data = {
-            "categories": serializer.data,
-            "total_categories": Category.objects.count(),
-            "active_categories": Category.objects.filter(status="Active").count(),
-            "inactive_categories": Category.objects.filter(status="Inactive").count(),
+            "departments": serializer.data,
         }
 
         return Response({
             'status': 'success',
-            'message': 'Categories retrieved successfully',
+            'message': 'Departments retrieved successfully',
             'data': data
         }, status=status.HTTP_200_OK)
 
@@ -42,20 +39,20 @@ class CategoryListCreate(generics.ListCreateAPIView):
             serializer.save()
             return Response({
                 'status': 'success',
-                'message': 'Category created successfully',
+                'message': 'Department created successfully',
                 'data': serializer.data
             }, status=status.HTTP_201_CREATED)
 
         return Response({
             'status': 'error',
-            'message': 'Failed to create category',
+            'message': 'Failed to create department',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CategoryDetails(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+class DepartmentDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'slug'
 
@@ -65,7 +62,7 @@ class CategoryDetails(generics.RetrieveUpdateDestroyAPIView):
 
         return Response({
             'status': 'success',
-            'message': 'Category retrieved successfully',
+            'message': 'Department retrieved successfully',
             'data': serializer.data
         }, status=status.HTTP_200_OK)
 
@@ -78,13 +75,13 @@ class CategoryDetails(generics.RetrieveUpdateDestroyAPIView):
 
             return Response({
                 'status': 'success',
-                'message': 'Category updated successfully',
+                'message': 'Department updated successfully',
                 'data': serializer.data
             }, status=status.HTTP_200_OK)
 
         return Response({
             'status': 'error',
-            'message': 'Failed to update category',
+            'message': 'Failed to update department',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -94,15 +91,15 @@ class CategoryDetails(generics.RetrieveUpdateDestroyAPIView):
 
         return Response({
             'status': 'success',
-            'message': 'Category deleted successfully'
+            'message': 'Department deleted successfully'
         }, status=status.HTTP_200_OK)
     
 
-class ServiceListCreate(generics.ListCreateAPIView):
-    queryset = Service.objects.all()
-    serializer_class = ServiceSerializer
+class DesignationListCreate(generics.ListCreateAPIView):
+    queryset = Designation.objects.all()
+    serializer_class = DesignationSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = ServiceFilter
+    filterset_class = DesignationFilter
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
@@ -110,15 +107,12 @@ class ServiceListCreate(generics.ListCreateAPIView):
         serializer = self.get_serializer(queryset, many=True)
 
         data = {
-            "services": serializer.data,
-            "total_services": Service.objects.count(),
-            "active_services": Service.objects.filter(status="Active").count(),
-            "inactive_services": Service.objects.filter(status="Inactive").count(),
+            "designations": serializer.data,
         }
 
         return Response({
             'status': 'success',
-            'message': 'Services retrieved successfully',
+            'message': 'Designations retrieved successfully',
             'data': data
         }, status=status.HTTP_200_OK)
 
@@ -129,20 +123,20 @@ class ServiceListCreate(generics.ListCreateAPIView):
             serializer.save()
             return Response({
                 'status': 'success',
-                'message': 'Service created successfully',
+                'message': 'Designation created successfully',
                 'data': serializer.data
             }, status=status.HTTP_201_CREATED)
 
         return Response({
             'status': 'error',
-            'message': 'Failed to create service',
+            'message': 'Failed to create designation',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ServiceDetails(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Service.objects.all()
-    serializer_class = ServiceSerializer
+class DesignationDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Designation.objects.all()
+    serializer_class = DesignationSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'slug'
 
@@ -152,7 +146,7 @@ class ServiceDetails(generics.RetrieveUpdateDestroyAPIView):
 
         return Response({
             'status': 'success',
-            'message': 'Service retrieved successfully',
+            'message': 'Designation retrieved successfully',
             'data': serializer.data
         }, status=status.HTTP_200_OK)
 
@@ -165,13 +159,13 @@ class ServiceDetails(generics.RetrieveUpdateDestroyAPIView):
 
             return Response({
                 'status': 'success',
-                'message': 'Service updated successfully',
+                'message': 'Designation updated successfully',
                 'data': serializer.data
             }, status=status.HTTP_200_OK)
 
         return Response({
             'status': 'error',
-            'message': 'Failed to update service',
+            'message': 'Failed to update designation',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -181,5 +175,5 @@ class ServiceDetails(generics.RetrieveUpdateDestroyAPIView):
 
         return Response({
             'status': 'success',
-            'message': 'Service deleted successfully'
+            'message': 'Designation deleted successfully'
         }, status=status.HTTP_200_OK)
