@@ -19,18 +19,18 @@ class DepartmentSerializer(RepMixin, serializers.ModelSerializer):
 
 class DesignationSerializer(RepMixin, serializers.ModelSerializer):
     department_name = serializers.SerializerMethodField()
-    department_slug = serializers.SerializerMethodField()
+    department_id = serializers.SerializerMethodField()
     staffs = serializers.SerializerMethodField()
 
     class Meta:
         model = Designation
-        fields = ['id','slug','name','info','department','department_name','department_slug','staffs']
+        fields = ['id','slug','name','info','department','department_name','department_id','staffs']
     
     def get_department_name(self, designation):
         return designation.department.name
     
-    def get_department_slug(self, designation):
-        return designation.department.slug
+    def get_department_id(self, designation):
+        return designation.department.id
     
     def get_staffs(self, designation):
         return Staff.objects.filter(designation=designation).count()
