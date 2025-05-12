@@ -24,7 +24,7 @@ class DesignationSerializer(RepMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Designation
-        fields = ['id','slug','name','info','department_name','department_slug','staffs']
+        fields = ['id','slug','name','info','department','department_name','department_slug','staffs']
     
     def get_department_name(self, designation):
         return designation.department.name
