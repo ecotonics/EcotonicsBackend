@@ -58,6 +58,7 @@ class Staff(BaseModel):
     contact_number = models.CharField(max_length=15)
     relation = models.CharField(max_length=50)
     address = models.CharField(max_length=150)
+    staff_wage = models.FloatField(default=0.0)
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'

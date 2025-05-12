@@ -29,6 +29,9 @@ urlpatterns = [
     path('',include('Workforce.urls')),
     path('accounts/',include('Accounts.urls')),
     path('works/',include('Works.urls')),
+
+    path('api/auth/',include('Api.authentication.urls', namespace='api_authentication')),
+    path('api/service/',include('Api.services.urls', namespace='api_service')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
