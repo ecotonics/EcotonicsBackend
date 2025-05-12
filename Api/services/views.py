@@ -98,3 +98,90 @@ class CategoryDetails(generics.RetrieveUpdateDestroyAPIView):
             'status': 'success',
             'message': 'Category deleted successfully'
         }, status=status.HTTP_200_OK)
+    
+
+class ServiceListCreate(generics.ListCreateAPIView):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ServiceFilter
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+
+        data = {
+            "services": serializer.data,
+            "total_services": Service.objects.count(),
+            "active_services": Service.objects.filter(status="Active").count(),
+            "inactive_services": Service.objects.filter(status="Inactive").count(),
+        }
+
+        return Response({
+            'status': 'success',
+            'message': 'Services retrieved successfully',
+            'data': data
+        }, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'status': 'success',
+                'message': 'Service created successfully',
+                'data': serializer.data
+            }, status=status.HTTP_201_CREATED)
+
+        return Response({
+            'status': 'error',
+            'message': 'Failed to create service',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ServiceDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'slug'
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+
+        return Response({
+            'status': 'success',
+            'message': 'Service retrieved successfully',
+            'data': serializer.data
+        }, status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response({
+                'status': 'success',
+                'message': 'Service updated successfully',
+                'data': serializer.data
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            'status': 'error',
+            'message': 'Failed to update service',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+
+        return Response({
+            'status': 'success',
+            'message': 'Service deleted successfully'
+        }, status=status.HTTP_200_OK)
