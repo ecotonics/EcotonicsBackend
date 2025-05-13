@@ -9,4 +9,7 @@ urlpatterns=[
 
     path('designations/',views.DesignationListCreate.as_view(),name='designation_list_create'),
     path('designation/<slug:slug>/',views.DesignationDetails.as_view(),name='designation_details'),
+
+    path('staffs/',views.StaffListCreate.as_view(),name='staff_list_create'),
+    path('staff/<slug:slug>/',views.StaffDetails.as_view(),name='staff_details'),
 ]

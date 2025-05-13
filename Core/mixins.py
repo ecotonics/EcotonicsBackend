@@ -60,13 +60,25 @@ class RepMixin(object):
                     return url.split('/')[-1]
 
                 if value:
-                    request = self.context.get('request')
-                    detailed_value = {
-                        'url': request.build_absolute_uri(value.url) if request else value.url,
-                        'size': readable_size(value.size),
-                        'name': get_file_name_from_url(value.name)
-                    }
-                    field_name = f"{field_name}_data"
-                    ret[field_name] = detailed_value
+                    try:
+                        request = self.context.get('request')
+                        detailed_value = {
+                            'url': request.build_absolute_uri(value.url) if request else value.url,
+                            'size': readable_size(value.size),
+                            'name': get_file_name_from_url(value.name)
+                        }
+                        field_name = f"{field_name}_data"
+                        ret[field_name] = detailed_value
+                    except (FileNotFoundError, ValueError):
+                        ret[field_name] = None
+
+            if isinstance(field, serializers.ImageField):
+                value = getattr(instance, field_name, None)
+                if value:
+                    try:
+                        request = self.context.get('request')
+                        ret[field_name] = request.build_absolute_uri(value.url) if request else value.url
+                    except (FileNotFoundError, ValueError):
+                        ret[field_name] = None
 
         return ret
