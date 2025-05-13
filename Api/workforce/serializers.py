@@ -39,6 +39,7 @@ class DesignationSerializer(RepMixin, serializers.ModelSerializer):
 
 class UserSerializer(RepMixin, serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
+    mobile = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
@@ -46,12 +47,13 @@ class UserSerializer(RepMixin, serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'photo']
+        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'photo', 'mobile']
         extra_kwargs = {
             'first_name': {'required': True},
+            'mobile': {'required': True},
             'email': {'required': True},
             'username': {'required': True},
-            'password': {'required': True, 'write_only': True}
+            'password': {'required': True, 'write_only': True},
         }
 
     def validate_email(self, value):
