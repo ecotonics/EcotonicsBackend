@@ -9,3 +9,6 @@ class ServiceStatusChoices(models.TextChoices):
     ACTIVE = 'active',_('Active')
     INACTIVE = 'inactive',_('Inactive')
 
+class StaffStatusChoices(models.TextChoices):
+    ACTIVE = 'active',_('Active')
+    INACTIVE = 'inactive',_('Inactive')

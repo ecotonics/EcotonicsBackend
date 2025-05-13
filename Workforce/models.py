@@ -4,6 +4,7 @@ from Core.models import BaseModel
 from Core.models import save_data
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
+from Core.choices import StaffStatusChoices
 
 # Create your models here.
 
@@ -47,7 +48,7 @@ class Designation(BaseModel):
         super(Designation, self).save(*args, **kwargs)
 
 class Staff(BaseModel):
-    status = models.IntegerField(default=1)
+    status = models.CharField(max_length=20, choices=StaffStatusChoices.choices, default=StaffStatusChoices.ACTIVE)
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     location = models.CharField(max_length=50)
     aadhar = models.CharField(max_length=12)
