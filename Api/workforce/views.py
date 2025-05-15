@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db import transaction
 
 from Workforce.models import Department, Designation, Staff
 from Users.models import User
@@ -202,18 +201,40 @@ class StaffListCreate(generics.ListCreateAPIView):
             'data': data
         }, status=status.HTTP_200_OK)
 
-    @transaction.atomic
     def create(self, request, *args, **kwargs):
         try:
-            user_serializer = UserSerializer(data=request.data, context={'request': request})
-            if not user_serializer.is_valid():
+            email = request.data.get('email')
+            username = request.data.get('username')
+            password = request.data.get('password')
+            first_name = request.data.get('first_name')
+            mobile = request.data.get('mobile')
+            photo = request.data.get('photo', None)
+
+            if User.objects.filter(email=email).exists():
                 return Response({
                     'status': 'error',
-                    'message': 'Failed to create user',
-                    'errors': user_serializer.errors
+                    'message': 'A user with this email already exists.',
+                    'errors': {'email': ['A user with this email already exists.']}
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            if User.objects.filter(username=username).exists():
+                return Response({
+                    'status': 'error',
+                    'message': 'A user with this username already exists.',
+                    'errors': {'username': ['A user with this username already exists.']}
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            user = user_serializer.save()
+            user = User.objects.create(
+                username=username,
+                first_name=first_name,
+                email=email,
+                is_staff=True,
+                photo=photo,
+                mobile=mobile
+            )
+
+            user.set_password(password)
+            user.save()
 
             staff_data = request.data.copy()
             staff_data['user'] = user.id
@@ -227,7 +248,7 @@ class StaffListCreate(generics.ListCreateAPIView):
                     'errors': staff_serializer.errors
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            staff = staff_serializer.save()
+            staff_serializer.save()
 
             return Response({
                 'status': 'success',
@@ -241,7 +262,6 @@ class StaffListCreate(generics.ListCreateAPIView):
                 'message': f'An error occurred: {str(e)}',
                 'errors': {}
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class StaffDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Staff.objects.all()
@@ -261,22 +281,25 @@ class StaffDetails(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        user = instance.user
 
-        if serializer.is_valid():
-            serializer.save()
+        user_fields = ['first_name', 'email', 'mobile', 'photo']
+        user_data = {field: request.data.get(field) for field in user_fields if field in request.data}
 
-            return Response({
-                'status': 'success',
-                'message': 'Staff updated successfully',
-                'data': serializer.data
-            }, status=status.HTTP_200_OK)
+        if user_data:
+            user_serializer = UserSerializer(user, data=user_data, partial=True)
+            user_serializer.is_valid(raise_exception=True)
+            user_serializer.save()
+
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response({
-            'status': 'error',
-            'message': 'Failed to update staff',
-            'errors': serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+            'status': 'success',
+            'message': 'Staff updated successfully',
+            'data': serializer.data
+        }, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -284,5 +307,5 @@ class StaffDetails(generics.RetrieveUpdateDestroyAPIView):
 
         return Response({
             'status': 'success',
-            'message': 'Designation deleted successfully'
+            'message': 'Staff deleted successfully'
         }, status=status.HTTP_200_OK)

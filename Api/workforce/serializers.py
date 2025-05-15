@@ -56,29 +56,6 @@ class UserSerializer(RepMixin, serializers.ModelSerializer):
             'password': {'required': True, 'write_only': True},
         }
 
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
-        return value
-
-    def validate_username(self, value):
-        if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("A user with this username already exists.")
-        return value
-
-    def create(self, validated_data):
-        password = validated_data.pop('password')
-        user = User.objects.create(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
-
-    def update(self, instance, validated_data):
-        if 'password' in validated_data:
-            password = validated_data.pop('password')
-            instance.set_password(password)
-        return super().update(instance, validated_data)
-
 
 class StaffSerializer(RepMixin, serializers.ModelSerializer):
     department_data = DepartmentSerializer(source='department', read_only=True)
