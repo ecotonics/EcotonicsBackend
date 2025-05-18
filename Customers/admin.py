@@ -4,7 +4,7 @@ from Customers.models import Customer, Lead, Followup
 # Register your models here.
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['name','type','location','mobile','email','active']
+    list_display = ['name','type','location','mobile','email','status']
 
 admin.site.register(Customer, CustomerAdmin)
 

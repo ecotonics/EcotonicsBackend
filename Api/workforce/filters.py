@@ -15,7 +15,7 @@ class DesignationFilter(django_filters.FilterSet):
 
     class Meta:
         model = Designation
-        fields = ['name',]
+        fields = ['name', 'department']
 
 
 class StaffFilter(django_filters.FilterSet):

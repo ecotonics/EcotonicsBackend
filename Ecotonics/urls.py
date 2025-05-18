@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/auth/',include('Api.authentication.urls', namespace='api_authentication')),
     path('api/service/',include('Api.services.urls', namespace='api_service')),
     path('api/workforce/',include('Api.workforce.urls', namespace='api_workforce')),
+    path('api/customers/',include('Api.customers.urls', namespace='api_customers')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

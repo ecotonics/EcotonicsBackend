@@ -12,3 +12,12 @@ class ServiceStatusChoices(models.TextChoices):
 class StaffStatusChoices(models.TextChoices):
     ACTIVE = 'active',_('Active')
     INACTIVE = 'inactive',_('Inactive')
+
+class CustomerStatusChoices(models.TextChoices):
+    ACTIVE = 'active',_('Active')
+    INACTIVE = 'inactive',_('Inactive')
+
+class CustomerTypeChoices(models.TextChoices):
+    INDIVIDUAL = 'individual',_('Individual')
+    ENTERPRISE = 'enterprise',_('Enterprise')
+    

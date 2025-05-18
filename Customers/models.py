@@ -5,28 +5,18 @@ from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 from Services.models import Category, Service
 from Workforce.models import Staff
+from Core.choices import CustomerTypeChoices, CustomerStatusChoices
 
 # Create your models here.
-
-TYPE = (
-    ('individual', 'individual'),
-    ('enterprise', 'enterprise')
-)
 
 LEAD_STATUS = (
     ('PENDING', 'PENDING'),
     ('CONVERTED', 'CONVERTED'),
     ('FAILED', 'FAILED')
 )
-
-CUSTOMER_STATUS = (
-    ('active','Active'),
-    ('inactive','Inactive'),
-)
-
 class Customer(BaseModel):
-    active = models.BooleanField(default=True)
-    type = models.CharField(max_length=50, choices=TYPE)
+    status = models.CharField(max_length=50, choices=CustomerStatusChoices.choices, default=CustomerStatusChoices.ACTIVE)
+    type = models.CharField(max_length=50, choices=CustomerTypeChoices.choices)
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=50)
     mobile = models.CharField(max_length=15)
@@ -53,7 +43,7 @@ class Lead(BaseModel):
     status = models.CharField(max_length=50, choices=LEAD_STATUS, default='PENDING')
     is_update_allowed = models.BooleanField(default=True)
 
-    type = models.CharField(max_length=50, choices=TYPE)
+    type = models.CharField(max_length=50, choices=CustomerTypeChoices.choices)
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE, null=True, blank=True)
 
     name = models.CharField(max_length=100)
