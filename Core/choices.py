@@ -21,3 +21,8 @@ class CustomerTypeChoices(models.TextChoices):
     INDIVIDUAL = 'individual',_('Individual')
     ENTERPRISE = 'enterprise',_('Enterprise')
     
+class OnCallStatusChoices(models.TextChoices):
+    PENDING = 'pending',_('Pending')
+    ONGOING = 'ongoing',_('Ongoing')
+    COMPLETED = 'completed',_('Completed')
+    CANCELLED = 'cancelled',_('Cancelled')

@@ -7,6 +7,7 @@ from Customers.models import Lead, Customer
 from Workforce.models import Staff
 from Users.models import User
 from Services.models import Category, Service
+from Core.choices import OnCallStatusChoices, CustomerTypeChoices
 
 UNITS = (
     ('NOS','NOS'),
@@ -35,7 +36,7 @@ class Work(BaseModel):
     status = models.CharField(max_length=20, choices=WORK_STATUS, default='PENDING')
     date = models.DateField(auto_now_add=True)
     lead = models.OneToOneField(Lead,on_delete=models.CASCADE)
-    staffs = models.ManyToManyField(Staff)
+    staffs = models.ManyToManyField(Staff, blank=True)
 
     def __str__(self):
         return self.lead.name
@@ -96,10 +97,10 @@ class RequisitionItem(BaseModel):
 
 class OnCall(BaseModel):
     date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=50, choices=LEAD_STATUS, default='PENDING')
-    type = models.CharField(max_length=50, choices=TYPE)
+    status = models.CharField(max_length=50, choices=OnCallStatusChoices.choices, default=OnCallStatusChoices.PENDING)
+    type = models.CharField(max_length=50, choices=CustomerTypeChoices.choices)
 
-    customer = models.ForeignKey(Customer,on_delete=models.CASCADE, null=True, blank=True)
+    customer = models.ForeignKey(Customer,on_delete=models.PROTECT, null=True)
     category = models.ForeignKey(Category,on_delete=models.PROTECT)
     service = models.ForeignKey(Service,on_delete=models.PROTECT)
 
@@ -109,7 +110,7 @@ class OnCall(BaseModel):
     contact_number = models.CharField(max_length=25, null=True, blank=True)
     site_location = models.TextField(null=True, blank=True)
 
-    staffs = models.ManyToManyField(Staff)
+    staffs = models.ManyToManyField(Staff, blank=True)
 
     def __str__(self):
         return self.site_name

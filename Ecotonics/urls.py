@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/service/',include('Api.services.urls', namespace='api_service')),
     path('api/workforce/',include('Api.workforce.urls', namespace='api_workforce')),
     path('api/customers/',include('Api.customers.urls', namespace='api_customers')),
+    path('api/works/',include('Api.oncalls.urls', namespace='api_oncalls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
