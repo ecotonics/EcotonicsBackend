@@ -24,6 +24,9 @@ class DepartmentListCreate(generics.ListCreateAPIView):
         serializer = self.get_serializer(queryset, many=True)
 
         data = {
+            "total_departments": Department.objects.count(),
+            "active_departments": Department.objects.count(),
+            "inactive_departments": 0,
             "departments": serializer.data,
         }
 
@@ -109,6 +112,9 @@ class DesignationListCreate(generics.ListCreateAPIView):
 
         data = {
             "designations": serializer.data,
+            "total_designations": Designation.objects.count(),
+            "total_departments": Department.objects.count(),
+            "total_staffs": Staff.objects.count(),
         }
 
         return Response({
