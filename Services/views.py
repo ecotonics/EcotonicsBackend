@@ -4,7 +4,7 @@ from Services.models import Category, Service
 from django.contrib import messages
 from django.db.models import Count
 from django.http import JsonResponse
-from Works.models import Work, OnCall
+from Works.models import OnCall
 
 # Create your views here.
 
@@ -179,14 +179,12 @@ def delete_service(request,slug):
 @user_passes_test(lambda u: u.is_superuser)
 def service_details(request,slug):
     service = Service.active_objects.get(slug=slug)
-    works = Work.objects.filter(lead__service=service)
     on_calls = OnCall.active_objects.filter(service=service)
 
     context = {
         'main' : 'services',
         'sub' : 'services',
         'service' : service,
-        'works' : works,
         'on_calls' : on_calls
     }
 

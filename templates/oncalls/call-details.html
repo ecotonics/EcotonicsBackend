@@ -6,15 +6,16 @@
 <div class="content">
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
-                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white"
+        role="alert">
+        <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+    {% endfor %}
     {% endif %}
 
     <!-- BEGIN: Profile Info -->
@@ -22,195 +23,348 @@
         <div class="flex flex-col lg:flex-row dark:border-darkmode-400 pb-5 -mx-5">
             <div class="flex-1 px-5 items-center justify-center">
                 <div class="flex flex-col justify-center items-center mt-4">
-                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> {{ on_call.customer.name }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="phone" class="w-4 h-4 mr-2"></i> {{ on_call.customer.mobile }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail" class="w-4 h-4 mr-2"></i> {{ on_call.customer.email | default:'None' }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="user"
+                            class="w-4 h-4 mr-2"></i> {{ on_call.customer.name }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="phone"
+                            class="w-4 h-4 mr-2"></i> {{ on_call.customer.mobile }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="mail"
+                            class="w-4 h-4 mr-2"></i> {{ on_call.customer.email | default:'None' }} </div>
                 </div>
             </div>
-            <div class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
+            <div
+                class="mt-6 lg:mt-0 flex-1 px-5 border-l border-r border-slate-200/60 dark:border-darkmode-400 border-t lg:border-t-0 pt-5 lg:pt-0">
                 <div class="flex flex-col justify-center items-center mt-4">
-                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i> {{ on_call.customer.location }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ on_call.category }} </div>
-                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard" class="w-4 h-4 mr-2"></i> {{ on_call.service }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center"> <i data-lucide="map-pin"
+                            class="w-4 h-4 mr-2"></i> {{ on_call.customer.location }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard"
+                            class="w-4 h-4 mr-2"></i> {{ on_call.category }} </div>
+                    <div class="truncate sm:whitespace-normal flex items-center mt-3"> <i data-lucide="clipboard"
+                            class="w-4 h-4 mr-2"></i> {{ on_call.service }} </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="intro-y box p-5 mt-5">
-        {{ on_call.info }}
+    <div class="intro-y box p-5 mt-5 flex">
+        <div class="flex items-center">
+            {{ on_call.info }}
+        </div>
+        {% if on_call.status != 'completed' %}
+        <div class="ml-auto">
+            <a href="{% url 'complete-on-call' on_call.slug %}"
+                onclick="return confirm('Are you sure you want to mark this work as completed ?');"
+                class="btn btn-success btn-sm text-white">Mark As Completed</a>
+        </div>
+        {% endif %}
     </div>
     <!-- END: Profile Info -->
 
     <!-- BEGIN: Lead Followups -->
     <div class="nav nav-boxed-tabs mt-5" role="tablist">
-        <div id="example-3-tab" class="nav-item flex-1" role="presentation">
-            <button class="nav-link w-full py-2 active" data-tw-toggle="pill" data-tw-target="#example-tab-3" type="button" role="tab" aria-controls="example-tab-3" aria-selected="true">
-                {% if user.is_superuser %} Technicians {% else %} Collegues {% endif %}
+        <div id="technicians-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2 active" data-tw-toggle="pill" data-tw-target="#technicians-tab"
+                type="button" role="tab" aria-controls="technicians-tab" aria-selected="true">
+                Technicians
             </button>
         </div>
 
-        <div id="example-4-tab" class="nav-item flex-1" role="presentation">
-            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#example-tab-4" type="button" role="tab" aria-controls="example-tab-4" aria-selected="false">
-                Expenses
+        <div id="attendance-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#attendance-tab" type="button"
+                role="tab" aria-controls="attendance-tab" aria-selected="false">
+                Attendance
+            </button>
+        </div>
+
+        <div id="expenses-tab" class="nav-item flex-1" role="presentation">
+            <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#expenses-tab" type="button"
+                role="tab" aria-controls="expenses-tab" aria-selected="false">
+                Transactions
             </button>
         </div>
     </div>
 
     <div class="tab-content mt-5">
-        
-        <div id="example-tab-3" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="example-3-tab">
+
+        <div id="technicians-tab" class="tab-pane leading-relaxed active" role="tabpanel"
+            aria-labelledby="technicians-tab">
             <div class="col-span-12 mt-5">
-                {% if user.is_superuser %}
-                    {% if on_call.status == 'PENDING' %}
-                        <div class="intro-y block sm:flex items-center h-10">
-                            <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
-                                <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#technician-modal">ASSIGN TECHNICIANS</button>
-                            </div>
-                        </div>
-                    {% endif %}
+                {% if on_call.status == 'pending' or 'ongoing' %}
+                <div class="intro-y block sm:flex items-center h-10">
+                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal"
+                            data-tw-target="#technician-modal">ASSIGN TECHNICIANS</button>
+                    </div>
+                </div>
                 {% endif %}
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
                     {% if on_call.staffs.all %}
-                        <table class="table table-report sm:mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="text-center whitespace-nowrap">NO</th>
-                                    <th class="text-center whitespace-nowrap">NAME</th>
-                                    <th class="text-center whitespace-nowrap">PHOTO</th>
-                                    <th class="text-center whitespace-nowrap">MOBILE</th>
-                                    {% if user.is_superuser %}
-                                        <th class="text-center whitespace-nowrap">ACTIONS</th>
-                                    {% endif %}
-                                </tr>
-                            </thead>
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">NAME</th>
+                                <th class="text-center whitespace-nowrap">PHOTO</th>
+                                <th class="text-center whitespace-nowrap">MOBILE</th>
+                                {% if user.is_superuser %}
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in on_call.staffs.all %}
+                            <tr class="intro-x">
+                                <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                <td class="text-center">
+                                    <a href="" class="font-medium whitespace-nowrap">{{ staff }}</a>
+                                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
+                                        {{ staff.designation }} / {{ staff.department }}</div>
+                                </td>
+
+                                <td class="">
+                                    <div class="flex justify-center">
+                                        <div class="w-10 h-10 image-fit zoom-in">
+                                            {% if staff.user.photo %}
+                                            <img alt="" class="tooltip rounded-full" src="{{ staff.user.photo.url }}"
+                                                title="{{ staff }}">
+                                            {% else %}
+                                            <img alt="" class="tooltip rounded-full"
+                                                src="{% static 'backend/images/preview.jpg' %}" title="{{ staff }}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="text-center whitespace-nowrap">{{ staff.user.mobile }}</td>
+
+                                <td class="table-report__action w-56">
+                                    <div class="flex justify-center items-center">
+                                        <a class="flex items-center mx-2 text-warning"
+                                            href="{% url 'staff-details' staff.slug %}">
+                                            <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
                             <tbody>
-                                {% for staff in on_call.staffs.all %}
-                                    <tr class="intro-x">
-                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-
-                                        <td class="text-center">
-                                            <a href="" class="font-medium whitespace-nowrap">{{ staff }}</a>
-                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ staff.designation }} / {{ staff.department }}</div>
-                                        </td>
-
-                                        <td class="">
-                                            <div class="flex justify-center">
-                                                <div class="w-10 h-10 image-fit zoom-in">
-                                                    {% if staff.user.photo %}
-                                                        <img alt="" class="tooltip rounded-full" src="{{ staff.user.photo.url }}" title="{{ staff }}">
-                                                    {% else %}
-                                                        <img alt="" class="tooltip rounded-full" src="{% static 'backend/images/preview.jpg' %}" title="{{ staff }}">
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <td class="text-center whitespace-nowrap">{{ staff.user.mobile }}</td>
-                                        
-                                        {% if user.is_superuser %}
-                                            <td class="table-report__action w-56">
-                                                <div class="flex justify-center items-center">
-                                                    <a class="flex items-center mx-2 text-warning" href="{% url 'staff-details' staff.slug %}">
-                                                        <i data-lucide="eye" class="w-4 h-4 mx-2"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive"
+                                            style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
+                                            class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
-                    {% else %}
-                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                            <table class="table table-report -mt-2">
-                                <tbody>
-                                    <tr class="intro-x width">
-                                        <td class=" width" style="width:100%;">
-                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
-                                            </i>
-                                        <div style="text-align: center;">No data available!</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    </div>
                     {% endif %}
                 </div>
             </div>
         </div>
 
-        <div id="example-tab-4" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="example-4-tab">
+        <div id="attendance-tab" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="attendance-tab">
             <div class="col-span-12 mt-5">
+                {% if on_call.status != 'completed' %}
                 <div class="intro-y block sm:flex items-center h-10">
                     <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
-                        <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#transaction-modal">ADD EXPENSE</button>
+                        <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal"
+                            data-tw-target="#attendance-modal">ADD ATTENDANCE</button>
                     </div>
                 </div>
+                {% endif %}
                 <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                    {% if expenses %}
-                        <table class="table table-report sm:mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="text-center whitespace-nowrap">NO</th>
-                                    <th class="text-center whitespace-nowrap">DATE</th>
-                                    <th class="text-center whitespace-nowrap">ADDED BY</th>
-                                    <th class="text-center whitespace-nowrap">TITLE</th>
-                                    <th class="text-center whitespace-nowrap">CATEGORY</th>
-                                    <th class="text-center whitespace-nowrap">AMOUNT</th>
-                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
-                                </tr>
-                            </thead>
+                    {% if attendances %}
+                    <div class="grid grid-cols-3 gap-4">
+                        {% for staff in attendance_summary %}
+                        <div class="intro-y box p-5 mt-5 text-center">
+                            <p class="text-success font-bold">{{ staff.staff__user__first_name }} (
+                                <span class="text-warning">{{ staff.total_days }} Days</span> )
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">DATE</th>
+                                <th class="text-center whitespace-nowrap">TECHNICIAN</th>
+                                <th class="text-center whitespace-nowrap">PHOTO</th>
+                                <th class="text-center whitespace-nowrap">START TIME</th>
+                                <th class="text-center whitespace-nowrap">END TIME</th>
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in attendances %}
+                            <tr class="intro-x">
+                                <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+                                <td class="text-center whitespace-nowrap">{{ attendance.date | date:'d M Y' }}</td>
+
+                                <td class="text-center">
+                                    <a href="" class="font-medium whitespace-nowrap">{{ attendance.staff }}</a>
+                                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
+                                        {{ attendance.staff.designation }} / {{ attendance.staff.department }}
+                                    </div>
+                                </td>
+
+                                <td class="">
+                                    <div class="flex justify-center">
+                                        <div class="w-10 h-10 image-fit zoom-in">
+                                            {% if attendance.staff.user.photo %}
+                                            <img alt="" class="tooltip rounded-full"
+                                                src="{{ attendance.staff.user.photo.url }}"
+                                                title="{{ attendance.staff }}">
+                                            {% else %}
+                                            <img alt="" class="tooltip rounded-full"
+                                                src="{% static 'backend/images/preview-11.jpg' %}"
+                                                title="{{ attendance.staff }}">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="text-center whitespace-nowrap text-success">
+                                    {{ attendance.start_time | date:"h:i A" }}
+                                </td>
+                                <td class="text-center whitespace-nowrap text-warning">
+                                    {{ attendance.end_time | date:"h:i A" }}
+                                </td>
+
+                                <td class="table-report__action w-36">
+                                    <div class="flex justify-center items-center">
+                                        <a class="flex items-center text-danger mx-2"
+                                            href="{% url 'attendance-delete' attendance.slug %}"
+                                            onclick="return confirm('Are you sure you want to delete the attendance ?');">
+                                            <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
                             <tbody>
-                                {% for expense in expenses %}
-                                    <tr class="intro-x">
-                                        <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                        
-                                        <td class="text-center whitespace-nowrap">{{ expense.date | date:'d M Y' }}</td>
-
-                                        <td class="text-center">
-                                            <a href="" class="font-medium whitespace-nowrap">{{ expense.staff.user.first_name }}</a>
-                                            <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{ expense.staff.designation }} / {{ expense.staff.department }}</div>
-                                        </td>
-
-                                        <td class="text-center whitespace-nowrap">{{ expense.title }}</td>
-
-                                        <td class="text-center whitespace-nowrap">{{ expense.category }}</td>
-
-                                        <td class="text-center whitespace-nowrap text-danger font-bold">{{ expense.amount }}</td>
-
-                                        <td class="table-report__action w-56">
-                                            <div class="flex justify-center items-center">
-                                                {% if expense.staff == user.staff or user.is_superuser %}
-                                                    <a class="flex items-center text-danger mx-2" href="{% url 'delete-on-call-expense' expense.slug %}" onclick="return confirm('Are you sure you want to delete the expense ?');">
-                                                        <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
-                                                    </a>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                <tr>
-                                    <td colspan="5" class="text-center whitespace-nowrap"></td>
-                                    <td class="text-center whitespace-nowrap font-bold text-danger text-2xl">{{ expense_amount }}</td>
-                                    <td></td>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive"
+                                            style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
+                                            class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
-                    {% else %}
-                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                            <table class="table table-report -mt-2">
-                                <tbody>
-                                    <tr class="intro-x width">
-                                        <td class=" width" style="width:100%;">
-                                            <i data-lucide="hard-drive" style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;" class="w-6 h-6 mr-2 text-white bg-success">
-                                            </i>
-                                        <div style="text-align: center;">No data available!</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div id="expenses-tab" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="expenses-tab">
+            <div class="col-span-12 mt-5">
+                {% if on_call.status != 'completed' %}
+                <div class="intro-y block sm:flex items-center h-10">
+                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                        <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal"
+                            data-tw-target="#transaction-modal">ADD TRANSACTION</button>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+                    {% if transactions %}
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="intro-y box p-5 mt-5 text-center">
+                            <p class="text-success font-bold">Revanue Amount (
+                                <span class="text-warning">{{ revanue_amount }}</span> )
+                            </p>
                         </div>
+
+                        <div class="intro-y box p-5 mt-5 text-center">
+                            <p class="text-success font-bold">Expense Amount (
+                                <span class="text-warning">{{ expense_amount }}</span> )
+                            </p>
+                        </div>
+
+                        <div class="intro-y box p-5 mt-5 text-center">
+                            <p class="text-success font-bold">Net Amount (
+                                <span class="text-warning">{{ net_amount }}</span> )
+                            </p>
+                        </div>
+                    </div>
+                    <table class="table table-report sm:mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-center whitespace-nowrap">NO</th>
+                                <th class="text-center whitespace-nowrap">DATE</th>
+                                <th class="text-center whitespace-nowrap">TITLE</th>
+                                <th class="text-center whitespace-nowrap">CATEGORY</th>
+                                <th class="text-center whitespace-nowrap">AMOUNT</th>
+                                <th class="text-center whitespace-nowrap">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions %}
+                            <tr class="intro-x">
+                                <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                                <td class="text-center whitespace-nowrap">{{ transaction.date | date:'d M Y' }}</td>
+
+                                <td class="text-center whitespace-nowrap">
+                                    {{ transaction.title }}
+                                    {% if transaction.staff %}
+                                    (<span class="text-warning"> {{ transaction.staff }} </span>)
+                                    {% endif %}
+                                </td>
+
+                                <td class="text-center whitespace-nowrap">{{ transaction.category }}</td>
+
+                                <td
+                                    class="text-center whitespace-nowrap {% if transaction.type == 'INCOME' %} text-success {% else %} text-danger {% endif %} font-bold">
+                                    {{ transaction.amount }}
+                                </td>
+
+                                <td class="table-report__action w-56">
+                                    <div class="flex justify-center items-center">
+                                        <a class="flex items-center text-danger mx-2"
+                                            href="{% url 'delete-on-call-expense' transaction.slug %}"
+                                            onclick="return confirm('Are you sure you want to delete the transaction ?');">
+                                            <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+                        <table class="table table-report -mt-2">
+                            <tbody>
+                                <tr class="intro-x width">
+                                    <td class=" width" style="width:100%;">
+                                        <i data-lucide="hard-drive"
+                                            style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
+                                            class="w-6 h-6 mr-2 text-white bg-success">
+                                        </i>
+                                        <div style="text-align: center;">No data available!</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     {% endif %}
                 </div>
             </div>
@@ -229,7 +383,7 @@
             <div class="modal-content">
                 <!-- BEGIN: Modal Header -->
                 <div class="modal-header">
-                    <h2 class="font-medium text-base mr-auto">Staffs</h2>
+                    <h2 class="font-medium text-base mr-auto">Assign Staffs</h2>
                 </div>
                 <!-- END: Modal Header -->
                 <!-- BEGIN: Modal Body -->
@@ -238,13 +392,17 @@
                         <select name="staffs" id="" class="tom-select" multiple>
                             <option value="">Search Staff</option>
                             {% if on_call.staffs %}
-                                {% for staff in on_call.staffs.all %}
-                                    <option value="{{ staff.id }}" selected>{{ staff.user.first_name }} ({{ staff.designation }})</option>
-                                {% endfor %}
+                            {% for staff in on_call.staffs.all %}
+                            <option value="{{ staff.id }}" selected>
+                                {{ staff.user.first_name }} ({{ staff.designation}})
+                            </option>
+                            {% endfor %}
                             {% endif %}
 
                             {% for staff in staffs %}
-                                <option value="{{ staff.id }}">{{ staff.user.first_name }} ({{ staff.designation }})</option>
+                            <option value="{{ staff.id }}">
+                                {{ staff.user.first_name }} ({{ staff.designation }})
+                            </option>
                             {% endfor %}
                         </select>
                     </div>
@@ -252,7 +410,62 @@
                 <!-- END: Modal Body -->
                 <!-- BEGIN: Modal Footer -->
                 <div class="modal-footer">
-                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+                    <button type="button" data-tw-dismiss="modal"
+                        class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+                    <button type="submit" class="btn btn-primary w-20">Submit</button>
+                </div>
+                <!-- END: Modal Footer -->
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END: Modal Content -->
+
+<!-- BEGIN: Modal Content -->
+<div id="attendance-modal" class="modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <form action="{% url 'attendance-add' on_call.slug %}" method="post">
+            {% csrf_token %}
+            <div class="modal-content">
+                <!-- BEGIN: Modal Header -->
+                <div class="modal-header">
+                    <h2 class="font-medium text-base mr-auto">Add Attendance</h2>
+                </div>
+                <!-- END: Modal Header -->
+
+                <!-- BEGIN: Modal Body -->
+                <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Technician</label>
+                        <select name="technician" id="" class="form-control">
+                            <option value="">Select Technician</option>
+                            {% for technician in on_call.staffs.all %}
+                            <option value="{{ technician.slug }}">{{ technician }} ({{ technician.designation }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Date</label>
+                        <input value="{{ today | date:'Y-m-d' }}" type="date" name="date" id="" class="form-control">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">From Time</label>
+                        <input type="time" name="start_time" id="" class="form-control">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">To Time</label>
+                        <input type="time" name="end_time" id="" class="form-control">
+                    </div>
+                </div>
+                <!-- END: Modal Body -->
+                <!-- BEGIN: Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" data-tw-dismiss="modal"
+                        class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
                     <button type="submit" class="btn btn-primary w-20">Submit</button>
                 </div>
                 <!-- END: Modal Footer -->
@@ -270,36 +483,45 @@
             <div class="modal-content">
                 <!-- BEGIN: Modal Header -->
                 <div class="modal-header">
-                    <h2 class="font-medium text-base mr-auto">Expenses</h2>
+                    <h2 class="font-medium text-base mr-auto">Add Transaction</h2>
                 </div>
                 <!-- END: Modal Header -->
 
                 <!-- BEGIN: Modal Body -->
                 <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
                     <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Transaction Type</label>
+                        <select name="type" id="transaction-type" class="form-control">
+                            <option value="">Select Transaction Type</option>
+                            <option value="INCOME">INCOME</option>
+                            <option value="EXPENSE">EXPENSE</option>
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Transaction Category</label>
-                        <select name="category" class="form-control">
+                        <select name="category" id="transaction-category" class="form-control">
                             <option value="">Select Category</option>
-                            {% for category in categories %}
-                                <option value="{{ category.slug }}">{{ category }}</option>
-                            {% endfor %}
                         </select>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Amount</label>
-                        <input step="0.01" type="number" name="amount" id="" class="form-control" placeholder="Enter transaction amount">
+                        <input step="0.01" type="number" name="amount" id="" class="form-control"
+                            placeholder="Enter transaction amount">
                     </div>
 
-                    <div class="intro-y col-span-12 sm:col-span-12">
+                    <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Title</label>
-                        <input type="text" name="title" id="" class="form-control" placeholder="Enter transaction title">
+                        <input type="text" name="title" id="" class="form-control"
+                            placeholder="Enter transaction title">
                     </div>
                 </div>
                 <!-- END: Modal Body -->
                 <!-- BEGIN: Modal Footer -->
                 <div class="modal-footer">
-                    <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
+                    <button type="button" data-tw-dismiss="modal"
+                        class="btn btn-outline-secondary w-20 mr-1">Cancel</button>
                     <button type="submit" class="btn btn-primary w-20">Submit</button>
                 </div>
                 <!-- END: Modal Footer -->

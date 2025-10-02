@@ -1,19 +1,3 @@
-"""
-URL configuration for Ecotonics project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path,include
 
@@ -29,12 +13,6 @@ urlpatterns = [
     path('',include('Workforce.urls')),
     path('accounts/',include('Accounts.urls')),
     path('works/',include('Works.urls')),
-
-    path('api/auth/',include('Api.authentication.urls', namespace='api_authentication')),
-    path('api/service/',include('Api.services.urls', namespace='api_service')),
-    path('api/workforce/',include('Api.workforce.urls', namespace='api_workforce')),
-    path('api/customers/',include('Api.customers.urls', namespace='api_customers')),
-    path('api/works/',include('Api.oncalls.urls', namespace='api_oncalls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -6,15 +6,16 @@
 <div class="content">
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
-                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white"
+        role="alert">
+        <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+    {% endfor %}
     {% endif %}
 
     <!-- BEGIN: Vertical Form -->
@@ -29,7 +30,8 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Name</label>
-                        <input name="name" type="text" class="form-control" placeholder="Enter staff name here" required maxlength="50">
+                        <input name="name" type="text" class="form-control" placeholder="Enter staff name here" required
+                            maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
@@ -39,27 +41,32 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Mobile Number</label>
-                        <input name="mobile" type="text" class="form-control" placeholder="enter mobile number here" required maxlength="15">
+                        <input name="mobile" type="text" class="form-control" placeholder="Enter mobile number here"
+                            required maxlength="20">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Email</label>
-                        <input name="email" type="email" class="form-control" placeholder="Enter email here" required maxlength="100">
+                        <input name="email" type="email" class="form-control" placeholder="Enter email here" required
+                            maxlength="100">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-4">
                         <label for="input-wizard-2" class="form-label">Location</label>
-                        <input name="location" type="text" class="form-control" placeholder="Enter location here" required maxlength="50">
+                        <input name="location" type="text" class="form-control" placeholder="Enter location here"
+                            required maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-4">
                         <label for="input-wizard-2" class="form-label">Aadhar Number</label>
-                        <input name="aadhar" type="text" class="form-control" placeholder="Enter aadhar number here" required maxlength="15">
+                        <input name="aadhar" type="text" class="form-control" placeholder="Enter aadhar number here"
+                            required maxlength="15">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-4">
                         <label for="input-wizard-2" class="form-label">Blood Group</label>
-                        <input name="bg" type="text" class="form-control" placeholder="Enter blood group here" required maxlength="3">
+                        <input name="bg" type="text" class="form-control" placeholder="Enter blood group here" required
+                            maxlength="3">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
@@ -67,7 +74,7 @@
                         <select name="department" id="" class="form-control" required>
                             <option value="">Select Department</option>
                             {% for department in departments %}
-                                <option value="{{ department.auto_id }}">{{ department }}</option>
+                            <option value="{{ department.auto_id }}">{{ department }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -77,7 +84,7 @@
                         <select name="designation" id="" class="form-control" required>
                             <option value="">Select Designation</option>
                             {% for designation in designations %}
-                                <option value="{{ designation.auto_id }}">{{ designation }}</option>
+                            <option value="{{ designation.auto_id }}">{{ designation }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -90,22 +97,26 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Contact Name</label>
-                        <input name="contact_name" type="text" class="form-control" placeholder="Enter emergency contact name here" required maxlength="50">
+                        <input name="contact_name" type="text" class="form-control"
+                            placeholder="Enter emergency contact name here" required maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Relation</label>
-                        <input name="relation" type="text" class="form-control" placeholder="Enter relation with staff here" required maxlength="50">
+                        <input name="relation" type="text" class="form-control"
+                            placeholder="Enter relation with staff here" required maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Contact Number</label>
-                        <input name="contact_number" type="text" class="form-control" placeholder="Enter contat number here" required maxlength="15">
+                        <input name="contact_number" type="text" class="form-control"
+                            placeholder="Enter contat number here" required maxlength="20">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Contact Address</label>
-                        <input name="address" type="text" class="form-control" placeholder="Enter contat address here" required maxlength="100">
+                        <input name="address" type="text" class="form-control" placeholder="Enter contat address here"
+                            required maxlength="100">
                     </div>
 
                     <div class="intro-y col-span-12">
@@ -116,12 +127,14 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Username</label>
-                        <input name="username" type="text" class="form-control" placeholder="Enter username" required maxlength="20">
+                        <input name="username" type="text" class="form-control" placeholder="Enter username" required
+                            maxlength="20">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Password</label>
-                        <input value="123456" name="password" id="password" type="text" class="form-control" placeholder="Enter password" required maxlength="20">
+                        <input value="123456" name="password" id="password" type="text" class="form-control"
+                            placeholder="Enter password" required maxlength="20">
                     </div>
 
                     <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">

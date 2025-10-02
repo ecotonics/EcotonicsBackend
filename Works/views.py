@@ -1,149 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
-from Works.models import Requisition, RequisitionItem, Work, Attendance
+from Works.models import Attendance
 from Accounts.models import TransactionCategory, Transaction, BankAccount
 from Workforce.models import Staff
 from datetime import datetime
 from django.contrib import messages
-from Customers.models import Lead, Customer
-from Works.models import Work, OnCall
+from Customers.models import Customer
+from Works.models import OnCall
 from Services.models import Category, Service
 from django.db.models import Count,Sum
 
 today = datetime.today()
 
 # Create your views here.
-
-@user_passes_test(lambda u: u.is_superuser)
-def works(request,status):
-    works = Work.active_objects.filter(status=status.upper())
-    context = {
-        'main' : 'works',
-        'sub' : status,
-        'works' : works,
-        'status' : status
-    }
-    return render(request,'works/works.html',context)
-
-@login_required
-def work_details(request,slug):
-    work = Work.objects.get(slug=slug)
-    transactions = Transaction.active_objects.filter(work=work)
-    staffs = Staff.active_objects.all()
-    attendances = Attendance.active_objects.filter(work=work)
-    requisitions = Requisition.active_objects.filter(work=work).annotate(items=Count('requisitionitem'))
-    accounts = BankAccount.active_objects.all()
-
-    context = {
-        'main' : 'works',
-        'sub' : work.status.lower,
-        'work' : work,
-        'transactions' : transactions,
-        'staffs' : staffs,
-        'accounts' : accounts,
-        'attendances' : attendances,
-        'requisitions' : requisitions
-    }
-    return render(request,'works/work-details.html',context)
-
-@login_required
-def crete_requisition(request, slug):
-    work = Work.objects.get(slug=slug)
-
-    try:
-        requisition = Requisition.objects.create(work=work, prepared=request.user)
-    except Exception as exception:
-        messages.error(request, exception)
-        return redirect('work-details', slug=work.slug)
-
-    return redirect('update-requisition', slug=requisition.slug)
-
-@login_required
-def requisition(request, slug):
-    requisition = Requisition.objects.get(slug=slug)
-    items = RequisitionItem.objects.filter(requisition=requisition).order_by('-id')
-
-    context = {
-        'main' : 'works',
-        'sub' : requisition.work.status.lower(),
-        'requisition' : requisition,
-        'work' : requisition.work,
-        'items' : items
-    }
-    return render(request,'requisition/requisition.html',context)
-
-@login_required
-def edit_requisition(request, slug):
-    requisition = Requisition.objects.get(slug=slug)
-    items = RequisitionItem.objects.filter(requisition=requisition).order_by('-id')
-
-    context = {
-        'main' : 'works',
-        'sub' : requisition.work.status.lower(),
-        'requisition' : requisition,
-        'work' : requisition.work,
-        'items' : items
-    }
-    return render(request,'requisition/requisition-update.html',context)
-
-@login_required
-def add_requisition_item(request, slug):
-    requisition = Requisition.objects.get(slug=slug)
-
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        unit = request.POST.get('unit')
-        quantity = request.POST.get('quantity')
-
-        try:
-            RequisitionItem.objects.create(requisition=requisition, name=name, unit=unit, quantity=quantity)
-            messages.success(request,'Item added successfully...')
-        except Exception as exception:
-            messages.warning(request,str(exception))
-
-    return redirect('update-requisition', slug=slug)
-
-@login_required
-def delete_requisition_item(request, slug):
-    item = RequisitionItem.objects.get(slug=slug)
-    requisition = item.requisition
-    item.delete()
-    messages.success(request,'Item deleted successfully...')
-    
-    return redirect('update-requisition', slug=requisition.slug)
-
-@user_passes_test(lambda u: u.is_superuser)
-def assign_technician(request,slug):
-    work = Work.objects.get(slug=slug)
-
-    if request.method == 'POST':
-        staffs = request.POST.getlist('staffs')
-        work.staffs.set(staffs)
-        work.save()
-
-    return redirect('work-details',slug=work.slug)
-
-
-@login_required
-def assigned_works(request):
-    if hasattr(request.user, 'staff') and request.user.staff:
-        sites = Lead.active_objects.filter(staffs__in=[request.user.staff], status="PENDING")
-        works = Work.active_objects.filter(staffs__in=[request.user.staff])
-        on_calls = OnCall.active_objects.filter(staffs__in=[request.user.staff])
-    else:
-        sites = []
-        works = []
-        on_calls = []
-
-    context = {
-        'main': 'assigned-works',
-        'sites': sites,
-        'works': works,
-        'on_calls' : on_calls
-    }
-
-    return render(request, 'technician/assigned-works.html', context)
-
 
 @user_passes_test(lambda u: u.is_superuser)
 def on_calls(request):
@@ -204,16 +73,30 @@ def on_call_details(request, slug):
     on_call = OnCall.active_objects.filter(slug=slug).first()
     staffs = Staff.active_objects.all()
     categories = TransactionCategory.active_objects.filter(type='EXPENSE')
-    expenses = Transaction.active_objects.filter(on_call=on_call)
-    expense_amount = expenses.aggregate(total=Sum('amount'))['total'] or 0
+    transactions = Transaction.active_objects.filter(on_call=on_call)
+
+    revanue_amount = transactions.filter(type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
+    expense_amount = transactions.filter(type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
+    net_amount = float(revanue_amount) - float(expense_amount)
+
+    attendances = Attendance.active_objects.filter(on_call=on_call)
+    attendance_summary = (
+        attendances.values("staff__id", "staff__user__first_name", "staff__user__last_name")
+        .annotate(total_days=Count("date", distinct=True))
+        .order_by("-total_days")
+    )
 
     context = {
         'main' : 'calls',
         'on_call' : on_call,
         'staffs' : staffs,
         'categories' : categories,
-        'expenses' : expenses,
-        'expense_amount' : expense_amount
+        'transactions' : transactions,
+        'revanue_amount' : revanue_amount,
+        'expense_amount' : expense_amount,
+        'net_amount' : net_amount,
+        'attendances' : attendances,
+        'attendance_summary' : attendance_summary
     }
     return render(request, 'oncalls/call-details.html', context)
 
@@ -268,6 +151,7 @@ def assign_on_call_technician(request,slug):
     if request.method == 'POST':
         staffs = request.POST.getlist('staffs')
         on_call.staffs.set(staffs)
+        on_call.status = 'ongoing'
         on_call.save()
 
     return redirect('on-call-details',slug=on_call.slug)
@@ -285,16 +169,11 @@ def add_on_call_expense(request, slug):
         try:
             category = TransactionCategory.objects.get(slug=category_slug)
 
-            if not request.user.is_superuser:
-                staff = request.user.staff
-            else:
-                staff = None
-
             Transaction.objects.create(
-                date=today, category=category, type=category.type, customer=on_call.customer, on_call=on_call, staff=staff, title=title, amount=amount
+                date=today, category=category, type=category.type, customer=on_call.customer, on_call=on_call, title=title, amount=amount
             )
 
-            messages.success(request, 'work expense added')
+            messages.success(request, 'work transaction added')
             return redirect('on-call-details', slug=slug)
         
         except Exception as exception:
@@ -313,3 +192,11 @@ def delete_on_call_expense(request, slug):
         messages.warning(request, str(exception))
 
     return redirect('on-call-details', slug=expense.on_call.slug)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def complete_on_call(request, slug):
+    on_call = OnCall.active_objects.filter(slug=slug).first()
+    on_call.status = 'completed'
+    on_call.save()
+    return redirect('on-call-details', slug=slug)

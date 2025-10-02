@@ -6,15 +6,14 @@ from datetime import datetime
 today = datetime.today()
 from django.http import JsonResponse
 from django.db.models import Sum
-from Customers.models import Customer, Lead
-from Works.models import Work
+from Customers.models import Customer
 from Workforce.models import Staff
 
 # Create your views here.
 
 @user_passes_test(lambda u: u.is_superuser)
 def overview(request):
-    transactions = Transaction.active_objects.all()[:10]
+    transactions = Transaction.active_objects.all()
     total_income = Transaction.active_objects.filter(type='INCOME').aggregate(Sum('amount'))['amount__sum'] or 0
     total_expense = Transaction.active_objects.filter(type='EXPENSE').aggregate(Sum('amount'))['amount__sum'] or 0
     balance = total_income - total_expense
@@ -261,12 +260,6 @@ def add_expense(request):
     amount = request.POST.get('amount')
 
     page = request.POST.get('page')
-    
-    if lead:
-        lead = Lead.objects.get(slug=lead)
-    
-    if work:
-        work = Work.objects.get(slug=work)
 
     if customer:
         customer = Customer.objects.get(slug=customer)

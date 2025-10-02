@@ -24,10 +24,14 @@ urlpatterns = [
     path('staff/delete/<slug:slug>/',views.delete_staff,name='staff-delete'),
 
     # ATTANDENCE
-    path('attandance/',views.attandance,name='attandance'),
-    path('attandance/add/',views.add_attandance,name='attandance-add'),
-    path('attandance/edit/<slug:slug>/',views.edit_attandance,name='attandance-edit'),
-    path('attandance/delete/',views.delete_attandance,name='attandance-delete'),
-    path('attandance/approve/<slug:slug>/',views.approve_attendance,name='attandance-approve'),
-    path('attandance/reject/<slug:slug>/',views.reject_attendance,name='attandance-reject'),
+    path('attendance/add/<slug:slug>/',views.add_attandance,name='attendance-add'),
+    path('attendance/delete/<slug:slug>/',views.delete_attandance,name='attendance-delete'),
+
+    # WAGES
+    path('wage/update/<slug:slug>/',views.update_wage,name='wage-update'),
+    path('wage/delete/<slug:slug>/',views.delete_wage,name='wage-delete'),
+
+    # PAYMENTS
+    path('payment/add/<slug:slug>/',views.add_payment,name='payment-add'),
+    path('payment/delete/<slug:slug>/',views.delete_payment,name='payment-delete')
 ]

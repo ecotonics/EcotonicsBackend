@@ -1,23 +1,17 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from Customers.models import Customer
 from django.contrib import messages
-from Services.models import Category, Service
-from Customers.models import Lead, Followup
-from django.apps import apps
 from django.http import JsonResponse
-from Workforce.models import Staff
-from Works.models import Requisition
-from django.db.models import Sum, Case, When, F, Value, DecimalField
-from django.db.models.functions import Coalesce
-from Works.models import Work, OnCall, Attendance
-from Accounts.models import Transaction, BankAccount
+from django.db.models import Sum, Count
+from Works.models import OnCall, Attendance
+from Accounts.models import Transaction
 
 # Create your views here.
 
 @user_passes_test(lambda u: u.is_superuser)
 def customers(request,type):
-    customers = Customer.active_objects.filter(type=type).order_by('name').order_by('-active')
+    customers = Customer.active_objects.filter(type=type).order_by('name')
     context = {
         'main' : 'customers',
         'sub' : type,
@@ -80,12 +74,18 @@ def edit_customer(request,slug):
 @user_passes_test(lambda u: u.is_superuser)
 def customer_details(request,slug):
     customer = Customer.objects.get(slug=slug)
-    attandances = Attendance.active_objects.filter(on_call__customer=customer, status='APPROVED')
-    expenses = Transaction.active_objects.filter(customer=customer, type='EXPENSE')
-    expense_amount = expenses.aggregate(total=Sum('amount'))['total'] or 0
-    revenues = Transaction.active_objects.filter(customer=customer, type='INCOME')
-    revenue_amount = revenues.aggregate(total=Sum('amount'))['total'] or 0
-    p_l = revenue_amount - expense_amount
+    transactions = Transaction.active_objects.filter(on_call__customer=customer)
+
+    revanue_amount = transactions.filter(type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
+    expense_amount = transactions.filter(type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
+    net_amount = float(revanue_amount) - float(expense_amount)
+
+    attandances = Attendance.active_objects.filter(on_call__customer=customer)
+    attendance_summary = (
+        attandances.values("staff__id", "staff__user__first_name", "staff__user__last_name")
+        .annotate(total_days=Count("date", distinct=True))
+        .order_by("-total_days")
+    )
 
     on_calls = OnCall.active_objects.filter(customer=customer)
 
@@ -95,11 +95,11 @@ def customer_details(request,slug):
         'customer' : customer,
         'on_calls' : on_calls,
         'attandances' : attandances,
-        'expenses' : expenses,
-        'revenues' : revenues,
+        'attendance_summary' : attendance_summary,
+        'transactions' : transactions,
+        'revanue_amount' : revanue_amount,
         'expense_amount' : expense_amount,
-        'revenue_amount' : revenue_amount,
-        'p_l' : p_l
+        'net_amount' : net_amount
     }
 
     return render(request, 'customers/customer-details.html', context)
@@ -108,7 +108,7 @@ def customer_details(request,slug):
 def delete_customer(request,slug):
     try:
         customer = Customer.objects.get(slug=slug)
-        customer.active=False
+        customer.status='inactive'
         customer.save()
         messages.error(request, 'Customer deleted successfully ...!')
 
@@ -125,218 +125,3 @@ def filter_customers(request):
     customers_data = list(customers_list)
 
     return JsonResponse({'customers': customers_data})
-
-
-@user_passes_test(lambda u: u.is_superuser)
-def leads(request,status):
-    leads = Lead.active_objects.filter(status=status.upper())
-    context = {
-        'main' : 'leads',
-        'sub' : status,
-        'status' : status,
-        'leads' : leads
-    }
-    return render(request,'leads/leads.html',context)
-
-@user_passes_test(lambda u: u.is_superuser)
-def add_lead(request):
-    categories = Category.active_objects.all()
-
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        location = request.POST.get('location')
-        mobile = request.POST.get('mobile')
-        email = request.POST.get('email')
-        category = request.POST.get('category')
-        service = request.POST.get('service')
-        info = request.POST.get('info')
-        lead_type = request.POST.get('lead_type')
-        work_type = request.POST.get('work_type')
-        customer = request.POST.get('customer')
-
-        try:
-            category = Category.objects.get(slug=category)
-            service = Service.objects.get(slug=service)
-
-            if lead_type == 'new':
-                Lead.objects.create(
-                    type=work_type, category=category, service=service, info=info,
-                    name=name, email=email, mobile=mobile, location=location,
-                )
-
-            elif lead_type == 'existing':
-                customer = Customer.objects.get(slug=customer)
-                Lead.objects.create(
-                    type=work_type, category=category, service=service, info=info, customer=customer,
-                    name=customer.name, email=customer.email, mobile=customer.mobile, location=customer.location,
-                )
-
-            messages.success(request,'Lead addedd successfully')
-            return redirect('leads',status='pending')
-
-        except Exception as exception:
-            messages.warning(request,str(exception))
-            return redirect('lead-add')
-
-    context = {
-        'main' : 'leads',
-        'sub' : 'pending',
-        'categories' : categories
-    }
-    return render(request,'leads/lead-add.html',context)
-
-@login_required
-def view_lead(request,slug):
-    lead = Lead.objects.get(slug=slug)
-    followups = Followup.active_objects.filter(lead=lead)
-    staffs = Staff.active_objects.all()
-    accounts = BankAccount.active_objects.all()
-    transactions = Transaction.active_objects.filter(lead=lead)
-
-    context = {
-        'main' : 'leads',
-        'sub' : lead.status.lower(),
-        'lead' : lead,
-        'followups' : followups,
-        'staffs' : staffs,
-        'accounts' : accounts,
-        'transactions' : transactions
-    }
-    return render(request,'leads/lead-details.html',context)
-
-@user_passes_test(lambda u: u.is_superuser)
-def convert_lead(request,slug):
-    try:
-        lead = Lead.objects.get(slug=slug)
-        lead.status = 'CONVERTED'
-        work = Work.objects.create(lead=lead)
-        work.staffs.set(lead.staffs.all())
-        lead.save()
-        return redirect('works',status='pending')
-    
-    except Exception as exception:
-        messages.warning(request,exception)
-        return redirect('lead-view',slug=lead.slug)
-
-@user_passes_test(lambda u: u.is_superuser)
-def followup(request,slug):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        details = request.POST.get('details')
-
-        try:
-            lead = Lead.objects.get(slug=slug)
-            Followup.objects.create(lead=lead,title=title,details=details)
-            messages.success(request, 'Followup added successfully')
-        except Exception as exception:
-            messages.warning(request,exception)
-
-        return redirect('lead-view',slug=lead.slug)
-
-@user_passes_test(lambda u: u.is_superuser)
-def edit_lead(request,slug):
-    lead = Lead.objects.get(slug=slug)
-    categories = Category.active_objects.all()
-    services = Service.active_objects.filter(category=lead.category)
-    customers = Customer.active_objects.all()
-
-    if request.method == 'POST':
-        if lead.customer:
-            customer = request.POST.get('customer')
-            customer = Customer.objects.get(slug=customer)
-            lead.customer = customer
-
-            lead.name = customer.name
-            lead.email = customer.email
-            lead.mobile = customer.mobile
-            lead.location = customer.location
-        else:
-            lead.name = request.POST.get('name')
-            lead.mobile = request.POST.get('mobile')
-            lead.email = request.POST.get('email')
-            lead.location = request.POST.get('location')
-
-        lead.type = request.POST.get('type')
-        lead.info = request.POST.get('info')
-
-        category = request.POST.get('category')
-        service = request.POST.get('service')
-
-        try:
-            category = Category.objects.get(slug=category)
-            service = Service.objects.get(slug=service)
-
-            lead.category = category
-            lead.service = service
-            lead.save()
-
-            messages.success(request,'Lead detailed updated successfully')
-            return redirect('leads', status=lead.status.lower())
-
-        except Exception as exception:
-            messages.warning(request,str(exception))
-            return redirect('lead-edit', slug=slug)
-
-    context = {
-        'main' : 'leads',
-        'sub' : lead.status.lower(),
-        'lead' : lead,
-        'categories' : categories,
-        'services' : services,
-        'customers' : customers
-    }
-    return render(request,'leads/lead-edit.html',context)
-
-@user_passes_test(lambda u: u.is_superuser)
-def delete_lead(request,slug):
-    try:
-        lead = Lead.objects.get(slug=slug)
-        lead.status = 'FAILED'
-        lead.save()
-        messages.error(request, 'Marked the lead as failed ...!')
-
-    except Exception as exception:
-        messages.warning(request, exception)
-    return redirect('leads',status=lead.status)
-
-@user_passes_test(lambda u: u.is_superuser)
-def assign_staff(request, slug):
-    lead = Lead.active_objects.get(slug=slug)
-    staffs = request.POST.getlist('staffs')
-    lead.staffs.set(staffs)
-    lead.save()
-    return redirect('lead-view',slug=lead.slug)
-
-@login_required
-def update_requirements(request, slug):
-    lead = Lead.objects.get(slug=slug)
-
-    if request.method == 'POST':
-        lead.primary_requirements = request.POST.get('primary_requirements')
-        lead.scope_of_work = request.POST.get('scope_of_work')
-        lead.site_condetion = request.POST.get('site_condetion')
-        lead.additional_requirements = request.POST.get('additional_requirements')
-        lead.customer_preferences = request.POST.get('customer_preferences')
-
-        try:
-            lead.save()
-            messages.success(request, 'Requirements updated successfully')
-            return redirect('lead-view', slug=lead.slug)
-        
-        except Exception as exception:
-            messages.warning(request, str(exception))
-            return redirect('update-requirements', slug=lead.slug)
-
-    context = {
-        'main' : 'leads',
-        'sub' : lead.status.lower(),
-        'lead' : lead,
-    }
-    return render(request, 'leads/requirements.html', context)
-
-@user_passes_test(lambda u: u.is_superuser)
-def lead_update_toggle(request, slug):
-    lead = Lead.objects.get(slug=slug)
-    lead.is_update_allowed = not lead.is_update_allowed
-    lead.save()
-    return redirect('lead-view', slug=lead.slug)

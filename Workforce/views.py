@@ -4,11 +4,10 @@ from Users.models import User
 from Workforce.models import Department, Designation, Staff
 from django.contrib import messages
 from django.db import transaction
-from Works.models import Work, Attendance, OnCall
+from Works.models import Attendance, OnCall
 from django.db.models import Count, Sum
-from Customers.models import Lead
 from datetime import datetime
-from Accounts.models import Transaction
+from Accounts.models import Transaction, TransactionCategory, Wage
 today = datetime.today()
 
 # Create your views here.
@@ -314,32 +313,30 @@ def edit_staff(request,slug):
 
 @login_required
 def staff_details(request,slug):
-    staff = Staff.objects.get(slug=slug)
-    sites = Lead.active_objects.filter(staffs__in=[staff], status='PENDING')
-    works = Work.active_objects.filter(staffs__in=[staff])
+    staff = Staff.active_objects.get(slug=slug)
     on_calls = OnCall.active_objects.filter(staffs__in=[staff])
-    attandances = Attendance.objects.filter(staff=staff)
-    expenses = Transaction.active_objects.filter(staff=staff).order_by('-id')
-    expense_amount = expenses.aggregate(total=Sum('amount'))['total'] or 0
-    self_expense = 0.0
-    petty_expense = 0.0
-    credit_expense = 0.0
-    petty_balance = 0.0
+    wages = Wage.active_objects.filter(staff=staff).order_by('-updated')
+    attandances = Attendance.active_objects.filter(staff=staff)
+    categories = TransactionCategory.active_objects.filter(type='EXPENSE')
+    payments = Transaction.active_objects.filter(staff=staff)
+
+    wage_total = attandances.aggregate(total=Sum('wage'))['total'] or 0.00
+    wage_paid = payments.aggregate(total=Sum('amount'))['total'] or 0.00
+    wage_balance = float(wage_total) - float(wage_paid)
 
     context = {
         'main' : 'workforce',
         'sub' : 'staffs',
         'staff' : staff,
-        'sites' : sites,
-        'works' : works,
+        'wages' : wages,
         'attandances' : attandances,
-        'expenses' : expenses,
-        'expense_amount' : expense_amount,
-        'self_expense' : self_expense,
-        'petty_expense' : petty_expense,
-        'credit_expense' : credit_expense,
-        'petty_balance' : petty_balance,
+        'wage_total' : wage_total,
+        'wage_paid' : wage_paid,
+        'wage_balance' : wage_balance,
         'on_calls' : on_calls,
+        'today' : today,
+        'categories' : categories,
+        'payments' : payments
     }
 
     return render(request,'workforce/staff-details.html',context)
@@ -356,147 +353,118 @@ def delete_staff(request,slug):
         messages.warning(request, exception)
     return redirect('staffs')
 
-
 @login_required
-def attandance(request):
-    if not request.user.is_superuser:
-        attandances = Attendance.active_objects.filter(staff=request.user.staff)
-        attandance = Attendance.active_objects.filter(date=today).exists()
-        if attandance:
-            clocked = True
-        else:
-            clocked = False
-    else:
-        attandances = Attendance.active_objects.all()
-        clocked = False
-
-    context = {
-        'main' : 'attandance',
-        'sub' : 'attandance',
-        'attandances' : attandances,
-        'clocked' : clocked
-    }
-    return render(request,'workforce/attandance.html',context)
-
-@login_required
-def add_attandance(request):
-    technicians = Staff.active_objects.all()
-    works = Work.active_objects.all()
-
-    if not request.user.is_superuser:
-        on_calls = OnCall.active_objects.filter(staffs__in=[request.user.staff])
-    else:
-        on_calls = OnCall.active_objects.all()
+def add_attandance(request, slug):
+    on_call = OnCall.active_objects.filter(slug=slug).first()
 
     if request.method == 'POST':
         technician = request.POST.get('technician')
-        on_call = request.POST.get('on_call')
         date = request.POST.get('date')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
 
         try:
-            if request.user.is_superuser:
-                staff = Staff.objects.get(slug=technician)
+            staff = Staff.objects.get(slug=technician)
+            wage_object = Wage.active_objects.filter(staff=staff).order_by('-updated').first()
+            
+            if wage_object:
+                wage = wage_object.amount
             else:
-                staff = Staff.objects.get(user=request.user)
-
-            on_call = OnCall.active_objects.get(slug=on_call)
+                wage = staff.staff_wage
 
             Attendance.objects.create(
-                staff=staff, on_call=on_call, date=date, start_time=start_time, end_time=end_time
+                staff=staff, on_call=on_call, date=date, start_time=start_time, end_time=end_time, wage=wage
             )
 
             messages.success(request,'Attendance added successfully')
-            return redirect('attandance')
+            return redirect('on-call-details', slug=slug)
 
         except Exception as exception:
             messages.warning(request,exception)
-            return redirect('attandance-add')
+            return redirect('on-call-details', slug=slug)
 
-    context = {
-        'main' : 'workforce',
-        'sub' : 'attandance',
-        'technicians' : technicians,
-        'works' : works,
-        'on_calls' : on_calls,
-        'today' : today,
-    }
-    return render(request,'workforce/attandance-add.html',context)
 
-@login_required
-def edit_attandance(request, slug):
-    technicians = Staff.active_objects.all()
-    attandance = Attendance.active_objects.filter(slug=slug).first()
+@user_passes_test(lambda u: u.is_superuser)
+def delete_attandance(request, slug):
+    try:
+        attendance = Attendance.active_objects.filter(slug=slug).first()
+        attendance.is_deleted = True
+        attendance.save()
 
-    if not request.user.is_superuser:
-        on_calls = OnCall.active_objects.filter(staffs__in=[request.user.staff])
-    else:
-        on_calls = OnCall.active_objects.all()
+        messages.success(request, 'Attendance deleted')
+    except Exception as exception:
+        messages.warning(request, str(exception))
+
+    return redirect('on-call-details', slug=attendance.on_call.slug)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def update_wage(request, slug):
+    staff = Staff.objects.get(slug=slug)
 
     if request.method == 'POST':
-        technician = request.POST.get('technician')
-        on_call = request.POST.get('on_call')
-        date = request.POST.get('date')
-        start_time = request.POST.get('start_time')
-        end_time = request.POST.get('end_time')
+        updated = request.POST.get('updated')
+        amount = request.POST.get('amount')
 
         try:
-            if request.user.is_superuser:
-                staff = Staff.objects.get(slug=technician)
-            else:
-                staff = Staff.objects.get(user=request.user)
-
-            on_call = OnCall.active_objects.filter(slug=on_call).first()
-
-            attandance.date = date
-            attandance.stat_time = start_time
-            attandance.end_time = end_time
-            attandance.staff = staff
-            attandance.on_call = on_call
-            attandance.save()
-
-            messages.success(request,'Attendance added successfully')
-            return redirect('attandance')
+            Wage.objects.create(staff=staff, updated=updated, amount=amount)
+            messages.success(request,'Wage updated successfully ... !')
 
         except Exception as exception:
-            messages.warning(request,exception)
-            return redirect('attandance-edit', slug=slug)
+            messages.warning(request,str(exception))
 
-    context = {
-        'main' : 'workforce',
-        'sub' : 'attandance',
-        'attandance' : attandance,
-        'on_calls' : on_calls,
-        'technicians' : technicians
-    }
-    return render(request,'workforce/attandance-edit.html',context)
+    return redirect('staff-details', slug=staff.slug)
 
-@login_required
-def delete_attandance(request):
-    return redirect('attandance')
 
-@login_required
-def approve_attendance(request,slug):
+@user_passes_test(lambda u: u.is_superuser)
+def delete_wage(request, slug):
     try:
-        attandance = Attendance.objects.get(slug=slug)
-        attandance.status = 'APPROVED'
-        attandance.save()
-        messages.success(request,'Attendance approved')
+        wage = Wage.objects.get(slug=slug)
+        wage.is_deleted=True
+        wage.save()
+        messages.success(request, 'Wage deleted successfully ...!')
+
     except Exception as exception:
-        messages.error(request,exception)
+        messages.warning(request, exception)
 
-    return redirect('attandance')
-    
+    return redirect('staff-details', slug=wage.staff.slug)
 
-@login_required
-def reject_attendance(request,slug):
+@user_passes_test(lambda u: u.is_superuser)
+def add_payment(request, slug):
+    staff = Staff.objects.get(slug=slug)
+
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        category_slug = request.POST.get('category')
+        site_slug = request.POST.get('on_call')
+        amount = request.POST.get('amount')
+        title = request.POST.get('title')
+
+        try:
+            category = TransactionCategory.active_objects.get(slug=category_slug)
+            on_call = OnCall.active_objects.get(slug=site_slug)
+
+            Transaction.objects.create(
+                date=date, type='EXPENSE', category=category, staff=staff,
+                title=title, amount=amount, on_call=on_call
+            )
+
+            messages.success(request,'Payment added successfully ... !')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+
+    return redirect('staff-details', slug=staff.slug)
+
+@user_passes_test(lambda u: u.is_superuser)
+def delete_payment(request, slug):
     try:
-        attandance = Attendance.objects.get(slug=slug)
-        attandance.status = 'REJECTED'
-        attandance.save()
-        messages.success(request,'Attendance rejected')
-    except Exception as exception:
-        messages.error(request,exception)
+        transaction = Transaction.objects.get(slug=slug)
+        transaction.is_deleted=True
+        transaction.save()
+        messages.success(request, 'Payment deleted successfully ...!')
 
-    return redirect('attandance')
+    except Exception as exception:
+        messages.warning(request, exception)
+
+    return redirect('staff-details', slug=transaction.staff.slug)

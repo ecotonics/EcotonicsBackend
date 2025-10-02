@@ -4,8 +4,8 @@ from Core.models import save_data
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 from Workforce.models import Staff
-from Works.models import Work, OnCall
-from Customers.models import Customer, Lead
+from Works.models import OnCall
+from Customers.models import Customer
 
 # Create your models here.
 
@@ -75,8 +75,6 @@ class Transaction(BaseModel):
     category = models.ForeignKey(TransactionCategory, on_delete=models.CASCADE)
 
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
-    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True, blank=True)
-    work = models.ForeignKey(Work, on_delete=models.CASCADE, null=True, blank=True)
     on_call = models.ForeignKey(OnCall, on_delete=models.CASCADE, null=True, blank=True)
     staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -98,3 +96,23 @@ class Transaction(BaseModel):
         save_data(self, request, self.category)
 
         super(Transaction, self).save(*args, **kwargs)
+
+class Wage(BaseModel):
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    updated = models.DateField()
+    amount = models.FloatField(default=500)
+
+    def __str__(self):
+        return self.staff.user.first_name + "" + str(self.amount)
+
+    class Meta:
+        verbose_name = _('Wage')
+        verbose_name_plural = _('Wages')
+        ordering = ("-date_added",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.staff.user.first_name + " " + str(self.amount))
+
+        super(Wage, self).save(*args, **kwargs)

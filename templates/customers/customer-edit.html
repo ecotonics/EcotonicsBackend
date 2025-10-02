@@ -6,15 +6,16 @@
 <div class="content">
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
-                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white"
+        role="alert">
+        <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+    {% endfor %}
     {% endif %}
 
     <!-- BEGIN: Vertical Form -->
@@ -29,22 +30,26 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Name</label>
-                        <input value="{{ customer.name }}" name="name" type="text" class="form-control" placeholder="Enter name here" required maxlength="100">
+                        <input value="{{ customer.name }}" name="name" type="text" class="form-control"
+                            placeholder="Enter name here" required maxlength="100">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Location</label>
-                        <input value="{{ customer.location }}" name="location" type="text" class="form-control" placeholder="Enter location here" required maxlength="50">
+                        <input value="{{ customer.location }}" name="location" type="text" class="form-control"
+                            placeholder="Enter location here" required maxlength="50">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Mobile</label>
-                        <input value="{{ customer.mobile }}" name="mobile" type="text" class="form-control" placeholder="Enter mobile number here" required maxlength="15">
+                        <input value="{{ customer.mobile }}" name="mobile" type="text" class="form-control"
+                            placeholder="Enter mobile number here" required maxlength="20">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Email</label>
-                        <input value="{{ customer.email }}" name="email" type="email" class="form-control" placeholder="Enter category name here" maxlength="100">
+                        <input value="{{ customer.email }}" name="email" type="email" class="form-control"
+                            placeholder="Enter category name here" maxlength="100">
                     </div>
 
                     <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
