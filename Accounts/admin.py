@@ -1,5 +1,6 @@
 from django.contrib import admin
 from Accounts.models import TransactionCategory,BankAccount,Transaction, Wage
+from import_export.admin import ExportMixin
 
 # Register your models here.
 
@@ -9,7 +10,7 @@ class TransactionCategoryAdmin(admin.ModelAdmin):
 class BankAccountAdmin(admin.ModelAdmin):
     list_display = ['name','account','number','branch','is_deleted']
 
-class TransactionAdmin(admin.ModelAdmin):
+class TransactionAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ['date','type','category','title','account','amount','is_deleted']
 
 class WageAdmin(admin.ModelAdmin):
