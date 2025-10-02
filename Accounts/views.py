@@ -5,18 +5,77 @@ from django.contrib import messages
 from datetime import datetime
 today = datetime.today()
 from django.http import JsonResponse
-from django.db.models import Sum
+from django.db.models import Q, Sum, Count, FloatField
+from django.db.models.functions import Coalesce
 from Customers.models import Customer
 from Workforce.models import Staff
+from Works.models import OnCall, Attendance
 
 # Create your views here.
 
 @user_passes_test(lambda u: u.is_superuser)
 def overview(request):
-    transactions = Transaction.active_objects.all()
+    transactions = Transaction.active_objects.all()[:10]
+    categories = TransactionCategory.active_objects.all().order_by('-type')
+    works = OnCall.active_objects.all().order_by('date')
+    staffs = Staff.active_objects.all().order_by('user__first_name')
+
     total_income = Transaction.active_objects.filter(type='INCOME').aggregate(Sum('amount'))['amount__sum'] or 0
     total_expense = Transaction.active_objects.filter(type='EXPENSE').aggregate(Sum('amount'))['amount__sum'] or 0
-    balance = total_income - total_expense
+    total_balance = float(total_income) - float(total_expense)
+
+    category_summary = []
+    work_summary = []
+    customer_summary = []
+    staff_summary = []
+
+    for category in categories:
+        amount = Transaction.active_objects.filter(category=category).values_list('amount', flat=True)
+
+        category_summary.append({
+            'slug' : category.slug,
+            'name' : category.name,
+            'type' : category.type,
+            'count' : amount.count(),
+            'amount' : sum(amount)
+        })
+
+    for work in works:
+        revenue = Transaction.active_objects.filter(on_call=work, type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
+        expense = Transaction.active_objects.filter(on_call=work, type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
+        balance = float(revenue) - float(expense)
+
+        work_summary.append({
+            'slug' : work.slug,
+            'name' : work.site_name,
+            'customer' : work.customer.name,
+            'mobile' : work.customer.mobile,
+            'email' : work.customer.email,
+            'revenue' : revenue,
+            'expense' : expense,
+            'balance' : balance
+        })
+
+    for staff in staffs:
+        attandances = Attendance.active_objects.filter(staff=staff)
+        payments = Transaction.active_objects.filter(staff=staff)
+
+        wage_total = attandances.aggregate(total=Sum('wage'))['total'] or 0.00
+        wage_paid = payments.aggregate(total=Sum('amount'))['total'] or 0.00
+        wage_balance = float(wage_total) - float(wage_paid)
+
+        staff_summary.append({
+            'slug' : staff.slug,
+            'name' : staff.user.first_name,
+            'photo' : staff.user.photo.url,
+            'mobile' : staff.user.mobile,
+            'email' : staff.user.email,
+            'designation' : staff.designation.name,
+            'department' : staff.department.name,
+            'wage_total' : wage_total,
+            'wage_paid' : wage_paid,
+            'wage_balance' : wage_balance
+        })
 
     context = {
         'main' : 'accounts',
@@ -24,7 +83,11 @@ def overview(request):
         'transactions' : transactions,
         'total_income' : float(total_income),
         'total_expense' : float(total_expense),
-        'balance' : float(balance)
+        'balance' : float(total_balance),
+        'category_summary' : category_summary,
+        'work_summary' : work_summary,
+        'customer_summary' : customer_summary,
+        'staff_summary' : staff_summary
     }
 
     return render(request,'accounts/overview.html',context)
@@ -63,6 +126,19 @@ def add_transaction_category(request):
     }
 
     return render(request,'accounts/category-add.html',context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def transaction_category_details(request,slug):
+    category = TransactionCategory.objects.get(slug=slug)
+    transactions = Transaction.active_objects.filter(category=category)
+
+    context = {
+        'main' : 'accounts',
+        'category' : category,
+        'transactions' : transactions
+    }
+
+    return render(request,'accounts/category-details.html',context)
 
 @user_passes_test(lambda u: u.is_superuser)
 def edit_transaction_category(request,slug):
