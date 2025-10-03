@@ -88,7 +88,7 @@
         <div id="technicians-tab" class="tab-pane leading-relaxed active" role="tabpanel"
             aria-labelledby="technicians-tab">
             <div class="col-span-12 mt-5">
-                {% if on_call.status == 'pending' or 'ongoing' %}
+                {% if on_call.status != 'completed' %}
                 <div class="intro-y block sm:flex items-center h-10">
                     <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
                         <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal"
