@@ -121,7 +121,7 @@ def delete_customer(request,slug):
 def filter_customers(request):
     type = request.GET.get('type')
 
-    customers_list = Customer.active_objects.filter(type=type).values('slug', 'name')
+    customers_list = Customer.active_objects.filter(type=type, status='active').values('slug', 'name')
     customers_data = list(customers_list)
 
     return JsonResponse({'customers': customers_data})

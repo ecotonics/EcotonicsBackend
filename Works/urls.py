@@ -11,4 +11,11 @@ urlpatterns = [
     path('on-call/expense/add/<slug:slug>/',views.add_on_call_expense,name='add-on-call-expense'),
     path('on-call/expense/delete/<slug:slug>/',views.delete_on_call_expense,name='delete-on-call-expense'),
     path('on-call/complete/<slug:slug>/',views.complete_on_call,name='complete-on-call'),
+
+    # TASKS
+    path('tasks/',views.tasks, name='tasks'),
+    path('task/add/',views.add_task, name='task-add'),
+    path('task/edit/<slug:slug>/', views.edit_task, name='task-edit'),
+    path('task/delete/<slug:slug>/', views.delete_task, name='task-delete'),
+    path('task/complete/<slug:slug>/', views.complete_task, name='task-complete'),
 ]

@@ -22,6 +22,11 @@ WORK_STATUS = (
     ('COMPLETED', 'COMPLETED')
 )
 
+TASK_STATUS = (
+    ('PENDING', 'PENDING'),
+    ('COMPLETED', 'COMPLETED')
+)
+
 TYPE = (
     ('individual', 'individual'),
     ('enterprise', 'enterprise')
@@ -56,7 +61,7 @@ class OnCall(BaseModel):
     class Meta:
         verbose_name = _('On Call')
         verbose_name_plural = _('On Calls')
-        ordering = ("-date_added",)
+        ordering = ("-date",)
 
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)
@@ -81,7 +86,7 @@ class Attendance(BaseModel):
     class Meta:
         verbose_name = _('Attendance')
         verbose_name_plural = _('Attendances')
-        ordering = ("-date_added",)
+        ordering = ("-date",)
 
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)
@@ -89,3 +94,25 @@ class Attendance(BaseModel):
         save_data(self, request, self.staff.user.username)
 
         super(Attendance, self).save(*args, **kwargs)
+
+
+class Task (BaseModel):
+    date = models.DateField()
+    title = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    is_completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _('Task')
+        verbose_name_plural = _('Tasks')
+        ordering = ("-date",)
+
+    def save(self, request=None, *args, **kwargs):
+        request = RequestMiddleware(get_response=None)
+        request = request.thread_local.current_request
+        save_data(self, request, self.title)
+
+        super(Task, self).save(*args, **kwargs)

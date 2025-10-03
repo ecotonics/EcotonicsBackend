@@ -37,7 +37,7 @@ class TransactionCategory(BaseModel):
     class Meta:
         verbose_name = _('Transaction Category')
         verbose_name_plural = _('Transaction Categories')
-        ordering = ("name",)
+        ordering = ("-type","name",)
 
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)
@@ -88,7 +88,7 @@ class Transaction(BaseModel):
     class Meta:
         verbose_name = _('Transaction')
         verbose_name_plural = _('Transactions')
-        ordering = ("-date_added",)
+        ordering = ("-date",)
 
     def save(self, request=None, *args, **kwargs):
         request = RequestMiddleware(get_response=None)

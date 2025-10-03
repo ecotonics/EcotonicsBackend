@@ -6,7 +6,7 @@ from Workforce.models import Staff
 from datetime import datetime
 from django.contrib import messages
 from Customers.models import Customer
-from Works.models import OnCall
+from Works.models import OnCall, Task
 from Services.models import Category, Service
 from django.db.models import Count,Sum
 
@@ -71,7 +71,7 @@ def add_on_call(request):
 
 def on_call_details(request, slug):
     on_call = OnCall.active_objects.filter(slug=slug).first()
-    staffs = Staff.active_objects.all()
+    staffs = Staff.active_objects.filter(status='active')
     categories = TransactionCategory.active_objects.filter(type='EXPENSE')
     transactions = Transaction.active_objects.filter(on_call=on_call)
 
@@ -200,3 +200,92 @@ def complete_on_call(request, slug):
     on_call.status = 'completed'
     on_call.save()
     return redirect('on-call-details', slug=slug)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def tasks(request):
+    tasks = Task.active_objects.all()
+
+    context = {
+        'main' : 'tasks',
+        'tasks' : tasks
+    }
+    return render(request,'tasks/tasks.html',context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def add_task(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        date = request.POST.get('date')
+
+        try:
+            Task.objects.create(
+                date=date, title=title, description=description
+            )
+
+            messages.success(request,'Task addedd successfully')
+            return redirect('tasks')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('task-add')
+
+    context = {
+        'main' : 'tasks',
+        'today' : today
+    }
+    return render(request,'tasks/task-add.html',context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def edit_task(request,slug):
+    task = Task.active_objects.filter(slug=slug).first()
+
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+
+        try:
+            task.date = date
+            task.title = title
+            task.description = description
+            task.save()
+
+            messages.success(request,'Task updated successfully')
+            return redirect('tasks')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('task-edit', slug=slug)
+
+    context = {
+        'main' : 'tasks',
+        'task' : task,
+        'today' : today
+    }
+    return render(request,'tasks/task-edit.html',context)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def delete_task(request, slug):
+    try:
+        task = Task.active_objects.filter(slug=slug).first()
+        task.is_deleted = True
+        task.save()
+
+        messages.success(request, 'Task deleted')
+    except Exception as exception:
+        messages.warning(request, str(exception))
+
+    return redirect('tasks')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def complete_task(request, slug):
+    task = Task.active_objects.filter(slug=slug).first()
+    task.is_completed = True
+    task.save()
+    return redirect('tasks')

@@ -345,7 +345,7 @@ def staff_details(request,slug):
 def delete_staff(request,slug):
     try:
         staff = Staff.objects.get(slug=slug)
-        staff.status = 0
+        staff.status = 'inactive'
         staff.save()
         messages.error(request, 'staff status changed successfully ...!')
 

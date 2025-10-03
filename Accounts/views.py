@@ -15,7 +15,7 @@ from Works.models import OnCall, Attendance
 
 @user_passes_test(lambda u: u.is_superuser)
 def overview(request):
-    transactions = Transaction.active_objects.all()[:10]
+    transactions = Transaction.active_objects.all()
     categories = TransactionCategory.active_objects.all().order_by('-type')
     works = OnCall.active_objects.all().order_by('date')
     staffs = Staff.active_objects.all().order_by('user__first_name')
@@ -246,18 +246,39 @@ def filter_category(request):
 @user_passes_test(lambda u: u.is_superuser)
 def add_transaction(request):
     accounts = BankAccount.active_objects.all()
+    staffs = Staff.active_objects.filter(status='active')
+    customers = Customer.active_objects.filter(status='active')
+    sites = OnCall.active_objects.all()
+
     if request.method == 'POST':
         date = request.POST.get('date')
         category = request.POST.get('category')
         title = request.POST.get('title')
-        account = request.POST.get('account')
         amount = request.POST.get('amount')
+        account = request.POST.get('account') or None
+        staff = request.POST.get('staff') or None
+        customer = request.POST.get('customer') or None
+        site = request.POST.get('site') or None
 
         try:
             category = TransactionCategory.active_objects.get(slug=category)
-            account = BankAccount.active_objects.get(slug=account)
 
-            Transaction.objects.create(date=date,category=category,type=category.type,title=title,account=account,amount=amount)
+            if account:
+                account = BankAccount.active_objects.get(slug=account)
+
+            if staff:
+                staff = Staff.active_objects.get(slug=staff)
+
+            if customer:
+                customer = Customer.active_objects.get(slug=customer)
+
+            if site:
+                site = OnCall.active_objects.get(slug=site)
+
+            Transaction.objects.create(
+                date=date, category=category, type=category.type, title=title, account=account, amount=amount,
+                staff=staff, customer=customer, on_call=site
+            )
             messages.success(request,'Transaction added successfully ... !')
             return redirect('transactions')
 
@@ -269,7 +290,10 @@ def add_transaction(request):
         'main' : 'accounts',
         'sub' : 'transactions',
         'today' : today,
-        'accounts' : accounts
+        'accounts' : accounts,
+        'staffs' : staffs,
+        'customers' : customers,
+        'sites' : sites
     }
 
     return render(request,'accounts/transaction-add.html',context)
@@ -277,19 +301,45 @@ def add_transaction(request):
 @user_passes_test(lambda u: u.is_superuser)
 def edit_transaction(request,slug):
     accounts = BankAccount.active_objects.all()
+    staffs = Staff.active_objects.filter(status='active')
+    customers = Customer.active_objects.filter(status='active')
+    sites = OnCall.active_objects.all()
+
     transaction = Transaction.objects.get(slug=slug)
     categories = TransactionCategory.objects.filter(type = transaction.type)
+
     if request.method == 'POST':
         transaction.date = request.POST.get('date')
         transaction.title = request.POST.get('title')
         transaction.amount = request.POST.get('amount')
 
         category = request.POST.get('category')
-        account = request.POST.get('account')
+        account = request.POST.get('account') or None
+        customer = request.POST.get('customer') or None
+        staff = request.POST.get('staff') or None
+        site = request.POST.get('site') or None
 
         try:
             category = TransactionCategory.active_objects.get(slug=category)
-            account = BankAccount.active_objects.get(slug=account)
+
+            if account:
+                account = BankAccount.active_objects.get(slug=account)
+
+            if customer:
+                customer = Customer.active_objects.get(slug=customer)
+
+            if staff:
+                staff = Staff.active_objects.get(slug=staff)
+
+            if site:
+                site = OnCall.active_objects.get(slug=site)
+
+            transaction.category = category
+            transaction.type = category.type
+            transaction.account = account
+            transaction.customer = customer
+            transaction.staff = staff
+            transaction.on_call = site
 
             transaction.save()
             messages.success(request,'Transaction details edited successfully ... !')
@@ -306,6 +356,9 @@ def edit_transaction(request,slug):
         'today' : today,
         'categories' : categories,
         'accounts' : accounts,
+        'staffs' : staffs,
+        'customers' : customers,
+        'sites' : sites
     }
     return render(request,'accounts/transaction-edit.html',context)
 

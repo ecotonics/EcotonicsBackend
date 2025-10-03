@@ -6,15 +6,16 @@
 <div class="content">
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
-                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white"
+        role="alert">
+        <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+    {% endfor %}
     {% endif %}
 
     <!-- BEGIN: Vertical Form -->
@@ -29,7 +30,8 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Date</label>
-                        <input value="{{ transaction.date | date:'Y-m-d' }}" type="date" name="date" id="" class="form-control">
+                        <input value="{{ transaction.date | date:'Y-m-d' }}" type="date" name="date" id=""
+                            class="form-control">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
@@ -46,23 +48,70 @@
                         <select name="category" id="transaction-category" class="form-control">
                             <option value="{{ transaction.category.slug }}">{{ transaction.category.name }}</option>
                             {% for category in categories %}
-                                <option value="{{ category.slug }}">{{ category.name }}</option>
+                            <option value="{{ category.slug }}">{{ category.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Staff</label>
+                        <div class="intro-y col-span-12 sm:col-span-6">
+                            <select name="staff" class="form-control">
+                                <option value="{{ transaction.staff.slug }}">
+                                    {{ transaction.staff.user.first_name }}
+                                </option>
+                                {% for staff in staffs %}
+                                <option value="{{ staff.slug }}">
+                                    {{ staff.user.first_name }} ({{ staff.designation }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Customer</label>
+                        <div class="intro-y col-span-12 sm:col-span-6">
+                            <select name="customer" class="form-control">
+                                <option value="{{ transaction.customer.slug }}">{{ transaction.customer.name }}</option>
+                                {% for customer in customers %}
+                                <option value="{{ customer.slug }}">
+                                    {{ customer.name }} ({{ customer.location }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Work Site</label>
+                        <div class="intro-y col-span-12 sm:col-span-6">
+                            <select name="site" class="form-control">
+                                <option value="{{ transaction.site.slug }}">{{ transaction.site.site_name }}</option>
+                                {% for site in sites %}
+                                <option value="{{ site.slug }}">
+                                    {{ site.site_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-12">
                         <label for="input-wizard-2" class="form-label">Title</label>
-                        <input value="{{ transaction.title }}" type="text" name="title" id="" class="form-control" placeholder="Enter transaction title">
+                        <input type="text" name="title" id="" class="form-control" placeholder="Enter transaction title"
+                            value="{{ transaction.title }}">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Account</label>
                         <div class="intro-y col-span-12 sm:col-span-6">
                             <select name="account" id="transaction-category" class="form-control">
-                                <option value="{{ transaction.account.slug }}">{{ transaction.account.name }} {{ transaction.account.account }}</option>
+                                <option value="{{ transaction.account.slug }}">{{ transaction.account.name }}
+                                    {{transaction.account.account }}
+                                </option>
                                 {% for account in accounts %}
-                                    <option value="{{ account.slug }}">{{ account.name }} {{ account.account }}</option>
+                                <option value="{{ account.slug }}">{{ account.name }} {{ account.account }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -70,7 +119,8 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Amount</label>
-                        <input value="{{ transaction.amount }}" step="0.01" type="number" name="amount" id="" class="form-control" placeholder="Enter transaction amount">
+                        <input value="{{ transaction.amount }}" step="0.01" type="number" name="amount" id=""
+                            class="form-control" placeholder="Enter transaction amount">
                     </div>
 
                     <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">
