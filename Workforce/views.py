@@ -446,7 +446,7 @@ def add_payment(request, slug):
 
             Transaction.objects.create(
                 date=date, type='EXPENSE', category=category, staff=staff,
-                title=title, amount=amount, on_call=on_call
+                title=title, amount=amount, on_call=on_call, customer=on_call.customer
             )
 
             messages.success(request,'Payment added successfully ... !')

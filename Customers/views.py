@@ -74,7 +74,7 @@ def edit_customer(request,slug):
 @user_passes_test(lambda u: u.is_superuser)
 def customer_details(request,slug):
     customer = Customer.objects.get(slug=slug)
-    transactions = Transaction.active_objects.filter(on_call__customer=customer)
+    transactions = Transaction.active_objects.filter(customer=customer, on_call__customer=customer)
 
     revanue_amount = transactions.filter(type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
     expense_amount = transactions.filter(type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
