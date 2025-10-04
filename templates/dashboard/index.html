@@ -84,21 +84,21 @@
                         <div id="today-tab" class="tab-pane leading-relaxed active" role="tabpanel"
                             aria-labelledby="today-tab">
 
-                            {% include 'tables/tasks.html' %}
+                            {% include 'tables/tasks.html' with tasks=today_tasks %}
 
                         </div>
 
                         <div id="overdue-tab" class="tab-pane leading-relaxed" role="tabpanel"
                             aria-labelledby="overdue-tab">
 
-                            {% include 'tables/tasks.html' %}
+                            {% include 'tables/tasks.html' with tasks=overdue_tasks %}
 
                         </div>
 
                         <div id="upcoming-tab" class="tab-pane leading-relaxed" role="tabpanel"
                             aria-labelledby="upcoming-tab">
 
-                            {% include 'tables/tasks.html' %}
+                            {% include 'tables/tasks.html' with tasks=upcoming_tasks %}
 
                         </div>
                     </div>
