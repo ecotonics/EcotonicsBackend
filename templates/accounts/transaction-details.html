@@ -1,0 +1,78 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- BEGIN: Content -->
+<div class="content">
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white"
+        role="alert">
+        <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- BEGIN: Profile Info -->
+    <div class="intro-y box p-10 mt-5">
+        <div class="grid grid-cols-3 gap-5">
+            <div>
+                <div class="text-slate-500">Date</div>
+                <div class="font-medium text-base mt-1">{{ transaction.date | date:'d F Y' }}</div>
+            </div>
+
+            <div>
+                <div class="text-slate-500">Type</div>
+                <div
+                    class="font-medium text-base mt-1 {% if transaction.type == 'INCOME' %} text-success {% else %} text-danger {% endif %}">
+                    {{ transaction.type }}
+                </div>
+            </div>
+
+            <div>
+                <div class="text-slate-500">Transaction Category</div>
+                <div class="font-medium text-base mt-1">{{ transaction.category }}</div>
+            </div>
+
+            <div class="mt-10">
+                <div class="text-slate-500">Title</div>
+                <div class="font-medium text-base mt-1">{{ transaction.title }}</div>
+            </div>
+
+            <div class="mt-10">
+                <div class="text-slate-500">Account</div>
+                <div class="font-medium text-base mt-1">{{ transaction.account }}</div>
+            </div>
+
+            <div class="mt-10">
+                <div class="text-slate-500">Amount</div>
+                <div
+                    class="font-medium text-base mt-1 {% if transaction.type == 'INCOME' %} text-success {% else %} text-danger {% endif %}">
+                    {{ transaction.amount }}
+                </div>
+            </div>
+
+            <div class="mt-10">
+                <div class="text-slate-500">Customer</div>
+                <div class="font-medium text-base mt-1">{{ transaction.customer }}</div>
+            </div>
+
+            <div class="mt-10">
+                <div class="text-slate-500">Work Site</div>
+                <div class="font-medium text-base mt-1">{{ transaction.on_call }}</div>
+            </div>
+
+            <div class="mt-10">
+                <div class="text-slate-500">Staff Name</div>
+                <div class="font-medium text-base mt-1">{{ transaction.staff }}</div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Profile Info -->
+</div>
+{% endblock content %}

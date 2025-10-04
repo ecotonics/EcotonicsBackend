@@ -243,6 +243,20 @@ def filter_category(request):
 
     return JsonResponse({'categories': category_data})
 
+
+@user_passes_test(lambda u: u.is_superuser)
+def transaction_details(request,slug):
+    transaction = Transaction.objects.get(slug=slug)
+
+    context = {
+        'main' : 'accounts',
+        'sub' : 'transactions',
+        'transaction' : transaction
+    }
+
+    return render(request,'accounts/transaction-details.html',context)
+
+
 @user_passes_test(lambda u: u.is_superuser)
 def add_transaction(request):
     accounts = BankAccount.active_objects.all()

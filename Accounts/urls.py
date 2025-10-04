@@ -18,6 +18,7 @@ urlpatterns = [
 
     path('transactions/',views.transactions,name='transactions'),
     path('transaction/add/',views.add_transaction,name='transaction-add'),
+    path('transaction/details/<slug:slug>/',views.transaction_details,name='transaction-details'),
     path('transaction/edit/<slug:slug>/',views.edit_transaction,name='transaction-edit'),
     path('transaction/delete/<slug:slug>/',views.delete_transaction,name='transaction-delete'),
 
