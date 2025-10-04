@@ -18,6 +18,7 @@
                 <th class="text-center whitespace-nowrap">DATE</th>
                 <th class="text-center whitespace-nowrap">TECHNICIAN</th>
                 <th class="text-center whitespace-nowrap">WORK SITE</th>
+                <th class="text-center whitespace-nowrap">DURATION</th>
                 <th class="text-center whitespace-nowrap">START TIME</th>
                 <th class="text-center whitespace-nowrap">END TIME</th>
                 <th class="text-center whitespace-nowrap">ACTIONS</th>
@@ -38,6 +39,10 @@
 
                 <td class="text-center">
                     <a href="" class="font-medium whitespace-nowrap">{{ attendance.on_call.site_name }}</a>
+                </td>
+
+                <td class="text-center whitespace-nowrap text-warning">
+                    {{ attendance.duration }}
                 </td>
 
                 <td class="text-center whitespace-nowrap text-success">
