@@ -25,6 +25,7 @@ urlpatterns = [
 
     # ATTANDENCE
     path('attendance/add/<slug:slug>/',views.add_attandance,name='attendance-add'),
+    path('attendance/edit/<slug:slug>/',views.edit_attandance,name='attendance-edit'),
     path('attendance/delete/<slug:slug>/',views.delete_attandance,name='attendance-delete'),
 
     # WAGES

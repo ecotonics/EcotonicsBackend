@@ -379,7 +379,7 @@ def add_attandance(request, slug):
                 wage = float(wage) / 4
 
             Attendance.objects.create(
-                staff=staff, on_call=on_call, date=date, start_time=start_time, end_time=end_time, wage=wage
+                staff=staff, on_call=on_call, date=date, start_time=start_time, end_time=end_time, wage=wage, duration=duration
             )
 
             messages.success(request,'Attendance added successfully')
@@ -388,6 +388,58 @@ def add_attandance(request, slug):
         except Exception as exception:
             messages.warning(request,exception)
             return redirect('on-call-details', slug=slug)
+        
+
+@user_passes_test(lambda u: u.is_superuser)
+def edit_attandance(request, slug):
+    attendance = Attendance.active_objects.filter(slug=slug).first()
+    on_call = attendance.on_call
+
+    if request.method == 'POST':
+        technician = request.POST.get('technician')
+        date = request.POST.get('date')
+        duration = request.POST.get('duration')
+        start_time = request.POST.get('start_time')
+        end_time = request.POST.get('end_time')
+
+        try:
+            staff = Staff.objects.get(slug=technician)
+            wage_object = Wage.active_objects.filter(staff=staff, updated__lt=date).order_by('-updated').first()
+            
+            if wage_object:
+                wage = wage_object.amount
+            else:
+                wage = staff.staff_wage
+
+            if duration == 'HALF':
+                wage = float(wage) / 2
+            elif duration == 'QUARTER':
+                wage = float(wage) / 4
+
+            attendance.staff = staff
+            attendance.date = date
+            attendance.start_time = start_time
+            attendance.end_time = end_time
+            attendance.wage = wage
+            attendance.duration = duration
+            attendance.save()
+
+            messages.success(request,'Attendance updated successfully')
+            return redirect('on-call-details', slug=on_call.slug)
+
+        except Exception as exception:
+            messages.warning(request,exception)
+            return redirect('staff-details', slug=staff.slug)
+    
+    context = {
+        'main' : 'workforce',
+        'sub' : 'staffs',
+        'attendance' : attendance,
+        'on_call' : on_call,
+        'staffs' : Staff.active_objects.all()
+    }
+
+    return render(request,'workforce/attendance-edit.html',context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
