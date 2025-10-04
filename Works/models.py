@@ -38,6 +38,12 @@ LEAD_STATUS = (
     ('FAILED', 'FAILED')
 )
 
+DURATION_CHOICES = [
+    ('FULL', 'Full Day'),
+    ('HALF', 'Half Day'),
+    ('QUARTER', 'Quarter Day'),
+]
+
 class OnCall(BaseModel):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=OnCallStatusChoices.choices, default=OnCallStatusChoices.PENDING)
@@ -77,6 +83,7 @@ class Attendance(BaseModel):
     staff = models.ForeignKey(Staff,on_delete=models.CASCADE)
     wage = models.FloatField(default=0.00)
     on_call = models.ForeignKey(OnCall, on_delete=models.CASCADE, null=True)
+    duration = models.CharField(max_length=20, choices=DURATION_CHOICES, default='FULL')
     start_time = models.TimeField(null=True,blank=True)
     end_time = models.TimeField(null=True,blank=True)
 

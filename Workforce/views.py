@@ -360,6 +360,7 @@ def add_attandance(request, slug):
     if request.method == 'POST':
         technician = request.POST.get('technician')
         date = request.POST.get('date')
+        duration = request.POST.get('duration')
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
 
@@ -371,6 +372,11 @@ def add_attandance(request, slug):
                 wage = wage_object.amount
             else:
                 wage = staff.staff_wage
+
+            if duration == 'HALF':
+                wage = float(wage) / 2
+            elif duration == 'QUARTER':
+                wage = float(wage) / 4
 
             Attendance.objects.create(
                 staff=staff, on_call=on_call, date=date, start_time=start_time, end_time=end_time, wage=wage
