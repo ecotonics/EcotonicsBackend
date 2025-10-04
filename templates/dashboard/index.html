@@ -83,242 +83,23 @@
 
                         <div id="today-tab" class="tab-pane leading-relaxed active" role="tabpanel"
                             aria-labelledby="today-tab">
-                            <div class="col-span-12 mt-5">
-                                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                                    {% if today_tasks %}
-                                    <table class="table table-report sm:mt-2">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center whitespace-nowrap">NO</th>
-                                                <th class="text-center whitespace-nowrap">TITLE</th>
-                                                <th class="text-center whitespace-nowrap">DATE</th>
-                                                <th class="text-center whitespace-nowrap">DESCRIPTION</th>
-                                                <th class="text-center whitespace-nowrap">ACTIONS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for task in today_tasks %}
-                                            <tr class="intro-x {% if task.is_completed %} text-success {% endif %}">
-                                                <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                                <td class="font-medium text-center whitespace-nowrap" {% if
-                                                    task.is_completed %} style="text-decoration: line-through;" {% endif
-                                                    %}>
-                                                    {{ task.title }}
-                                                </td>
-                                                <td class="font-medium text-center whitespace-nowrap" {% if
-                                                    task.is_completed %} style="text-decoration: line-through;" {% endif
-                                                    %}>
-                                                    {{ task.date | date:"d M Y" }}
-                                                </td>
-                                                <td class="text-center whitespace-nowrap" {% if task.is_completed %}
-                                                    style="text-decoration: line-through;" {% endif %}>
-                                                    {{ task.description }}
-                                                </td>
-                                                <td class="table-report__action w-56">
-                                                    <div class="flex justify-center items-center">
-                                                        {% if not task.is_completed %}
-                                                        <a class="flex items-center mx-2"
-                                                            href="{% url 'task-edit' task.slug %}">
-                                                            <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
-                                                        </a>
 
-                                                        <a class="flex items-center text-success mx-2"
-                                                            href="{% url 'task-complete' task.slug %}"
-                                                            onclick="return confirm('Are you sure you want to mark the task as completed ?');">
-                                                            <i data-lucide="check-circle" class="w-4 h-4 mx-2"></i>
-                                                        </a>
-                                                        {% endif %}
+                            {% include 'tables/tasks.html' %}
 
-                                                        <a class="flex items-center text-danger mx-2"
-                                                            href="{% url 'task-delete' task.slug %}"
-                                                            onclick="return confirm('Are you sure you want to delete the task ?');">
-                                                            <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                    {% else %}
-                                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                                        <table class="table table-report -mt-2">
-                                            <tbody>
-                                                <tr class="intro-x width">
-                                                    <td class=" width" style="width:100%;">
-                                                        <i data-lucide="hard-drive"
-                                                            style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
-                                                            class="w-6 h-6 mr-2 text-white bg-success">
-                                                        </i>
-                                                        <div style="text-align: center;">No data available!</div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
                         </div>
 
                         <div id="overdue-tab" class="tab-pane leading-relaxed" role="tabpanel"
                             aria-labelledby="overdue-tab">
-                            <div class="col-span-12 mt-5">
-                                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                                    {% if overdue_tasks %}
-                                    <table class="table table-report sm:mt-2">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center whitespace-nowrap">NO</th>
-                                                <th class="text-center whitespace-nowrap">TITLE</th>
-                                                <th class="text-center whitespace-nowrap">DATE</th>
-                                                <th class="text-center whitespace-nowrap">DESCRIPTION</th>
-                                                <th class="text-center whitespace-nowrap">ACTIONS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for task in overdue_tasks %}
-                                            <tr class="intro-x {% if task.is_completed %} text-success {% endif %}">
-                                                <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                                <td class="font-medium text-center whitespace-nowrap" {% if
-                                                    task.is_completed %} style="text-decoration: line-through;" {% endif
-                                                    %}>
-                                                    {{ task.title }}
-                                                </td>
-                                                <td class="font-medium text-center whitespace-nowrap" {% if
-                                                    task.is_completed %} style="text-decoration: line-through;" {% endif
-                                                    %}>
-                                                    {{ task.date | date:"d M Y" }}
-                                                </td>
-                                                <td class="text-center whitespace-nowrap" {% if task.is_completed %}
-                                                    style="text-decoration: line-through;" {% endif %}>
-                                                    {{ task.description }}
-                                                </td>
-                                                <td class="table-report__action w-56">
-                                                    <div class="flex justify-center items-center">
-                                                        {% if not task.is_completed %}
-                                                        <a class="flex items-center mx-2"
-                                                            href="{% url 'task-edit' task.slug %}">
-                                                            <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
-                                                        </a>
 
-                                                        <a class="flex items-center text-success mx-2"
-                                                            href="{% url 'task-complete' task.slug %}"
-                                                            onclick="return confirm('Are you sure you want to mark the task as completed ?');">
-                                                            <i data-lucide="check-circle" class="w-4 h-4 mx-2"></i>
-                                                        </a>
-                                                        {% endif %}
+                            {% include 'tables/tasks.html' %}
 
-                                                        <a class="flex items-center text-danger mx-2"
-                                                            href="{% url 'task-delete' task.slug %}"
-                                                            onclick="return confirm('Are you sure you want to delete the task ?');">
-                                                            <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                    {% else %}
-                                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                                        <table class="table table-report -mt-2">
-                                            <tbody>
-                                                <tr class="intro-x width">
-                                                    <td class=" width" style="width:100%;">
-                                                        <i data-lucide="hard-drive"
-                                                            style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
-                                                            class="w-6 h-6 mr-2 text-white bg-success">
-                                                        </i>
-                                                        <div style="text-align: center;">No data available!</div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
                         </div>
 
                         <div id="upcoming-tab" class="tab-pane leading-relaxed" role="tabpanel"
                             aria-labelledby="upcoming-tab">
-                            <div class="col-span-12 mt-5">
-                                <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
-                                    {% if upcoming_tasks %}
-                                    <table class="table table-report sm:mt-2">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center whitespace-nowrap">NO</th>
-                                                <th class="text-center whitespace-nowrap">TITLE</th>
-                                                <th class="text-center whitespace-nowrap">DATE</th>
-                                                <th class="text-center whitespace-nowrap">DESCRIPTION</th>
-                                                <th class="text-center whitespace-nowrap">ACTIONS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for task in upcoming_tasks %}
-                                            <tr class="intro-x {% if task.is_completed %} text-success {% endif %}">
-                                                <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                                <td class="font-medium text-center whitespace-nowrap" {% if
-                                                    task.is_completed %} style="text-decoration: line-through;" {% endif
-                                                    %}>
-                                                    {{ task.title }}
-                                                </td>
-                                                <td class="font-medium text-center whitespace-nowrap" {% if
-                                                    task.is_completed %} style="text-decoration: line-through;" {% endif
-                                                    %}>
-                                                    {{ task.date | date:"d M Y" }}
-                                                </td>
-                                                <td class="text-center whitespace-nowrap" {% if task.is_completed %}
-                                                    style="text-decoration: line-through;" {% endif %}>
-                                                    {{ task.description }}
-                                                </td>
-                                                <td class="table-report__action w-56">
-                                                    <div class="flex justify-center items-center">
-                                                        {% if not task.is_completed %}
-                                                        <a class="flex items-center mx-2"
-                                                            href="{% url 'task-edit' task.slug %}">
-                                                            <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
-                                                        </a>
 
-                                                        <a class="flex items-center text-success mx-2"
-                                                            href="{% url 'task-complete' task.slug %}"
-                                                            onclick="return confirm('Are you sure you want to mark the task as completed ?');">
-                                                            <i data-lucide="check-circle" class="w-4 h-4 mx-2"></i>
-                                                        </a>
-                                                        {% endif %}
+                            {% include 'tables/tasks.html' %}
 
-                                                        <a class="flex items-center text-danger mx-2"
-                                                            href="{% url 'task-delete' task.slug %}"
-                                                            onclick="return confirm('Are you sure you want to delete the task ?');">
-                                                            <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                    {% else %}
-                                    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                                        <table class="table table-report -mt-2">
-                                            <tbody>
-                                                <tr class="intro-x width">
-                                                    <td class=" width" style="width:100%;">
-                                                        <i data-lucide="hard-drive"
-                                                            style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
-                                                            class="w-6 h-6 mr-2 text-white bg-success">
-                                                        </i>
-                                                        <div style="text-align: center;">No data available!</div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -330,67 +111,8 @@
                             Ongoing Works
                         </h2>
                     </div>
-                    <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
-                        {% if ongoing_works %}
-                        <table class="table table-report sm:mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="text-center whitespace-nowrap">NO</th>
-                                    <th class="text-center whitespace-nowrap">CUSTOMER</th>
-                                    <th class="text-center whitespace-nowrap">LOCATION</th>
-                                    <th class="text-center whitespace-nowrap">SERVICE</th>
-                                    <th class="text-center whitespace-nowrap">ACTIONS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for work in ongoing_works %}
-                                <tr class="intro-x">
-                                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
-                                    <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ work.customer.name }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
-                                            {{work.customer.mobile}}
-                                        </div>
-                                    </td>
-                                    <td class="font-medium text-center whitespace-nowrap">
-                                        {{ work.customer.location }}
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="" class="font-medium whitespace-nowrap">{{ work.service }}</a>
-                                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
-                                            {{work.category }}
-                                        </div>
-                                    </td>
-                                    <td class="table-report__action w-56">
-                                        <div class="flex justify-center items-center">
-                                            <a class="flex items-center text-warning"
-                                                href="{% url 'on-call-details' work.slug %}">
-                                                <i data-lucide="eye" class="w-4 h-4 mr-1"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
-                            <table class="table table-report -mt-2">
-                                <tbody>
-                                    <tr class="intro-x width">
-                                        <td class=" width" style="width:100%;">
-                                            <i data-lucide="hard-drive"
-                                                style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
-                                                class="w-6 h-6 mr-2 text-white bg-success">
-                                            </i>
-                                            <div style="text-align: center;">No data available!</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        {% endif %}
-                    </div>
+
+                    {% include 'tables/oncalls.html' with on_calls=ongoing_works %}
                 </div>
                 <!-- END: Weekly Top Products -->
             </div>

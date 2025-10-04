@@ -1,0 +1,100 @@
+<div class="grid grid-cols-12 gap-6">
+    <div class="col-span-12">
+        <div class="grid grid-cols-12 gap-6 mt-5">
+            <div class="col-span-12 sm:col-span-6 xl:col-span-4 intro-y">
+                <div class="report-box zoom-in">
+                    <div class="box p-5 flex">
+                        <div class="text-3xl font-medium leading-8">{{ wage_total | default:0.0 }}</div>
+                        <div class="text-base text-warning font-medium ml-auto">WAGE TOTAL</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 xl:col-span-4 intro-y">
+                <div class="report-box zoom-in">
+                    <div class="box p-5 flex">
+                        <div class="text-3xl font-medium leading-8">{{ wage_paid | default:0.0 }}</div>
+                        <div class="text-base text-success font-medium ml-auto">WAGE PAID</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-span-12 sm:col-span-6 xl:col-span-4 intro-y">
+                <div class="report-box zoom-in">
+                    <div class="box p-5 flex">
+                        <div class="text-3xl font-medium leading-8">{{ wage_balance | default:0.0 }}</div>
+                        <div class="text-base text-warning font-medium ml-auto">WAGE BALANCE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-span-12 mt-10">
+    <div class="intro-y block sm:flex items-center h-10">
+        <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+            <button class="btn btn-primary text-white mx-2" data-tw-toggle="modal" data-tw-target="#payment-modal">MAKE
+                A PAYMENT</button>
+        </div>
+    </div>
+    <div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+        {% if payments %}
+        <table class="table table-report sm:mt-2">
+            <thead>
+                <tr>
+                    <th class="text-center whitespace-nowrap">NO</th>
+                    <th class="text-center whitespace-nowrap">DATE</th>
+                    <th class="text-center whitespace-nowrap">SITE</th>
+                    <!-- <th class="text-center whitespace-nowrap">CATEGORY</th> -->
+                    <th class="text-center whitespace-nowrap">TITLE</th>
+                    <th class="text-center whitespace-nowrap">AMOUNT</th>
+                    <th class="text-center whitespace-nowrap">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr class="intro-x">
+                    <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                    <td class="text-center whitespace-nowrap">{{ payment.date | date:'d M Y' }}</td>
+
+                    <td class="text-center whitespace-nowrap">{{ payment.on_call }}</td>
+
+                    <!-- <td class="text-center whitespace-nowrap">{{ payment.category }}</td> -->
+
+                    <td class="text-center whitespace-nowrap font-medium">{{ payment.title }}</td>
+
+                    <td class="text-center whitespace-nowrap text-warning font-medium">
+                        {{ payment.amount }}
+                    </td>
+
+                    <td class="table-report__action w-24">
+                        <div class="flex justify-center items-center">
+                            <a class="flex items-center text-danger" href="{% url 'payment-delete' payment.slug %}"
+                                onclick="return confirm('Are you sure you want to delete the transaction ?');">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+            <table class="table table-report -mt-2">
+                <tbody>
+                    <tr class="intro-x width">
+                        <td class=" width" style="width:100%;">
+                            <i data-lucide="hard-drive"
+                                style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
+                                class="w-6 h-6 mr-2 text-white bg-success">
+                            </i>
+                            <div style="text-align: center;">No data available!</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>

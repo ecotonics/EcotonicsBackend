@@ -80,9 +80,9 @@ def customer_details(request,slug):
     expense_amount = transactions.filter(type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
     net_amount = float(revanue_amount) - float(expense_amount)
 
-    attandances = Attendance.active_objects.filter(on_call__customer=customer)
+    attendances = Attendance.active_objects.filter(on_call__customer=customer)
     attendance_summary = (
-        attandances.values("staff__id", "staff__user__first_name", "staff__user__last_name")
+        attendances.values("staff__id", "staff__user__first_name", "staff__user__last_name")
         .annotate(total_days=Count("date", distinct=True))
         .order_by("-total_days")
     )
@@ -94,7 +94,7 @@ def customer_details(request,slug):
         'sub' : customer.type,
         'customer' : customer,
         'on_calls' : on_calls,
-        'attandances' : attandances,
+        'attendances' : attendances,
         'attendance_summary' : attendance_summary,
         'transactions' : transactions,
         'revanue_amount' : revanue_amount,

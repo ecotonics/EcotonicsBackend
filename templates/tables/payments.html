@@ -1,0 +1,84 @@
+<div class="intro-y overflow-auto lg:overflow-visible mt-5 sm:mt-0">
+    {% if transactions %}
+    <div class="grid grid-cols-3 gap-4">
+        <div class="intro-y box p-5 mt-5 text-center">
+            <p class="text-success font-bold">Revanue Amount (
+                <span class="text-warning">{{ revanue_amount }}</span> )
+            </p>
+        </div>
+
+        <div class="intro-y box p-5 mt-5 text-center">
+            <p class="text-success font-bold">Expense Amount (
+                <span class="text-warning">{{ expense_amount }}</span> )
+            </p>
+        </div>
+
+        <div class="intro-y box p-5 mt-5 text-center">
+            <p class="text-success font-bold">Net Amount (
+                <span class="text-warning">{{ net_amount }}</span> )
+            </p>
+        </div>
+    </div>
+    <table class="table table-report sm:mt-2">
+        <thead>
+            <tr>
+                <th class="text-center whitespace-nowrap">NO</th>
+                <th class="text-center whitespace-nowrap">DATE</th>
+                <th class="text-center whitespace-nowrap">TITLE</th>
+                <th class="text-center whitespace-nowrap">CATEGORY</th>
+                <th class="text-center whitespace-nowrap">AMOUNT</th>
+                <th class="text-center whitespace-nowrap">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr class="intro-x">
+                <td class="text-center whitespace-nowrap">{{ forloop.counter }}</td>
+
+                <td class="text-center whitespace-nowrap">{{ transaction.date | date:'d M Y' }}</td>
+
+                <td class="text-center whitespace-nowrap">
+                    {{ transaction.title }}
+                    {% if transaction.staff %}
+                    (<span class="text-warning"> {{ transaction.staff }} </span>)
+                    {% endif %}
+                </td>
+
+                <td class="text-center whitespace-nowrap">{{ transaction.category }}</td>
+
+                <td
+                    class="text-center whitespace-nowrap {% if transaction.type == 'INCOME' %} text-success {% else %} text-danger {% endif %} font-bold">
+                    {{ transaction.amount }}
+                </td>
+
+                <td class="table-report__action w-56">
+                    <div class="flex justify-center items-center">
+                        <a class="flex items-center text-danger mx-2"
+                            href="{% url 'delete-on-call-expense' transaction.slug %}"
+                            onclick="return confirm('Are you sure you want to delete the transaction ?');">
+                            <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible mt-5">
+        <table class="table table-report -mt-2">
+            <tbody>
+                <tr class="intro-x width">
+                    <td class=" width" style="width:100%;">
+                        <i data-lucide="hard-drive"
+                            style="width:60px; height:60px; margin-left: auto; margin-right: auto; display: block; padding: 10px; border-radius: 50%;"
+                            class="w-6 h-6 mr-2 text-white bg-success">
+                        </i>
+                        <div style="text-align: center;">No data available!</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>

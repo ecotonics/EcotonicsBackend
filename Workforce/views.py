@@ -316,11 +316,11 @@ def staff_details(request,slug):
     staff = Staff.active_objects.get(slug=slug)
     on_calls = OnCall.active_objects.filter(staffs__in=[staff])
     wages = Wage.active_objects.filter(staff=staff).order_by('-updated')
-    attandances = Attendance.active_objects.filter(staff=staff)
+    attendances = Attendance.active_objects.filter(staff=staff)
     categories = TransactionCategory.active_objects.filter(type='EXPENSE')
     payments = Transaction.active_objects.filter(staff=staff)
 
-    wage_total = attandances.aggregate(total=Sum('wage'))['total'] or 0.00
+    wage_total = attendances.aggregate(total=Sum('wage'))['total'] or 0.00
     wage_paid = payments.aggregate(total=Sum('amount'))['total'] or 0.00
     wage_balance = float(wage_total) - float(wage_paid)
 
@@ -329,7 +329,7 @@ def staff_details(request,slug):
         'sub' : 'staffs',
         'staff' : staff,
         'wages' : wages,
-        'attandances' : attandances,
+        'attendances' : attendances,
         'wage_total' : wage_total,
         'wage_paid' : wage_paid,
         'wage_balance' : wage_balance,
