@@ -22,8 +22,11 @@ SOURCE = (
 
 TRANSACTION_STATUS = (
     ('pending','PENDING'),
+    ('completed','COMPLETED'),
+    ('cancelled','CANCELLED'),
+    ('failed','FAILED'),
     ('approved','APPROVED'),
-    ('rejected','REJECTED'),
+    ('payed','PAYED'),
 )
 
 class TransactionCategory(BaseModel):
@@ -69,7 +72,7 @@ class BankAccount(BaseModel):
 
 class Transaction(BaseModel):
     date = models.DateField()
-    status = models.CharField(max_length=50, choices=TRANSACTION_STATUS, default='pending')
+    status = models.CharField(max_length=50, choices=TRANSACTION_STATUS, default='completed')
 
     type = models.CharField(max_length=25, choices=TRANSACTION)
     category = models.ForeignKey(TransactionCategory, on_delete=models.CASCADE)

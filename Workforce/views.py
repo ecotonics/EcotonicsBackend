@@ -320,8 +320,11 @@ def staff_details(request,slug):
     categories = TransactionCategory.active_objects.filter(type='EXPENSE')
     payments = Transaction.active_objects.filter(staff=staff)
 
-    wage_total = attendances.aggregate(total=Sum('wage'))['total'] or 0.00
-    wage_paid = payments.aggregate(total=Sum('amount'))['total'] or 0.00
+    petty_total = payments.filter(status='pending').aggregate(total=Sum('amount'))['total'] or 0.00
+    wage_amount = attendances.aggregate(total=Sum('wage'))['total'] or 0.00
+
+    wage_total = float(wage_amount) + float(petty_total)
+    wage_paid = payments.filter(status='payed').aggregate(total=Sum('amount'))['total'] or 0.00
     wage_balance = float(wage_total) - float(wage_paid)
 
     context = {
@@ -497,13 +500,19 @@ def add_payment(request, slug):
         site_slug = request.POST.get('on_call')
         amount = request.POST.get('amount')
         title = request.POST.get('title')
+        type = request.POST.get('type')
 
         try:
             category = TransactionCategory.active_objects.get(slug=category_slug)
             on_call = OnCall.active_objects.get(slug=site_slug)
 
+            if type == 'petty':
+                status = 'pending'
+            else:
+                status = 'payed'
+
             Transaction.objects.create(
-                date=date, type='EXPENSE', category=category, staff=staff,
+                date=date, type='EXPENSE', category=category, staff=staff, status=status,
                 title=title, amount=amount, on_call=on_call, customer=on_call.customer
             )
 
@@ -513,6 +522,21 @@ def add_payment(request, slug):
             messages.warning(request,str(exception))
 
     return redirect('staff-details', slug=staff.slug)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def mark_paid(request, slug):
+    try:
+        transaction = Transaction.objects.get(slug=slug)
+        transaction.status = 'payed'
+        transaction.save()
+        messages.success(request, 'Payment deleted successfully ...!')
+
+    except Exception as exception:
+        messages.warning(request, exception)
+
+    return redirect('staff-details', slug=transaction.staff.slug)
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def delete_payment(request, slug):

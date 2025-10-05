@@ -34,5 +34,6 @@ urlpatterns = [
 
     # PAYMENTS
     path('payment/add/<slug:slug>/',views.add_payment,name='payment-add'),
+    path('payment/mark/payed/<slug:slug>/',views.mark_paid,name='mark-payed'),
     path('payment/delete/<slug:slug>/',views.delete_payment,name='payment-delete')
 ]

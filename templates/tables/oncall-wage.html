@@ -44,9 +44,9 @@
                     <th class="text-center whitespace-nowrap">NO</th>
                     <th class="text-center whitespace-nowrap">DATE</th>
                     <th class="text-center whitespace-nowrap">SITE</th>
-                    <!-- <th class="text-center whitespace-nowrap">CATEGORY</th> -->
                     <th class="text-center whitespace-nowrap">TITLE</th>
                     <th class="text-center whitespace-nowrap">AMOUNT</th>
+                    <th class="text-center whitespace-nowrap">STATUS</th>
                     <th class="text-center whitespace-nowrap">ACTIONS</th>
                 </tr>
             </thead>
@@ -59,7 +59,10 @@
 
                     <td class="text-center whitespace-nowrap">{{ payment.on_call }}</td>
 
-                    <!-- <td class="text-center whitespace-nowrap">{{ payment.category }}</td> -->
+                    <td
+                        class="text-center whitespace-nowrap text-base font-medium {% if payment.status == 'payed' %} text-success {% else %} text-warning {% endif %}">
+                        {{ payment.status | upper }}
+                    </td>
 
                     <td class="text-center whitespace-nowrap font-medium">{{ payment.title }}</td>
 
@@ -69,13 +72,20 @@
 
                     <td class="table-report__action w-24">
                         <div class="flex justify-center items-center">
-                            <a class="flex items-center mr-3" href="{% url 'transaction-edit' payment.slug %}">
-                                <i data-lucide="edit" class="w-4 h-4 mr-3"></i>
+                            <a class="flex items-center mx-2" href="{% url 'transaction-edit' payment.slug %}">
+                                <i data-lucide="edit" class="w-4 h-4 mx-2"></i>
                             </a>
 
-                            <a class="flex items-center text-danger" href="{% url 'payment-delete' payment.slug %}"
+                            {% if payment.status == 'pending' %}
+                            <a class="flex items-center text-success mx-2" href="{% url 'mark-payed' payment.slug %}"
+                                onclick="return confirm('Are you sure you want to mark as payed ?');">
+                                <i data-lucide="check-circle" class="w-4 h-4 mx-2"></i>
+                            </a>
+                            {% endif %}
+
+                            <a class="flex items-center text-danger mx-2" href="{% url 'payment-delete' payment.slug %}"
                                 onclick="return confirm('Are you sure you want to delete the transaction ?');">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                <i data-lucide="trash-2" class="w-4 h-4 mx-2"></i>
                             </a>
                         </div>
                     </td>
