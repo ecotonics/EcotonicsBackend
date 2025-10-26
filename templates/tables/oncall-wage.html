@@ -59,15 +59,15 @@
 
                     <td class="text-center whitespace-nowrap">{{ payment.on_call }}</td>
 
-                    <td
-                        class="text-center whitespace-nowrap text-base font-medium {% if payment.status == 'payed' %} text-success {% else %} text-warning {% endif %}">
-                        {{ payment.status | upper }}
-                    </td>
-
                     <td class="text-center whitespace-nowrap font-medium">{{ payment.title }}</td>
 
                     <td class="text-center whitespace-nowrap text-warning font-medium">
                         {{ payment.amount }}
+                    </td>
+
+                    <td
+                        class="text-center whitespace-nowrap text-base font-medium {% if payment.status == 'payed' %} text-success {% else %} text-warning {% endif %}">
+                        {{ payment.status | upper }}
                     </td>
 
                     <td class="table-report__action w-24">

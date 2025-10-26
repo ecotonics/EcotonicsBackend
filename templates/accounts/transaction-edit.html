@@ -87,7 +87,9 @@
                         <label for="input-wizard-2" class="form-label">Work Site</label>
                         <div class="intro-y col-span-12 sm:col-span-6">
                             <select name="site" class="form-control">
-                                <option value="{{ transaction.site.slug }}">{{ transaction.site.site_name }}</option>
+                                <option value="{{ transaction.on_call.slug }}">
+                                    {{ transaction.on_call.site_name }}
+                                </option>
                                 {% for site in sites %}
                                 <option value="{{ site.slug }}">
                                     {{ site.site_name }}
