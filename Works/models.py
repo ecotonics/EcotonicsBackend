@@ -44,6 +44,11 @@ DURATION_CHOICES = [
     ('QUARTER', 'Quarter Day'),
 ]
 
+WAGE_STATUS = [
+    ('PENDING', 'PENDING'),
+    ('PAID', 'PAID'),
+]
+
 class OnCall(BaseModel):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=OnCallStatusChoices.choices, default=OnCallStatusChoices.PENDING)
@@ -82,6 +87,7 @@ class Attendance(BaseModel):
     status = models.CharField(default='PENDING', max_length=20)
     staff = models.ForeignKey(Staff,on_delete=models.CASCADE)
     wage = models.FloatField(default=0.00)
+    wage_status = models.CharField(choices=WAGE_STATUS, default='PENDING')
     on_call = models.ForeignKey(OnCall, on_delete=models.CASCADE, null=True)
     duration = models.CharField(max_length=20, choices=DURATION_CHOICES, default='FULL')
     start_time = models.TimeField(null=True,blank=True)

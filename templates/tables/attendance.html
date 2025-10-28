@@ -19,8 +19,7 @@
                 <th class="text-center whitespace-nowrap">TECHNICIAN</th>
                 <th class="text-center whitespace-nowrap">WORK SITE</th>
                 <th class="text-center whitespace-nowrap">DURATION</th>
-                <th class="text-center whitespace-nowrap">START TIME</th>
-                <th class="text-center whitespace-nowrap">END TIME</th>
+                <th class="text-center whitespace-nowrap">WAGE</th>
                 <th class="text-center whitespace-nowrap">ACTIONS</th>
             </tr>
         </thead>
@@ -41,15 +40,17 @@
                     <a href="" class="font-medium whitespace-nowrap">{{ attendance.on_call.site_name }}</a>
                 </td>
 
-                <td class="text-center whitespace-nowrap text-warning">
-                    {{ attendance.duration }}
+                <td class="text-center">
+                    <a href="" class="font-medium whitespace-nowrap text-warning">{{ attendance.duration }}</a>
+                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
+                        <span class="text-success">{{ attendance.start_time | date:"h:i A" }}</span> /
+                        <span class="text-success">{{ attendance.end_time | date:"h:i A" }}</span>
+                    </div>
                 </td>
 
-                <td class="text-center whitespace-nowrap text-success">
-                    {{ attendance.start_time | date:"h:i A" }}
-                </td>
-                <td class="text-center whitespace-nowrap text-warning">
-                    {{ attendance.end_time | date:"h:i A" }}
+                <td
+                    class="text-center whitespace-nowrap font-medium {% if payment.status == 'payed' %} text-success {% else %} text-warning {% endif %}">
+                    {{ attendance.wage_status | upper }}
                 </td>
 
                 <td class="table-report__action w-36">

@@ -4,7 +4,7 @@ from Core.models import save_data
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
 from Workforce.models import Staff
-from Works.models import OnCall
+from Works.models import OnCall, Attendance
 from Customers.models import Customer
 
 # Create your models here.
@@ -80,6 +80,7 @@ class Transaction(BaseModel):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     on_call = models.ForeignKey(OnCall, on_delete=models.CASCADE, null=True, blank=True)
     staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
+    attendance = models.OneToOneField(Attendance, null=True, blank=True, on_delete=models.SET_NULL)
 
     title = models.CharField(max_length=200)
     account = models.ForeignKey(BankAccount,on_delete=models.CASCADE, null=True, blank=True)
