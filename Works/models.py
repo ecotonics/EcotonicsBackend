@@ -87,7 +87,7 @@ class Attendance(BaseModel):
     status = models.CharField(default='PENDING', max_length=20)
     staff = models.ForeignKey(Staff,on_delete=models.CASCADE)
     wage = models.FloatField(default=0.00)
-    wage_status = models.CharField(choices=WAGE_STATUS, default='PENDING')
+    wage_status = models.CharField(max_length=20, choices=WAGE_STATUS, default='PENDING')
     on_call = models.ForeignKey(OnCall, on_delete=models.CASCADE, null=True)
     duration = models.CharField(max_length=20, choices=DURATION_CHOICES, default='FULL')
     start_time = models.TimeField(null=True,blank=True)
