@@ -58,7 +58,9 @@
 
                     <td class="text-center whitespace-nowrap">{{ payment.date | date:'d M Y' }}</td>
 
-                    <td class="text-center whitespace-nowrap">{{ payment.on_call }}</td>
+                    <td class="text-center whitespace-nowrap">
+                        {{ payment.on_call }} ( {{ payment.attendance.date | date:'d M Y' }} )
+                    </td>
 
                     <td class="text-center whitespace-nowrap font-medium">{{ payment.title }}</td>
 
