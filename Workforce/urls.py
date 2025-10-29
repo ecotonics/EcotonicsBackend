@@ -31,6 +31,7 @@ urlpatterns = [
     # WAGES
     path('wage/update/<slug:slug>/',views.update_wage,name='wage-update'),
     path('wage/delete/<slug:slug>/',views.delete_wage,name='wage-delete'),
+    path('wage/pay/<slug:slug>/', views.pay_wage, name='pay-wage'),
 
     # PAYMENTS
     path('payment/add/<slug:slug>/',views.add_payment,name='payment-add'),

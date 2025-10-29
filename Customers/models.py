@@ -3,8 +3,6 @@ from Core.models import BaseModel
 from Core.models import save_data
 from django.utils.translation import gettext_lazy as _
 from Core.middlewares import RequestMiddleware
-from Services.models import Category, Service
-from Workforce.models import Staff
 from Core.choices import CustomerTypeChoices, CustomerStatusChoices
 
 # Create your models here.

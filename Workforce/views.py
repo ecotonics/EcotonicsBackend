@@ -317,14 +317,14 @@ def staff_details(request,slug):
     on_calls = OnCall.active_objects.filter(staffs__in=[staff])
     wages = Wage.active_objects.filter(staff=staff).order_by('-updated')
     attendances = Attendance.active_objects.filter(staff=staff)
-    categories = TransactionCategory.active_objects.filter(type='EXPENSE')
+    categories = TransactionCategory.active_objects.filter(type='expense')
     payments = Transaction.active_objects.filter(staff=staff)
 
     petty_total = payments.filter(status='pending').aggregate(total=Sum('amount'))['total'] or 0.00
     wage_amount = attendances.aggregate(total=Sum('wage'))['total'] or 0.00
 
     wage_total = float(wage_amount) + float(petty_total)
-    wage_paid = payments.filter(status='payed').aggregate(total=Sum('amount'))['total'] or 0.00
+    wage_paid = payments.filter(status='paid').aggregate(total=Sum('amount'))['total'] or 0.00
     wage_balance = float(wage_total) - float(wage_paid)
 
     context = {
@@ -333,6 +333,7 @@ def staff_details(request,slug):
         'staff' : staff,
         'wages' : wages,
         'attendances' : attendances,
+        'attendance_np' : attendances.filter(wage_status='pending'),
         'wage_total' : wage_total,
         'wage_paid' : wage_paid,
         'wage_balance' : wage_balance,
@@ -376,9 +377,9 @@ def add_attandance(request, slug):
             else:
                 wage = staff.staff_wage
 
-            if duration == 'HALF':
+            if duration == 'half':
                 wage = float(wage) / 2
-            elif duration == 'QUARTER':
+            elif duration == 'quarter':
                 wage = float(wage) / 4
 
             Attendance.objects.create(
@@ -414,9 +415,9 @@ def edit_attandance(request, slug):
             else:
                 wage = staff.staff_wage
 
-            if duration == 'HALF':
+            if duration == 'half':
                 wage = float(wage) / 2
-            elif duration == 'QUARTER':
+            elif duration == 'quarter':
                 wage = float(wage) / 4
 
             attendance.staff = staff
@@ -491,6 +492,28 @@ def delete_wage(request, slug):
     return redirect('staff-details', slug=wage.staff.slug)
 
 @user_passes_test(lambda u: u.is_superuser)
+def pay_wage(request,slug):
+    staff = Staff.active_objects.get(slug=slug)
+
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        title = request.POST.get('title')
+        amount = request.POST.get('amount')
+        attendance_slug = request.POST.get('attendance')
+
+    try:
+        attendance = Attendance.active_objects.get(slug=attendance_slug)
+        
+        Transaction.objects.create(
+            date=date, type='expense', staff=staff, status='paid',
+            title=title, amount=amount, on_call=attendance.on_call, customer=attendance.on_call.customer
+        )
+    except Exception as exception:
+            messages.warning(request,str(exception))
+
+    return redirect('staff-details', slug=staff.slug)
+
+@user_passes_test(lambda u: u.is_superuser)
 def add_payment(request, slug):
     staff = Staff.objects.get(slug=slug)
 
@@ -509,7 +532,7 @@ def add_payment(request, slug):
             if type == 'petty':
                 status = 'pending'
             else:
-                status = 'payed'
+                status = 'paid'
 
             Transaction.objects.create(
                 date=date, type='EXPENSE', category=category, staff=staff, status=status,
@@ -528,7 +551,7 @@ def add_payment(request, slug):
 def mark_paid(request, slug):
     try:
         transaction = Transaction.objects.get(slug=slug)
-        transaction.status = 'payed'
+        transaction.status = 'paid'
         transaction.save()
         messages.success(request, 'Payment deleted successfully ...!')
 

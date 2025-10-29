@@ -72,11 +72,11 @@ def add_on_call(request):
 def on_call_details(request, slug):
     on_call = OnCall.active_objects.filter(slug=slug).first()
     staffs = Staff.active_objects.filter(status='active')
-    categories = TransactionCategory.active_objects.filter(type='EXPENSE')
+    categories = TransactionCategory.active_objects.filter(type='expense')
     transactions = Transaction.active_objects.filter(on_call=on_call)
 
-    revanue_amount = transactions.filter(type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
-    expense_amount = transactions.filter(type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
+    revanue_amount = transactions.filter(type='income').aggregate(total=Sum('amount'))['total'] or 0
+    expense_amount = transactions.filter(type='expense').aggregate(total=Sum('amount'))['total'] or 0
     net_amount = float(revanue_amount) - float(expense_amount)
 
     attendances = Attendance.active_objects.filter(on_call=on_call)

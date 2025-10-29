@@ -78,8 +78,8 @@ def customer_details(request,slug):
         Q(customer=customer) | Q(on_call__customer=customer)
     )
 
-    revanue_amount = transactions.filter(type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
-    expense_amount = transactions.filter(type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
+    revanue_amount = transactions.filter(type='income').aggregate(total=Sum('amount'))['total'] or 0
+    expense_amount = transactions.filter(type='expense').aggregate(total=Sum('amount'))['total'] or 0
     net_amount = float(revanue_amount) - float(expense_amount)
 
     attendances = Attendance.active_objects.filter(on_call__customer=customer)

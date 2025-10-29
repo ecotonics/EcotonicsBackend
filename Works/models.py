@@ -7,47 +7,7 @@ from Customers.models import Customer
 from Workforce.models import Staff
 from Users.models import User
 from Services.models import Category, Service
-from Core.choices import OnCallStatusChoices, CustomerTypeChoices
-# from Accounts.models import Wage
-
-UNITS = (
-    ('NOS','NOS'),
-    ('METERS','METERS'),
-    ('KILOGRAMS','KILOGRAMS'),
-)
-
-WORK_STATUS = (
-    ('PENDING', 'PENDING'),
-    ('ONGOING', 'ONGOING'),
-    ('COMPLETED', 'COMPLETED')
-)
-
-TASK_STATUS = (
-    ('PENDING', 'PENDING'),
-    ('COMPLETED', 'COMPLETED')
-)
-
-TYPE = (
-    ('individual', 'individual'),
-    ('enterprise', 'enterprise')
-)
-
-LEAD_STATUS = (
-    ('PENDING', 'PENDING'),
-    ('CONVERTED', 'CONVERTED'),
-    ('FAILED', 'FAILED')
-)
-
-DURATION_CHOICES = [
-    ('FULL', 'Full Day'),
-    ('HALF', 'Half Day'),
-    ('QUARTER', 'Quarter Day'),
-]
-
-WAGE_STATUS = [
-    ('PENDING', 'PENDING'),
-    ('PAID', 'PAID'),
-]
+from Core.choices import OnCallStatusChoices, CustomerTypeChoices, WorkDurationChoices, WageStatusChoices
 
 class OnCall(BaseModel):
     date = models.DateField(auto_now_add=True)
@@ -84,12 +44,12 @@ class OnCall(BaseModel):
 
 class Attendance(BaseModel):
     date = models.DateField()
-    status = models.CharField(default='PENDING', max_length=20)
+    status = models.CharField(max_length=20, null=True)
     staff = models.ForeignKey(Staff,on_delete=models.CASCADE)
     wage = models.FloatField(default=0.00)
-    wage_status = models.CharField(max_length=20, choices=WAGE_STATUS, default='PENDING')
+    wage_status = models.CharField(max_length=20, choices=WageStatusChoices.choices, default=WageStatusChoices.PENDING)
     on_call = models.ForeignKey(OnCall, on_delete=models.CASCADE, null=True)
-    duration = models.CharField(max_length=20, choices=DURATION_CHOICES, default='FULL')
+    duration = models.CharField(max_length=20, choices=WorkDurationChoices.choices, default=WorkDurationChoices.FULL)
     start_time = models.TimeField(null=True,blank=True)
     end_time = models.TimeField(null=True,blank=True)
 

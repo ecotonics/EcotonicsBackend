@@ -262,7 +262,7 @@
 <!-- BEGIN: Modal Content -->
 <div id="payment-modal" class="modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <form action="{% url 'payment-add' staff.slug %}" method="post">
+        <form action="{% url 'pay-wage' staff.slug %}" method="post">
             {% csrf_token %}
             <div class="modal-content">
                 <!-- BEGIN: Modal Header -->
@@ -279,30 +279,12 @@
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
-                        <label for="input-wizard-2" class="form-label">Transaction Type</label>
-                        <select name="type" id="transaction-category" class="form-control">
-                            <option value="">Select Transaction Type</option>
-                            <option value="wage">Daily Wage</option>
-                            <option value="petty">Petty Cash</option>
-                        </select>
-                    </div>
-
-                    <div class="intro-y col-span-12 sm:col-span-6">
-                        <label for="input-wizard-2" class="form-label">Transaction Category</label>
-                        <select name="category" id="transaction-category" class="form-control">
-                            <option value="">Select Category</option>
-                            {% for category in categories %}
-                            <option value="{{ category.slug }}">{{ category.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="intro-y col-span-12 sm:col-span-6">
-                        <label for="input-wizard-2" class="form-label">Select Work</label>
-                        <select name="on_call" class="form-control">
+                        <label for="input-wizard-2" class="form-label">Attendance</label>
+                        <select name="attendance" class="form-control">
                             <option value="">Select Work</option>
-                            {% for call in on_calls %}
-                            <option value="{{ call.slug }}">{{ call.site_name }}</option>
+                            {% for attendance in attendance_np %}
+                            <option value="{{ attendance.slug }}">{{ attendance.on_call }} ( {{ attendance.date }} )
+                            </option>
                             {% endfor %}
                         </select>
                     </div>

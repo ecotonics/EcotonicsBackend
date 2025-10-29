@@ -6,15 +6,16 @@
 <div class="content">
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white" role="alert">
-                <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %} alert-dismissible show flex items-center mb-2 mt-5 text-white"
+        role="alert">
+        <i data-lucide="alert-octagon" class="w-6 h-6 mr-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close text-white" data-tw-dismiss="alert" aria-label="Close">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+    {% endfor %}
     {% endif %}
 
     <!-- BEGIN: Vertical Form -->
@@ -31,19 +32,21 @@
                         <label for="input-wizard-2" class="form-label">Category Type</label>
                         <select name="type" id="" class="form-control">
                             <option value="{{ category.type }}">{{ category.type }}</option>
-                            <option value="INCOME">INCOME</option>
-                            <option value="EXPENSE">EXPENSE</option>
+                            <option value="income">INCOME</option>
+                            <option value="expense">EXPENSE</option>
                         </select>
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Category Name</label>
-                        <input value="{{ category.name }}" name="name" type="text" class="form-control" placeholder="Enter category name here" required maxlength="100">
+                        <input value="{{ category.name }}" name="name" type="text" class="form-control"
+                            placeholder="Enter category name here" required maxlength="100">
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-12">
                         <label for="input-wizard-2" class="form-label">Info</label>
-                        <textarea name="info" id="" cols="10" rows="5" placeholder="Enter additional info" class="form-control">{{ category.info }}</textarea>
+                        <textarea name="info" id="" cols="10" rows="5" placeholder="Enter additional info"
+                            class="form-control">{{ category.info }}</textarea>
                     </div>
 
                     <div class="intro-y col-span-12 flex items-center justify-center sm:justify-end mt-5">

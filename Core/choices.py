@@ -26,3 +26,20 @@ class OnCallStatusChoices(models.TextChoices):
     ONGOING = 'ongoing',_('Ongoing')
     COMPLETED = 'completed',_('Completed')
     CANCELLED = 'cancelled',_('Cancelled')
+
+class TransactionTypeChoices(models.TextChoices):
+    INCOME = 'income', _('Income')
+    Expense = 'expense', _('Expense')
+
+class TransactionStatusChoices(models.TextChoices):
+    PENDING = 'pending', _('Pending')
+    PAID = 'paid', _('Paid')
+
+class WorkDurationChoices(models.TextChoices):
+    FULL = 'full', _('Full')
+    HALF = 'half', _('Half')
+    QUARTER = 'quarter', _('Quarter')
+
+class WageStatusChoices(models.TextChoices):
+    PENDING = 'pending', _('Pending')
+    PAID = 'paid', _('Paid')

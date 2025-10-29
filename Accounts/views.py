@@ -20,8 +20,8 @@ def overview(request):
     works = OnCall.active_objects.all().order_by('date')
     staffs = Staff.active_objects.all().order_by('user__first_name')
 
-    total_income = Transaction.active_objects.filter(type='INCOME').aggregate(Sum('amount'))['amount__sum'] or 0
-    total_expense = Transaction.active_objects.filter(type='EXPENSE').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_income = Transaction.active_objects.filter(type='income').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_expense = Transaction.active_objects.filter(type='expense').aggregate(Sum('amount'))['amount__sum'] or 0
     total_balance = float(total_income) - float(total_expense)
 
     category_summary = []
@@ -41,8 +41,8 @@ def overview(request):
         })
 
     for work in works:
-        revenue = Transaction.active_objects.filter(on_call=work, type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
-        expense = Transaction.active_objects.filter(on_call=work, type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
+        revenue = Transaction.active_objects.filter(on_call=work, type='income').aggregate(total=Sum('amount'))['total'] or 0
+        expense = Transaction.active_objects.filter(on_call=work, type='expense').aggregate(total=Sum('amount'))['total'] or 0
         balance = float(revenue) - float(expense)
 
         work_summary.append({

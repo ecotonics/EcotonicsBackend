@@ -6,31 +6,12 @@ from Core.middlewares import RequestMiddleware
 from Workforce.models import Staff
 from Works.models import OnCall, Attendance
 from Customers.models import Customer
+from Core.choices import TransactionTypeChoices, TransactionStatusChoices
 
 # Create your models here.
 
-TRANSACTION = (
-    ('INCOME','INCOME'),
-    ('EXPENSE','EXPENSE'),
-)
-
-SOURCE = (
-    ('PETTY','PETTY'),
-    ('SELF','SELF'),
-    ('CREDIT','CREDIT'),
-)
-
-TRANSACTION_STATUS = (
-    ('pending','PENDING'),
-    ('completed','COMPLETED'),
-    ('cancelled','CANCELLED'),
-    ('failed','FAILED'),
-    ('approved','APPROVED'),
-    ('payed','PAYED'),
-)
-
 class TransactionCategory(BaseModel):
-    type = models.CharField(max_length=50,choices=TRANSACTION)
+    type = models.CharField(max_length=50,choices=TransactionTypeChoices.choices)
     name = models.CharField(max_length=100)
     info = models.TextField(null=True)
 
@@ -72,10 +53,10 @@ class BankAccount(BaseModel):
 
 class Transaction(BaseModel):
     date = models.DateField()
-    status = models.CharField(max_length=50, choices=TRANSACTION_STATUS, default='completed')
+    status = models.CharField(max_length=50, choices=TransactionStatusChoices.choices, default=TransactionStatusChoices.PAID)
 
-    type = models.CharField(max_length=25, choices=TRANSACTION)
-    category = models.ForeignKey(TransactionCategory, on_delete=models.CASCADE)
+    type = models.CharField(max_length=25, choices=TransactionTypeChoices.choices)
+    category = models.ForeignKey(TransactionCategory, on_delete=models.CASCADE, null=True)
 
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     on_call = models.ForeignKey(OnCall, on_delete=models.CASCADE, null=True, blank=True)
