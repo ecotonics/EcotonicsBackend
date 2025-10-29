@@ -317,34 +317,6 @@ def staff_details(request,slug):
     on_calls = OnCall.active_objects.filter(staffs__in=[staff])
     wages = Wage.active_objects.filter(staff=staff).order_by('-updated')
     attendances = Attendance.active_objects.filter(staff=staff)
-    payments = Transaction.active_objects.filter(staff=staff)
-
-    wage_total = attendances.aggregate(total=Sum('wage'))['total'] or 0.00
-    wage_paid = payments.filter(status='paid').aggregate(total=Sum('amount'))['total'] or 0.00
-    wage_balance = float(wage_total) - float(wage_paid)
-
-    context = {
-        'main' : 'workforce',
-        'sub' : 'staffs',
-        'staff' : staff,
-        'wages' : wages,
-        'attendances' : attendances,
-        'attendance_np' : attendances.filter(wage_status='pending'),
-        'wage_total' : wage_total,
-        'wage_paid' : wage_paid,
-        'wage_balance' : wage_balance,
-        'on_calls' : on_calls,
-        'payments' : payments
-    }
-
-    return render(request,'workforce/staff-details.html',context)
-
-
-def staff_profile(request,slug):
-    staff = Staff.active_objects.get(slug=slug)
-    on_calls = OnCall.active_objects.filter(staffs__in=[staff])
-    wages = Wage.active_objects.filter(staff=staff).order_by('-updated')
-    attendances = Attendance.active_objects.filter(staff=staff)
     categories = TransactionCategory.active_objects.filter(type='expense')
     payments = Transaction.active_objects.filter(staff=staff)
 
@@ -361,12 +333,37 @@ def staff_profile(request,slug):
         'staff' : staff,
         'wages' : wages,
         'attendances' : attendances,
+        'attendance_np' : attendances.filter(wage_status='pending'),
         'wage_total' : wage_total,
         'wage_paid' : wage_paid,
         'wage_balance' : wage_balance,
         'on_calls' : on_calls,
         'today' : today,
         'categories' : categories,
+        'payments' : payments
+    }
+
+    return render(request,'workforce/staff-details.html',context)
+
+def staff_profile(request,slug):
+    staff = Staff.active_objects.get(slug=slug)
+    on_calls = OnCall.active_objects.filter(staffs__in=[staff])
+    wage = Wage.active_objects.filter(staff=staff).first()
+    attendances = Attendance.active_objects.filter(staff=staff)
+    payments = Transaction.active_objects.filter(staff=staff)
+
+    wage_total = attendances.aggregate(total=Sum('wage'))['total'] or 0.00
+    wage_paid = payments.filter(status='paid').aggregate(total=Sum('amount'))['total'] or 0.00
+    wage_balance = float(wage_total) - float(wage_paid)
+
+    context = {
+        'staff' : staff,
+        'wage' : wage,
+        'attendances' : attendances,
+        'wage_total' : wage_total,
+        'wage_paid' : wage_paid,
+        'wage_balance' : wage_balance,
+        'on_calls' : on_calls,
         'payments' : payments
     }
 
