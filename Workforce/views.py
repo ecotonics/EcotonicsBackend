@@ -506,7 +506,8 @@ def pay_wage(request,slug):
         
         Transaction.objects.create(
             date=date, type='expense', staff=staff, status='paid',
-            title=title, amount=amount, on_call=attendance.on_call, customer=attendance.on_call.customer
+            title=title, amount=amount, attendance=attendance, on_call=attendance.on_call,
+            customer=attendance.on_call.customer
         )
 
         attendance.wage_status = 'paid'
