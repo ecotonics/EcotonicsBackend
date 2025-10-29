@@ -104,13 +104,18 @@
                             </p>
                         </div>
                         <div>
+                            <p class="text-gray-500 text-xs">Wage Amount</p>
+                            <p class="font-medium text-sm">₹{{ attendance.wage }}</p>
+                        </div>
+                        <div>
                             <p class="text-gray-500 text-xs">Payment Amount</p>
                             <p class="font-medium text-sm">₹{{ attendance.transaction.amount }}</p>
                         </div>
                     </div>
                     {% else %}
-                    <div class="p-4 bg-white">
+                    <div class="p-4 bg-white flex justify-between">
                         <p class="text-red-500 text-sm">Payment Pending</p>
+                        <p class="font-semibold text-blue-500">{{ attendance.wage }}</p>
                     </div>
                     {% endif %}
                 </div>
