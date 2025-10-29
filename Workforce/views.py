@@ -354,7 +354,9 @@ def staff_profile(request,slug):
 
     wage_total = attendances.aggregate(total=Sum('wage'))['total'] or 0.00
     wage_paid = payments.filter(status='paid').aggregate(total=Sum('amount'))['total'] or 0.00
+    wage_paid_days = payments.filter(status='paid').count()
     wage_balance = float(wage_total) - float(wage_paid)
+    wage_balance_days = int(attendances.count()) - int(wage_paid_days)
 
     context = {
         'staff' : staff,
@@ -362,9 +364,11 @@ def staff_profile(request,slug):
         'attendances' : attendances,
         'wage_total' : wage_total,
         'wage_paid' : wage_paid,
+        'wage_paid_days' : wage_paid_days,
         'wage_balance' : wage_balance,
+        'wage_balance_days' : wage_balance_days,
         'on_calls' : on_calls,
-        'payments' : payments
+        'payments' : payments,
     }
 
     return render(request, 'workforce/staff-profile.html', context)
