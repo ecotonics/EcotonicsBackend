@@ -508,6 +508,10 @@ def pay_wage(request,slug):
             date=date, type='expense', staff=staff, status='paid',
             title=title, amount=amount, on_call=attendance.on_call, customer=attendance.on_call.customer
         )
+
+        attendance.wage_status = 'paid'
+        attendance.save()
+        
     except Exception as exception:
             messages.warning(request,str(exception))
 

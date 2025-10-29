@@ -50,7 +50,7 @@
 
                 <td
                     class="text-center whitespace-nowrap font-medium {% if payment.status == 'payed' %} text-success {% else %} text-warning {% endif %}">
-                    {{ attendance.wage_status | upper }}
+                    {{ attendance.wage_status | upper }} ( attendance.wage )
                 </td>
 
                 <td class="table-report__action w-36">
