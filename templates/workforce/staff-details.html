@@ -283,7 +283,8 @@
                         <select name="attendance" class="form-control">
                             <option value="">Select Work</option>
                             {% for attendance in attendance_np %}
-                            <option value="{{ attendance.slug }}">{{ attendance.on_call }} ( {{ attendance.date }} )
+                            <option value="{{ attendance.slug }}">
+                                {{ attendance.on_call }} ( {{ attendance.date }} ) ( {{ attendance.wage}} )
                             </option>
                             {% endfor %}
                         </select>
