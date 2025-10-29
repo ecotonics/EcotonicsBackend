@@ -311,7 +311,6 @@ def edit_staff(request,slug):
 
     return render(request,'workforce/staff-edit.html',context)
 
-@login_required
 def staff_details(request,slug):
     staff = Staff.active_objects.get(slug=slug)
     on_calls = OnCall.active_objects.filter(staffs__in=[staff])
