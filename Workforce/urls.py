@@ -22,6 +22,7 @@ urlpatterns = [
     path('staff/edit/<slug:slug>/',views.edit_staff,name='staff-edit'),
     path('staff/details/<slug:slug>/',views.staff_details,name='staff-details'),
     path('staff/delete/<slug:slug>/',views.delete_staff,name='staff-delete'),
+    path('staff/profile/<slug:slug>/',views.staff_profile,name='staff-profile'),
 
     # ATTANDENCE
     path('attendance/add/<slug:slug>/',views.add_attandance,name='attendance-add'),

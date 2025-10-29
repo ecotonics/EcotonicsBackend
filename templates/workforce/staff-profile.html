@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Staff Profile</title>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    <main class="mx-auto p-6">
+
+        <!-- Profile Header -->
+        <section
+            class="border border-gray-300 bg-white rounded-2xl p-6 grid grid-cols-1 md:grid-cols-6 gap-6 shadow-sm">
+            <!-- Photo -->
+            <div class="flex justify-center items-start">
+                <div class="rounded-xl overflow-hidden border border-gray-300 w-64 h-64 bg-gray-50">
+                    <img src="{{ staff.user.photo.url }}" alt="{{ staff.user.name }}"
+                        class="object-cover w-full h-full">
+                </div>
+            </div>
+
+            <!-- Info -->
+            <div class="md:col-span-5 space-y-4">
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-900">{{ staff.user.first_name }}</h1>
+                    <p class="text-gray-600 font-medium">{{ staff.designation }} / {{ staff.department }}</p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                    <div class="border border-gray-300 rounded-xl p-3 bg-gray-50">
+                        <p class="text-gray-500 text-xs">Days Worked</p>
+                        <p class="text-base font-medium">{{ attendances.count }}</p>
+                    </div>
+                    <div class="border border-gray-300 rounded-xl p-3 bg-gray-50">
+                        <p class="text-gray-500 text-xs">Sites Worked</p>
+                        <p class="text-base font-medium">{{ on_calls.count }}</p>
+                    </div>
+                    <div class="border border-gray-300 rounded-xl p-3 bg-gray-50">
+                        <p class="text-gray-500 text-xs">Current Wage</p>
+                        <p class="text-base font-medium">₹ {{ wages.first.amount }}</p>
+                    </div>
+                    <div class="border border-gray-300 rounded-xl p-3 bg-gray-50">
+                        <p class="text-gray-500 text-xs">Wage Total</p>
+                        <p class="text-base font-medium text-red-600">₹ {{ wage_total }}</p>
+                    </div>
+                    <div class="border border-gray-300 rounded-xl p-3 bg-gray-50">
+                        <p class="text-gray-500 text-xs">Wage Paid</p>
+                        <p class="text-base font-medium text-green-600">₹ {{ wage_paid }}</p>
+                    </div>
+                    <div class="border border-gray-300 rounded-xl p-3 bg-gray-50">
+                        <p class="text-gray-500 text-xs">Balance</p>
+                        <p class="text-base font-medium text-blue-600">₹ {{ wage_balance }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Attendance Details -->
+        <section class="mt-8 border border-gray-300 bg-white rounded-2xl shadow-sm p-6">
+            <h2 class="text-lg font-semibold mb-4 border-b border-gray-300 pb-2">Attendance & Payment Details</h2>
+
+            <div class="space-y-4">
+                {% for attendance in attendances %}
+                <div class="border border-gray-300 rounded-xl bg-gray-50 overflow-hidden">
+                    <div class="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 border-b border-gray-300">
+                        <div class="col-span-2 md:col-span-1">
+                            <p class="text-gray-500 text-xs">Work Site</p>
+                            <p class="font-medium text-sm">{{ attendance.on_call.site_name }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">Date</p>
+                            <p class="font-medium text-sm">{{ attendance.date | date:'d M Y' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">Duration</p>
+                            <p class="font-semibold text-sm text-yellow-500">{{ attendance.duration | upper }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">Start Time</p>
+                            <p class="font-medium text-sm">{{ attendance.start_time | date:"h:i A" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">End Time</p>
+                            <p class="font-medium text-sm">{{ attendance.end_time | date:"h:i A" }}</p>
+                        </div>
+                    </div>
+
+                    {% if attendance.transaction %}
+                    <div class="p-4 bg-white grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10">
+                        <div>
+                            <p class="text-gray-500 text-xs">Payment Status</p>
+                            <p
+                                class="font-semibold text-sm {% if attendance.wage_status == 'paid' %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ attendance.wage_status | upper }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">Payment Date</p>
+                            <p class="font-medium text-sm">
+                                {{ attendance.transaction.date | date:'d M Y' }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">Payment Amount</p>
+                            <p class="font-medium text-sm">₹{{ attendance.transaction.amount }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="p-4 bg-white">
+                        <p class="text-red-500 text-sm">Payment Pending</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-sm">No attendance records found.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

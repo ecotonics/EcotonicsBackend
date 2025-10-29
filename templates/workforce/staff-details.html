@@ -34,6 +34,9 @@
                         {{ staff.user.first_name}}
                     </div>
                     <div class="text-slate-500">{{ staff.designation }} / {{ staff.department }}</div>
+                    <a class="text-white font-medium btn btn-sm mt-3" href="{% url 'staff-profile' staff.slug %}">
+                        View Profile
+                    </a>
                 </div>
             </div>
             <div
