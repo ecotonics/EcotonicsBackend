@@ -20,9 +20,9 @@
 
                 <td class="text-center whitespace-nowrap">{{ transaction.date | date:'d M Y' }}</td>
 
-                {% if transaction.type == 'INCOME' %}
+                {% if transaction.type == 'income' %}
                 <td class="text-center whitespace-nowrap text-success">INCOME</td>
-                {% elif transaction.type == 'EXPENSE' %}
+                {% elif transaction.type == 'expense' %}
                 <td class="text-center whitespace-nowrap text-danger">EXPENSE</td>
                 {% endif %}
 
@@ -30,9 +30,9 @@
                 <td class="text-center whitespace-nowrap font-medium">{{ transaction.title }}</td>
                 <td class="text-center whitespace-nowrap">{{ transaction.account }}</td>
 
-                {% if transaction.type == 'INCOME' %}
+                {% if transaction.type == 'income' %}
                 <td class="text-center whitespace-nowrap text-success font-medium">{{ transaction.amount }}</td>
-                {% elif transaction.type == 'EXPENSE' %}
+                {% elif transaction.type == 'expense' %}
                 <td class="text-center whitespace-nowrap text-danger font-medium">{{ transaction.amount }}</td>
                 {% endif %}
 
