@@ -294,6 +294,18 @@
                     </div>
 
                     <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Category</label>
+                        <select name="category" class="form-control">
+                            <option value="">Select Work</option>
+                            {% for category in categories %}
+                            <option value="{{ attendance.slug }}">
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Amount</label>
                         <input step="0.01" type="number" name="amount" id="" class="form-control"
                             placeholder="Enter transaction amount">

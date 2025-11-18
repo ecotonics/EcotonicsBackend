@@ -527,15 +527,17 @@ def pay_wage(request,slug):
         date = request.POST.get('date')
         title = request.POST.get('title')
         amount = request.POST.get('amount')
+        category_slug = request.POST.get('category')
         attendance_slug = request.POST.get('attendance')
 
     try:
         attendance = Attendance.active_objects.get(slug=attendance_slug)
+        category = TransactionCategory.active_objects.get(slug=category_slug)
         
         Transaction.objects.create(
             date=date, type='expense', staff=staff, status='paid',
             title=title, amount=amount, attendance=attendance, on_call=attendance.on_call,
-            customer=attendance.on_call.customer
+            customer=attendance.on_call.customer, category=category
         )
 
         attendance.wage_status = 'paid'
