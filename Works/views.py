@@ -164,13 +164,14 @@ def add_on_call_expense(request, slug):
     if request.method == 'POST':
         title = request.POST.get('title')
         amount = request.POST.get('amount')
+        date = request.POST.get('date')
         category_slug = request.POST.get('category')
 
         try:
             category = TransactionCategory.objects.get(slug=category_slug)
 
             Transaction.objects.create(
-                date=today, category=category, type=category.type, customer=on_call.customer, on_call=on_call, title=title, amount=amount
+                date=date, category=category, type=category.type, customer=on_call.customer, on_call=on_call, title=title, amount=amount
             )
 
             messages.success(request, 'work transaction added')

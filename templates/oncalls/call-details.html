@@ -278,6 +278,11 @@
 
                     <div class="intro-y col-span-12 sm:col-span-6">
                         <label for="input-wizard-2" class="form-label">Amount</label>
+                        <input value="{{ today | date:'Y-m-d' }}" type="date" name="date" id="" class="form-control">
+                    </div>
+
+                    <div class="intro-y col-span-12 sm:col-span-6">
+                        <label for="input-wizard-2" class="form-label">Amount</label>
                         <input step="0.01" type="number" name="amount" id="" class="form-control"
                             placeholder="Enter transaction amount">
                     </div>
